@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    amqp
+   infobroker
 
 Indices and tables
 ==================
