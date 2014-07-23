@@ -57,6 +57,27 @@ Example
     with prod:
         prod.push_message('test message')
 
+``rpc_producer_example.py``
+
+.. code-block:: python
+
+    import occo.util.config as config
+    import occo.util.communication as comm
+
+    with open('config.yaml') as f
+        cfg = config.DefaultYAMLConfig(f)
+
+    prod = comm.RPCProducer(**cfg.mqconfig)
+    with prod:
+        try:
+            data = prod.push_message('test message')
+        except CommunicationError as e:
+            print e
+        except ApplicationError as e:
+            # do application specific error handling here
+        else:
+            print data
+
 ``infinite_consumer_example.py``
 
 .. code-block:: python
