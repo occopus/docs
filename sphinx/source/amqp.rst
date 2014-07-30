@@ -71,7 +71,7 @@ Example
     with prod:
         try:
             data = prod.push_message('test message')
-        except CommunicationError as e:
+        except comm.CommunicationError as e:
             print e
         except ApplicationError as e:
             # do application specific error handling here
@@ -90,6 +90,8 @@ Example
 
     def core_func(msg):
         print msg
+        retval = 'hello, %s'%msg
+        return comm.Response(200, retval)
 
     cons = comm.EventDrivenConsumer(core_func, **cfg.mqconfig)
     with cons:
@@ -108,6 +110,8 @@ Example
 
     def core_func(msg):
         print msg
+        retval = 'hello, %s'%msg
+        return comm.Response(200, retval)
 
     cancel = threading.Event()
     cons = comm.EventDrivenConsumer(core_func,
