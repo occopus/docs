@@ -1,6 +1,13 @@
 --find-links http://c153-86.localcloud:8080/packages
 --no-index
 
+# Sphinx
+Jinja2==2.7.3
+MarkupSafe==0.23
+Pygments==2.0.1
+Sphinx==1.2.3
+docutils==0.12
+
 PyYAML==3.11
 argparse==1.2.1
 dateutils==0.6.6
