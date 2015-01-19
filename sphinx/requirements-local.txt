@@ -17,4 +17,4 @@ redis==2.10.3
 -e ../../cloud-handler
 -e ../../enactor
 -e ../../compiler
--e ../../infraistructure-processor
+-e ../../infrastructure-processor
