@@ -1,0 +1,20 @@
+--find-links http://c153-86.localcloud:8080/packages
+--no-index
+
+PyYAML==3.11
+argparse==1.2.1
+dateutils==0.6.6
+python-dateutil==2.2
+pytz==2014.9
+six==1.8.0
+wsgiref==0.1.2
+drett-client==0.1.0
+boto==2.34.0
+pika==0.9.14
+redis==2.10.3
+-e ../../util
+-e ../../info-broker
+-e ../../cloud-handler
+-e ../../enactor
+-e ../../compiler
+-e ../../infraistructure-processor
