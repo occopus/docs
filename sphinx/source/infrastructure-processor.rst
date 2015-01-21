@@ -1,5 +1,5 @@
 Infrastructure Processor for OCCO
-================================
+=================================
 
 Generic Infrastructure Processor component
 ------------------------------------------
