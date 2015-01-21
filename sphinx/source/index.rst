@@ -13,6 +13,12 @@ Contents:
 
    amqp
    infobroker
+   util
+   uds
+   compiler
+   enactor
+   infrastructure-processor
+   cloud-handler
 
 Indices and tables
 ==================
