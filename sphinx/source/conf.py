@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
     'sphinx.ext.viewcode',
+    'sphinx.ext.ifconfig',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -270,3 +271,14 @@ texinfo_documents = [
 intersphinx_mapping = {'http://docs.python.org/': None}
 
 todo_include_todos = True
+
+def setup(app):
+    # If set to True, an API documentation will be generated.
+    # If False, an documentation for internal use will be generated.
+    # The difference is that the internal documentation will contain
+    # documentation of private members, and members not present in a modules's
+    # __all__ variable. (Only thos that have been explicitly specified in the
+    # docstrings.)
+    app.add_config_value('api_doc', False, 'env')
+
+api_doc = False

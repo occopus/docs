@@ -7,4 +7,3 @@ Abstract Information Providers
 ------------------------------
 .. automodule:: occo.infobroker.provider
     :members:
-    :special-members:
