@@ -1,3 +1,5 @@
+.. _infobroker:
+
 Information Distribution in OCCO
 ================================
 
