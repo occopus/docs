@@ -1,3 +1,5 @@
+.. _IP:
+
 Infrastructure Processor for OCCO
 =================================
 
