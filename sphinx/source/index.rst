@@ -20,6 +20,10 @@ Contents:
    infrastructure-processor
    cloud-handler
 
+.. ifconfig:: api_doc is False
+
+    .. todolist::
+
 Indices and tables
 ==================
 
