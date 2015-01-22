@@ -14,7 +14,6 @@ Configration utility functions
 
 .. automodule:: occo.util.config
 .. automodule:: occo.util.config.config
-    :noindex:
     :members:
 
 A generic implementation of the abstract factory pattern
@@ -22,5 +21,4 @@ A generic implementation of the abstract factory pattern
 
 .. automodule:: occo.util.factory
 .. automodule:: occo.util.factory.factory
-    :noindex:
     :members:

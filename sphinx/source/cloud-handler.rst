@@ -7,7 +7,6 @@ Abstract Cloud Handler and generic functions
 .. automodule:: occo.cloudhandler
 .. automodule:: occo.cloudhandler.cloudhandler
     :members:
-    :noindex:
 
 Specialized backend implementations
 -----------------------------------

@@ -12,7 +12,6 @@ Generic Infrastructure Processor component
 .. automodule:: occo.infraprocessor
 .. automodule:: occo.infraprocessor.infraprocessor
     :members:
-    :noindex:
 
 Specific node resolution implementations
 ----------------------------------------
