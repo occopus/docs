@@ -1,6 +1,9 @@
 Infrastructure Processor for OCCO
 =================================
 
+.. index::
+    pair: IP; Infrastructure Processor
+
 Generic Infrastructure Processor component
 ------------------------------------------
 
