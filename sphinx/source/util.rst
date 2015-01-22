@@ -4,6 +4,7 @@ Utilities for OCCO
 Generic utility functions
 -------------------------
 
+.. automodule:: occo.util
 .. automodule:: occo.util.general
     :members:
     :special-members:
@@ -12,13 +13,17 @@ Generic utility functions
 Configration utility functions
 ------------------------------
 
+.. automodule:: occo.util.config
 .. automodule:: occo.util.config.config
+    :noindex:
     :members:
     :special-members:
 
 A generic implementation of the abstract factory pattern
 --------------------------------------------------------
 
+.. automodule:: occo.util.factory
 .. automodule:: occo.util.factory.factory
+    :noindex:
     :members:
     :special-members:

@@ -5,11 +5,15 @@ Abstract Cloud Handler and generic functions
 --------------------------------------------
 
 .. automodule:: occo.cloudhandler
+.. automodule:: occo.cloudhandler.cloudhandler
     :members:
     :special-members:
+    :noindex:
 
 Specialized backend implementations
 -----------------------------------
+
+.. automodule:: occo.cloudhandler.backends
 
 Dummy backend for testing
 ~~~~~~~~~~~~~~~~~~~~~~~~~
