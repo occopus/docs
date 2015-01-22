@@ -19,6 +19,7 @@ Contents:
    enactor
    infrastructure-processor
    cloud-handler
+   datastructures
 
 .. ifconfig:: api_doc is False
 
