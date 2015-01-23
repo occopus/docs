@@ -53,3 +53,22 @@ topological ordering of the :ref:`infradescription`.
 
 .. todo:: The specification can be foun in the code:
     :class:`occo.compiler.compiler.StaticDescription`
+
+.. _instancedata:
+
+Instance Data
+-------------
+
+Specification of a running node instance. A ``(backend_id, instance_id)`` pair
+is required and is sufficient to manipulate a running node instance.
+
+    ``node_id``
+        Internal identifier of the node instance.
+    ``backend_id``
+        Identifies the backend that has actually handled the creation of this
+        node.
+    ``instance_id``
+        Identifier of the node instance in the backend's domain (e.g. boto vm
+        id).
+    ``user_id``
+        User identifier of the infrastructure this node pertains to.
