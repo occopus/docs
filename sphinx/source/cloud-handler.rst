@@ -1,3 +1,5 @@
+.. _cloudhandler:
+
 Cloud handlers for OCCO
 ================================
 
