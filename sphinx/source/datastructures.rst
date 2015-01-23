@@ -35,8 +35,32 @@ Dependency graph on :ref:`nodedescription`-s.
 Node Description
 ----------------
 
+Abstract description of a node, which identifies a type of node a user may
+include in an infrastructure. It is an abstract, backend-independent definition
+of a class of nodes and can be stored in a repository.
+
+This data structure does not contain information on how it can be
+instantiated. Rather, it refers to one or more *implementations* that can be
+used to instantiate the node. These implementations are described with
+:ref:`node definition <nodedefinition>` data structures.
+
+To instantiate a node, its implementations are gathered first. Then, they are
+either filtered by ``backend_id`` (if explicitly specified), or one is selected
+by some brokering algorithm (currently: randomly).
+
+The node definition will then be resolved to a :ref:`resolved node definition
+<resolvednode>` so it contains all information required by the intended
+backend. For details, continue to :ref:`nodedefinition`, and then to
+:ref:`resolvednode`.
+
   ``name``
       Uniquely identifies the node inside the infrastructure.
+  ``type``
+      The type of the node.
+  ``backend_id``
+      Optional. The dedicated backend for this node. If unspecified, the
+      :ref:`Infrastructure Processor <infraprocessor>` will choose among
+      implementations.
   ``environment_id``
       Back reference to the containing infrastructure instance.
   ``user_id``
@@ -53,6 +77,57 @@ topological ordering of the :ref:`infradescription`.
 
 .. todo:: The specification can be foun in the code:
     :class:`occo.compiler.compiler.StaticDescription`
+
+.. _nodedefinition:
+
+Node Definition
+---------------
+
+Describes an *implementation* of a :ref:`node <nodedescription>`, a template
+that is required to instantiate a node. The template pertains to a specific
+:ref:`Cloud Handler <cloudhandler>` (through ``backend_id``), and a specific
+:ref:`Service Composer <servicecomposer>` (to be implemented).
+
+A node definition does not contain all information needed to instantiate the
+data. It is just a backend-\ *dependent* description that can be stored in a
+repository (cf. with :ref:`nodedescription`, which is backend-\ *independent*).
+
+To be used to instantiate a concrete node, this template needs to be resolved;
+that is, filled in with actual information. This results in a
+:ref:`resolved node definition <resolvednode>` (see there for details).
+
+    ``implementation_type``
+        The :mod:`Resolver <occo.infraprocessor.node_resolution>` module uses
+        this to select the correct resolver. This string should identify the
+        cloud handler + service composer pair that can handle this
+        implementation. E.g. ``"chef+cloudinit"``.
+    ``...``
+        Extra information required by the resolver handling this type of
+        implementation. E.g. ``"context_template"`` in case of cloud-init
+        backends.
+        
+.. _resolvednode:
+
+Resolved Node Definition
+------------------------
+
+The :ref:`node definition <nodedefinition>` contains the *template* to
+instantiate a node in a specific backend, but it does not contain actual
+details: it must be resolved first.
+
+The resolution in initiated by the :ref:`Infrastructure Processor
+<infraprocessor>`, and performed by the :mod:`node resolution
+<occo.infraprocessor.node_resolution>` module. The correct resolution algorithm
+determines the content of the resolved node definition, which depends on the
+backend type of the :ref:`Cloud Handler <cloudhandler>` *and* the type of the
+:ref:`Service Composer <servicecomposer>`.
+
+A resolved node definition is not intended to be stored in any permanent
+storage as it is product of the :ref:`node definition <nodedefinition>` and
+up-to-date information from the :ref:`Information Broker <infobroker>`.
+
+The content of the resolved node definition depends completely on the resolving
+algorithm.
 
 .. _instancedata:
 
