@@ -24,6 +24,12 @@ Infrastructure Description
 
 Dependency graph on :ref:`nodedescription`-s.
 
+.. todo:: The use of ``environment_id``, ``infra_id``, and
+    ``infrastructure_id`` is inconsistent throughout the code and the system.
+    We need to refactor the code and the design so it is consistently called
+    ``infrastructure_id``. We should drop the "environment" terminology
+    altogether, as it is Chef-specific.
+
 .. _nodedescription:
 
 Node Description
