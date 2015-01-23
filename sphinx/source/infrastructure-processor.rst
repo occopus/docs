@@ -1,3 +1,4 @@
+.. _infraprocessor:
 .. _IP:
 
 Infrastructure Processor for OCCO
