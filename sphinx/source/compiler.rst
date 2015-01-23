@@ -1,3 +1,5 @@
+.. _compiler:
+
 Compiler for OCCO
 ================================
 
