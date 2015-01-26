@@ -30,6 +30,59 @@ Dependency graph on :ref:`nodedescription`-s.
     ``infrastructure_id``. We should drop the "environment" terminology
     altogether, as it is Chef-specific.
 
+Examples
+~~~~~~~~
+
+Diamond
+```````
+
+.. code:: yaml
+
+    user_id: 1
+    name: diamond
+    nodes: &NODES
+        - &A
+            name: A
+            type: mysql-something
+        - &B
+            name: B
+            type: wordpress-something
+            scaling:
+                max: 5
+        - &C
+            name: C
+            type: something-something-darkside
+            scaling:
+                min: 2
+                max: 5
+        - &D
+            name: D
+            type: yaay
+    dependencies:
+        - [ *D, *C ]
+        - [ *D, *B ]
+        - [ *B, *A ]
+        - [ *C, *A ]
+
+OC-Demo
+```````
+
+.. code:: yaml
+
+    user_id: 1
+    name: original_ocdemo
+    nodes: &NODES
+        - &portal
+            name: gUSE
+            type: ocdemo_guse
+        - &boinc_client
+            name: BOINC_client
+            type: ocdemo_boinc_client
+            scaling:
+                min: 2
+    dependencies:
+        - [ *boinc_client, *portal ]
+
 .. _nodedescription:
 
 Node Description
@@ -69,6 +122,7 @@ backend. For details, continue to :ref:`nodedefinition`, and then to
       the containing infrastructure, but it is much more efficient to simply
       copy the ``user_id`` to each node's description.
 
+
 Infrastructure Static State
 ---------------------------
 
@@ -105,6 +159,18 @@ that is, filled in with actual information. This results in a
         Extra information required by the resolver handling this type of
         implementation. E.g. ``"context_template"`` in case of cloud-init
         backends.
+
+Example
+~~~~~~~
+
+.. code:: yaml
+    
+    implementation_type: chef+cloudinit
+    backend_id: dummy1
+    service_composer_id: chef1
+    image_id: ami-00000724
+    instance_type: m1.medium
+    run_list: ''
         
 .. _resolvednode:
 
