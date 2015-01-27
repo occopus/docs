@@ -9,3 +9,9 @@ Abstract Information Providers
 ------------------------------
 .. automodule:: occo.infobroker.provider
     :members:
+
+Distributed Information Provider
+--------------------------------
+
+.. automodule:: occo.infobroker.remote
+    :members:
