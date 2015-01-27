@@ -1,3 +1,5 @@
+.. _comm:
+
 Component Communication in OCCO
 ===============================
 
