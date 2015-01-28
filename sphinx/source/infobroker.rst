@@ -15,3 +15,9 @@ Distributed Information Provider
 
 .. automodule:: occo.infobroker.remote
     :members:
+
+Cloud Information Provider
+--------------------------
+
+.. automodule:: occo.infobroker.cloud_provider
+    :members:

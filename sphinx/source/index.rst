@@ -33,3 +33,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 * :ref:`occoglossary`
+* :ref:`ibkeyindex`
