@@ -31,9 +31,14 @@ class IBKeyDirective(Directive):
 
         targetid = 'ibkey-{0}'.format(env.new_serialno('ibkey'))
         targetnode = nodes.target('', '', ids=[targetid])
+        keynode = nodes.literal(self.content[0], self.content[0])
+        label = nodes.strong('@provides', '@provides')
+        sep = nodes.inline(': ', ': ')
+        p = nodes.paragraph('', '', label, sep, keynode)
 
-        ad = make_admonition(ibkey, self.name, [_('IB Key')], self.options,
-                             self.content, self.lineno, self.content_offset,
+        ad = make_admonition(ibkey, self.name,
+                             [_("Provided InfoBroker key")], self.options,
+                             keynode, self.lineno, self.content_offset,
                              self.block_text, self.state, self.state_machine)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
@@ -41,10 +46,10 @@ class IBKeyDirective(Directive):
         env.ibkey_all_ibkeys.append(dict(
             docname=env.docname,
             lineno=self.lineno,
-            ibkey=ad[0].deepcopy(),
+            ibkey=keynode.deepcopy(),
             target=targetnode))
 
-        return [targetnode] + ad
+        return [targetnode, p] #+ ad
 
 def purge_ibkeys(app, env, docname):
     if not hasattr(env, 'ibkey_all_ibkeys'):
