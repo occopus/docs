@@ -2,6 +2,7 @@
 
 from docutils import nodes
 from sphinx.util.nodes import nested_parse_with_titles
+from docutils.parsers.rst import Directive
 
 class declibkey(nodes.General, nodes.Element): pass
 
@@ -27,9 +28,6 @@ class ibkey(nodes.paragraph):
 class iblist_entry(nodes.paragraph):
     def __init__(self, env, docname, lineno, refkey, key_elem, doc):
 
-        origentry = nodes.inline('', '')
-        origentry += nodes.Text(' (', ' (')
-
         filename = env.doc2path(docname, base=None)
         linktext = "{0}:{1}".format(filename, lineno)
         refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
@@ -37,8 +35,10 @@ class iblist_entry(nodes.paragraph):
         refnode['refuri'] = "{0}#{1}".format(
             env.app.builder.get_target_uri(docname), refkey)
 
-        origentry += refnode
-        origentry += nodes.Text(')', ')')
+        origentry = nodes.inline('', '',
+                                 nodes.Text(' (', ' ('),
+                                 refnode,
+                                 nodes.Text(')', ')'))
 
         entry_header = nodes.paragraph('', '', key_elem, origentry)
 
@@ -57,8 +57,6 @@ def depart_iblist_entry_node(self, node): self.depart_paragraph(node)
 def visit_keynode_node(self, node): self.visit_literal(node)
 def depart_keynode_node(self, node): self.depart_literal(node)
 
-from docutils.parsers.rst import Directive
-
 class DeclIBKey(Directive):
     has_content = True
 
@@ -70,10 +68,6 @@ class DeclIBKey(Directive):
 class IBKeyListDirective(Directive):
     def run(self):
         return [ibkeylist('')]
-
-from sphinx.util.compat import make_admonition
-from sphinx.locale import _
-from docutils.statemachine import ViewList
 
 class IBKeyDirective(Directive):
     has_content = True
@@ -89,9 +83,9 @@ class IBKeyDirective(Directive):
 
     def run(self):
         env = self.state.document.settings.env
+        docname = env.docname
 
         key = self.find_key(self.content.parent)
-        docname = env.docname
 
         key_elem = keynode(key)
         doc = keydoc(self.state, self.content, self.content_offset)
