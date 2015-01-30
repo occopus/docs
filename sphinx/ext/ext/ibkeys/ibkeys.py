@@ -4,11 +4,25 @@ from docutils import nodes
 from sphinx.util.nodes import nested_parse_with_titles
 
 class declibkey(nodes.General, nodes.Element): pass
-class ibkey(nodes.paragraph): pass
+class keynode(nodes.literal):
+    def __init__(self, key):
+        super(keynode, self).__init__(key, key)
+
+class ibkey(nodes.paragraph):
+    def __init__(self, refkey, key_elem, doc):
+        targetnode = nodes.target('', '', ids=[refkey])
+
+        label = nodes.strong('@provides', '@provides')
+        sep = nodes.Text(': ', ': ')
+        par = nodes.paragraph('', '', label, sep, key_elem)
+
+        super(ibkey, self).__init__('', '', targetnode, par, doc)
+
 class ibkey_content(nodes.paragraph): pass
 class ibkeylist(nodes.General, nodes.Element): pass
+
 class iblist_entry(nodes.paragraph):
-    def __init__(self, env, docname, lineno, refkey, keynode, doc):
+    def __init__(self, env, docname, lineno, refkey, key_elem, doc):
 
         origentry = nodes.inline('', '')
         origentry += nodes.Text(' (', ' (')
@@ -23,7 +37,7 @@ class iblist_entry(nodes.paragraph):
         origentry += refnode
         origentry += nodes.Text(')', ')')
 
-        entry_header = nodes.paragraph('', '', keynode, origentry)
+        entry_header = nodes.paragraph('', '', key_elem, origentry)
 
         super(iblist_entry, self).__init__('', '', entry_header, doc)
 
@@ -35,6 +49,8 @@ def visit_ibkey_content_node(self, node): self.visit_paragraph(node)
 def depart_ibkey_content_node(self, node): self.depart_paragraph(node)
 def visit_iblist_entry_node(self, node): self.visit_paragraph(node)
 def depart_iblist_entry_node(self, node): self.depart_paragraph(node)
+def visit_keynode_node(self, node): self.visit_literal(node)
+def depart_keynode_node(self, node): self.depart_literal(node)
 
 from docutils.parsers.rst import Directive
 
@@ -74,18 +90,14 @@ class IBKeyDirective(Directive):
 
         docname = env.docname
 
-        targetnode = nodes.target('', '', ids=[refkey])
-
-        keynode = nodes.literal(key, key)
-        label = nodes.strong('@provides', '@provides')
-        sep = nodes.Text(': ', ': ')
+        key_elem = keynode(key)
         doc = ibkey_content(rawsource='\n'.join(self.content))
         doc.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, doc)
 
-        p = ibkey('', '', label, sep, keynode, doc)
+        doc_entry = ibkey(refkey, key_elem, doc)
         catalog_entry = iblist_entry(
-            env, docname, self.lineno, refkey, keynode, doc)
+            env, docname, self.lineno, refkey, key_elem, doc)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
@@ -93,7 +105,7 @@ class IBKeyDirective(Directive):
         env.ibkey_all_ibkeys[key] = dict(docname=docname,
                                          catalog_entry=catalog_entry)
 
-        return [targetnode, p]
+        return [doc_entry]
 
 def purge_ibkeys(app, env, docname):
     if not hasattr(env, 'ibkey_all_ibkeys'):
@@ -121,7 +133,8 @@ def setup(app):
     app.add_node(ibkeylist)
     g = globals()
 
-    for nodename in ['ibkey', 'ibkey_content', 'declibkey', 'iblist_entry']:
+    for nodename in ['ibkey', 'ibkey_content', 'declibkey', 'iblist_entry',
+                     'keynode']:
         methods = tuple(g['{1}_{0}_node'.format(nodename, role)]
                         for role in ['visit', 'depart'])
         allmethods = dict((k,methods) for k in ['html', 'latex', 'text'])
