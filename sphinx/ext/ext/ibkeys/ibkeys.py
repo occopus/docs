@@ -7,7 +7,25 @@ class declibkey(nodes.General, nodes.Element): pass
 class ibkey(nodes.paragraph): pass
 class ibkey_content(nodes.paragraph): pass
 class ibkeylist(nodes.General, nodes.Element): pass
-class iblist_entry(nodes.paragraph): pass
+class iblist_entry(nodes.paragraph):
+    def __init__(self, env, docname, lineno, refkey, keynode, doc):
+
+        origentry = nodes.inline('', '')
+        origentry += nodes.Text(' (', ' (')
+
+        filename = env.doc2path(docname, base=None)
+        linktext = "{0}:{1}".format(filename, lineno)
+        refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
+        refnode['refdocname'] = docname
+        refnode['refuri'] = "{0}#{1}".format(
+            env.app.builder.get_target_uri(docname), refkey)
+
+        origentry += refnode
+        origentry += nodes.Text(')', ')')
+
+        entry_header = nodes.paragraph('', '', keynode, origentry)
+
+        super(iblist_entry, self).__init__('', '', entry_header, doc)
 
 def visit_declibkey_node(self, node): self.visit_raw(node)
 def depart_declibkey_node(self, node): self.depart_raw(node)
@@ -60,31 +78,14 @@ class IBKeyDirective(Directive):
 
         keynode = nodes.literal(key, key)
         label = nodes.strong('@provides', '@provides')
-        sep = nodes.inline(': ', ': ')
+        sep = nodes.Text(': ', ': ')
         doc = ibkey_content(rawsource='\n'.join(self.content))
         doc.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, doc)
 
         p = ibkey('', '', label, sep, keynode, doc)
-        catalog_entry = iblist_entry('', '')
-
-        origentry = nodes.inline('', '')
-        origentry += nodes.Text(' (', ' (')
-
-        filename = env.doc2path(docname, base=None)
-        linktext = "{0}:{1}".format(filename, self.lineno)
-        refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
-        refnode['refdocname'] = docname
-        refnode['refuri'] = "{0}#{1}".format(
-            env.app.builder.get_target_uri(docname), refkey)
-
-        origentry += refnode
-        origentry += nodes.Text(')', ')')
-
-        entry_header = nodes.paragraph('', '', keynode, origentry)
-
-        catalog_entry += entry_header
-        catalog_entry += doc
+        catalog_entry = iblist_entry(
+            env, docname, self.lineno, refkey, keynode, doc)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
