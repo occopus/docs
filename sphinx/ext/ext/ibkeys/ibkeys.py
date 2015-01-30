@@ -1,22 +1,22 @@
 # Extension for Sphinx to document Info Broker keys
 
 from docutils import nodes
+from sphinx.util.nodes import nested_parse_with_titles
 
 class declibkey(nodes.General, nodes.Element): pass
-class ibkey(nodes.Admonition, nodes.Element): pass
+class ibkey(nodes.paragraph): pass
+class ibkey_content(nodes.paragraph): pass
 class ibkeylist(nodes.General, nodes.Element): pass
+class iblist_entry(nodes.paragraph): pass
 
-def visit_declibkey_node(self, node):
-    self.visit_admonition(node)
-
-def depart_declibkey_node(self, node):
-    self.depart_admonition(node)
-
-def visit_ibkey_node(self, node):
-    self.visit_admonition(node)
-
-def depart_ibkey_node(self, node):
-    self.depart_admonition(node)
+def visit_declibkey_node(self, node): self.visit_raw(node)
+def depart_declibkey_node(self, node): self.depart_raw(node)
+def visit_ibkey_node(self, node): self.visit_paragraph(node)
+def depart_ibkey_node(self, node): self.depart_paragraph(node)
+def visit_ibkey_content_node(self, node): self.visit_paragraph(node)
+def depart_ibkey_content_node(self, node): self.depart_paragraph(node)
+def visit_iblist_entry_node(self, node): self.visit_paragraph(node)
+def depart_iblist_entry_node(self, node): self.depart_paragraph(node)
 
 from docutils.parsers.rst import Directive
 
@@ -34,6 +34,7 @@ class IBKeyListDirective(Directive):
 
 from sphinx.util.compat import make_admonition
 from sphinx.locale import _
+from docutils.statemachine import ViewList
 
 class IBKeyDirective(Directive):
     has_content = True
@@ -50,29 +51,48 @@ class IBKeyDirective(Directive):
     def run(self):
         env = self.state.document.settings.env
 
-        targetid = 'ibkey-{0}'.format(env.new_serialno('ibkey'))
-        targetnode = nodes.target('', '', ids=[targetid])
-
         key = self.find_key(self.content.parent)
+        refkey = key
+
+        docname = env.docname
+
+        targetnode = nodes.target('', '', ids=[refkey])
 
         keynode = nodes.literal(key, key)
         label = nodes.strong('@provides', '@provides')
         sep = nodes.inline(': ', ': ')
-        p = nodes.paragraph('', '', label, sep, keynode)
+        doc = ibkey_content(rawsource='\n'.join(self.content))
+        doc.document = self.state.document
+        self.state.nested_parse(self.content, self.content_offset, doc)
 
-        ad = make_admonition(ibkey, self.name,
-                             [_("Provided InfoBroker key")], self.options,
-                             keynode, self.lineno, self.content_offset,
-                             self.block_text, self.state, self.state_machine)
+        p = ibkey('', '', label, sep, keynode, doc)
+        catalog_entry = iblist_entry('', '')
+
+        origentry = nodes.paragraph()
+        filename = env.doc2path(docname, base=None)
+        description = \
+            _("(Original entry: '{0}':{1} ").format(filename, self.lineno)
+        origentry += nodes.Text(description, description)
+
+        refnode = nodes.reference('', '')
+        innernode = nodes.emphasis(_('here'), _('here'))
+        refnode['refdocname'] = docname
+        refnode['refuri'] = "{0}#{1}".format(docname, refkey)
+                                             
+        refnode.append(innernode)
+
+        origentry += refnode
+        origentry += nodes.Text('.)', '.)')
+
+        catalog_entry += keynode
+        catalog_entry += origentry
+        catalog_entry += doc
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
 
-        env.ibkey_all_ibkeys[key] = \
-            dict(docname=env.docname,
-                 lineno=self.lineno,
-                 ibkey=keynode.deepcopy(),
-                 target=targetnode)
+        env.ibkey_all_ibkeys[key] = dict(docname=docname,
+                                         catalog_entry=catalog_entry)
 
         return [targetnode, p]
 
@@ -93,46 +113,24 @@ def process_ibkey_nodes(app, doctree, fromdocname):
         all_ibkeys = env.ibkey_all_ibkeys
 
         for key in sorted(all_ibkeys.iterkeys()):
-            key_info = all_ibkeys[key]
-            docname  = key_info['docname']
-
-            para = nodes.paragraph()
-            filename = env.doc2path(docname, base=None)
-            description = (
-                _("(Original entry: '{0}':{1} ").format(filename,
-                                                        key_info['lineno']))
-            para += nodes.Text(description, description)
-
-            newnode = nodes.reference('', '')
-            innernode = nodes.emphasis(_('here'), _('here'))
-            newnode['refdocname'] = docname
-            newnode['refuri'] = app.builder.get_relative_uri(
-                fromdocname, docname)
-            newnode['refuri'] += "#{0}".format(key_info['target']['refid'])
-            newnode.append(innernode)
-
-            para += newnode
-            para += nodes.Text('.)', '.)')
-
-            content.append(key_info['ibkey'])
-            content.append(para)
+            content.append(all_ibkeys[key]['catalog_entry'])
 
         node.replace_self(content)
 
 
 def setup(app):
-    #app.add_config_value('xxx', False, False)
     app.add_node(ibkeylist)
-    app.add_node(ibkey,
-                 html=(visit_ibkey_node, depart_ibkey_node),
-                 latex=(visit_ibkey_node, depart_ibkey_node),
-                 text=(visit_ibkey_node, depart_ibkey_node))
-    app.add_node(declibkey,
-                 html=(visit_declibkey_node, depart_declibkey_node),
-                 latex=(visit_declibkey_node, depart_declibkey_node),
-                 text=(visit_declibkey_node, depart_declibkey_node))
+    g = globals()
+
+    for nodename in ['ibkey', 'ibkey_content', 'declibkey', 'iblist_entry']:
+        methods = tuple(g['{1}_{0}_node'.format(nodename, role)]
+                        for role in ['visit', 'depart'])
+        allmethods = dict((k,methods) for k in ['html', 'latex', 'text'])
+        app.add_node(g[nodename], **allmethods)
+
     app.add_directive('ibkey', IBKeyDirective)
     app.add_directive('decl_ibkey', DeclIBKey)
     app.add_directive('ibkeylist', IBKeyListDirective)
+
     app.connect('doctree-resolved', process_ibkey_nodes)
     app.connect('env-purge-doc', purge_ibkeys)
