@@ -91,16 +91,14 @@ class IBKeyDirective(Directive):
         env = self.state.document.settings.env
 
         key = self.find_key(self.content.parent)
-        refkey = key
-
         docname = env.docname
 
         key_elem = keynode(key)
         doc = keydoc(self.state, self.content, self.content_offset)
 
-        doc_entry = ibkey(refkey, key_elem, doc)
+        doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
-            env, docname, self.lineno, refkey, key_elem, doc)
+            env, docname, self.lineno, key, key_elem, doc)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
