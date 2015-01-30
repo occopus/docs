@@ -31,7 +31,10 @@ class IBKeyDirective(Directive):
 
         targetid = 'ibkey-{0}'.format(env.new_serialno('ibkey'))
         targetnode = nodes.target('', '', ids=[targetid])
-        keynode = nodes.literal(self.content[0], self.content[0])
+
+        key = self.content[0]
+
+        keynode = nodes.literal(key, key)
         label = nodes.strong('@provides', '@provides')
         sep = nodes.inline(': ', ': ')
         p = nodes.paragraph('', '', label, sep, keynode)
@@ -42,21 +45,23 @@ class IBKeyDirective(Directive):
                              self.block_text, self.state, self.state_machine)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
-            env.ibkey_all_ibkeys = list()
-        env.ibkey_all_ibkeys.append(dict(
-            docname=env.docname,
-            lineno=self.lineno,
-            ibkey=keynode.deepcopy(),
-            target=targetnode))
+            env.ibkey_all_ibkeys = dict()
 
-        return [targetnode, p] #+ ad
+        env.ibkey_all_ibkeys[key] = \
+            dict(docname=env.docname,
+                 lineno=self.lineno,
+                 ibkey=keynode.deepcopy(),
+                 target=targetnode)
+
+        return [targetnode, p]
 
 def purge_ibkeys(app, env, docname):
     if not hasattr(env, 'ibkey_all_ibkeys'):
         return
 
-    env.ibkey_all_ibkeys = [i for i in env.ibkey_all_ibkeys
-                            if i['docname'] != docname]
+    env.ibkey_all_ibkeys = dict((k, v)
+                                for k, v in env.ibkey_all_ibkeys.iteritems()
+                                if v['docname'] != docname)
 
 def process_ibkey_nodes(app, doctree, fromdocname):
     env = app.builder.env
@@ -64,7 +69,10 @@ def process_ibkey_nodes(app, doctree, fromdocname):
     for node in doctree.traverse(ibkeylist):
         content = list()
 
-        for key_info in env.ibkey_all_ibkeys:
+        all_ibkeys = env.ibkey_all_ibkeys
+
+        for key in sorted(all_ibkeys.iterkeys()):
+            key_info = all_ibkeys[key]
             docname  = key_info['docname']
 
             para = nodes.paragraph()
