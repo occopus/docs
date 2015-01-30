@@ -68,25 +68,22 @@ class IBKeyDirective(Directive):
         p = ibkey('', '', label, sep, keynode, doc)
         catalog_entry = iblist_entry('', '')
 
-        origentry = nodes.paragraph()
-        filename = env.doc2path(docname, base=None)
-        description = \
-            _("(Original entry: '{0}':{1} ").format(filename, self.lineno)
-        origentry += nodes.Text(description, description)
+        origentry = nodes.inline('', '')
+        origentry += nodes.Text(' (', ' (')
 
-        refnode = nodes.reference('', '')
-        innernode = nodes.emphasis(_('here'), _('here'))
+        filename = env.doc2path(docname, base=None)
+        linktext = "{0}:{1}".format(filename, self.lineno)
+        refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
         refnode['refdocname'] = docname
         refnode['refuri'] = "{0}#{1}".format(
             env.app.builder.get_target_uri(docname), refkey)
 
-        refnode.append(innernode)
-
         origentry += refnode
-        origentry += nodes.Text('.)', '.)')
+        origentry += nodes.Text(')', ')')
 
-        catalog_entry += keynode
-        catalog_entry += origentry
+        entry_header = nodes.paragraph('', '', keynode, origentry)
+
+        catalog_entry += entry_header
         catalog_entry += doc
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
