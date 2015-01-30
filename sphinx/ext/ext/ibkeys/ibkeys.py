@@ -2,11 +2,15 @@
 
 from docutils import nodes
 
-class ibkey(nodes.Admonition, nodes.Element):
-    pass
+class declibkey(nodes.General, nodes.Element): pass
+class ibkey(nodes.Admonition, nodes.Element): pass
+class ibkeylist(nodes.General, nodes.Element): pass
 
-class ibkeylist(nodes.General, nodes.Element):
-    pass
+def visit_declibkey_node(self, node):
+    self.visit_admonition(node)
+
+def depart_declibkey_node(self, node):
+    self.depart_admonition(node)
 
 def visit_ibkey_node(self, node):
     self.visit_admonition(node)
@@ -15,6 +19,14 @@ def depart_ibkey_node(self, node):
     self.depart_admonition(node)
 
 from docutils.parsers.rst import Directive
+
+class DeclIBKey(Directive):
+    has_content = True
+
+    def run(self):
+        # The declared key is valid in the scope of the parent docstring.
+        self.content.parent.declared_ibkey = self.content[0]
+        return []
 
 class IBKeyListDirective(Directive):
     def run(self):
@@ -26,13 +38,22 @@ from sphinx.locale import _
 class IBKeyDirective(Directive):
     has_content = True
 
+    def find_key(self, parent):
+        if hasattr(parent, 'declared_ibkey'):
+            return parent.declared_ibkey
+        elif hasattr(parent, 'parent'):
+            return self.find_key(parent.parent)
+        else:
+            raise Exception(
+                'There is no declared key in the scope of this directive.')
+
     def run(self):
         env = self.state.document.settings.env
 
         targetid = 'ibkey-{0}'.format(env.new_serialno('ibkey'))
         targetnode = nodes.target('', '', ids=[targetid])
 
-        key = self.content[0]
+        key = self.find_key(self.content.parent)
 
         keynode = nodes.literal(key, key)
         label = nodes.strong('@provides', '@provides')
@@ -106,7 +127,12 @@ def setup(app):
                  html=(visit_ibkey_node, depart_ibkey_node),
                  latex=(visit_ibkey_node, depart_ibkey_node),
                  text=(visit_ibkey_node, depart_ibkey_node))
+    app.add_node(declibkey,
+                 html=(visit_declibkey_node, depart_declibkey_node),
+                 latex=(visit_declibkey_node, depart_declibkey_node),
+                 text=(visit_declibkey_node, depart_declibkey_node))
     app.add_directive('ibkey', IBKeyDirective)
+    app.add_directive('decl_ibkey', DeclIBKey)
     app.add_directive('ibkeylist', IBKeyListDirective)
     app.connect('doctree-resolved', process_ibkey_nodes)
     app.connect('env-purge-doc', purge_ibkeys)
