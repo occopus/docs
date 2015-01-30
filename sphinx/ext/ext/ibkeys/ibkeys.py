@@ -1,8 +1,8 @@
 # Extension for Sphinx to document Info Broker keys
 
 from docutils import nodes
-from sphinx.util.nodes import nested_parse_with_titles
 from docutils.parsers.rst import Directive
+from sphinx.util.nodes import nested_parse_with_titles
 
 class declibkey(nodes.General, nodes.Element): pass
 
@@ -11,9 +11,12 @@ class keynode(nodes.literal):
         super(keynode, self).__init__(key, key)
 
 class keydoc(nodes.line_block):
-    def __init__(self, state, content, content_offset):
+    def __init__(self, state, content):
         super(keydoc, self).__init__('\n'.join(content))
-        state.nested_parse(content, content_offset, self)
+        self.document = state.document
+        n = nodes.table()
+        nested_parse_with_titles(state, content, n)
+        self += n
 
 class ibkey(nodes.paragraph):
     def __init__(self, refkey, key_elem, doc):
@@ -72,8 +75,15 @@ class IBKeyListDirective(Directive):
     def run(self):
         return [ibkeylist('')]
 
-class IBKeyDirective(Directive):
+from sphinx.util.docfields import DocFieldTransformer
+from sphinx.directives import ObjectDescription
+from sphinx.domains.python import TypedField
+
+class IBKeyDirective(ObjectDescription):
     has_content = True
+    doc_field_types = [TypedField('param', label='Parameters',
+                                  rolename='param',
+                                  typerolename='type',)]
 
     def find_key(self, parent):
         if hasattr(parent, 'declared_ibkey'):
@@ -88,10 +98,20 @@ class IBKeyDirective(Directive):
         env = self.state.document.settings.env
         docname = env.docname
 
+        import yaml
+        def d(x): return yaml.dump(x, default_flow_style=False)
+
+        #print d([i for i in dir(self.) if '' in i])
+
+        self.domain = env.temp_data['default_domain']
+        trans = DocFieldTransformer(self)
+        trans.preprocess_fieldtypes(self.doc_field_types)
+
         key = self.find_key(self.content.parent)
 
         key_elem = keynode(key)
-        doc = keydoc(self.state, self.content, self.content_offset)
+        doc = keydoc(self.state, self.content)
+        trans.transform_all(doc)
 
         doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
