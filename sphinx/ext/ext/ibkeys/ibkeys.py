@@ -77,8 +77,9 @@ class IBKeyDirective(Directive):
         refnode = nodes.reference('', '')
         innernode = nodes.emphasis(_('here'), _('here'))
         refnode['refdocname'] = docname
-        refnode['refuri'] = "{0}#{1}".format(docname, refkey)
-                                             
+        refnode['refuri'] = "{0}#{1}".format(
+            env.app.builder.get_target_uri(docname), refkey)
+
         refnode.append(innernode)
 
         origentry += refnode
