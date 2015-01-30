@@ -25,7 +25,7 @@ class ibkey(nodes.paragraph):
 
         super(ibkey, self).__init__('', '', targetnode, par, doc)
 
-class iblist_entry(nodes.paragraph):
+class iblist_entry(nodes.definition_list_item):
     def __init__(self, env, docname, lineno, refkey, key_elem, doc):
 
         filename = env.doc2path(docname, base=None)
@@ -40,11 +40,12 @@ class iblist_entry(nodes.paragraph):
                                  refnode,
                                  nodes.Text(')', ')'))
 
-        entry_header = nodes.paragraph('', '', key_elem, origentry)
+        entry_header = nodes.term('', '', key_elem, origentry)
+        entry_content = nodes.definition('', doc)
 
-        super(iblist_entry, self).__init__('', '', entry_header, doc)
+        super(iblist_entry, self).__init__('', entry_header, entry_content)
 
-class ibkeylist(nodes.General, nodes.Element): pass
+class ibkeylist(nodes.definition_list): pass
 
 def visit_declibkey_node(self, node): self.visit_raw(node)
 def depart_declibkey_node(self, node): self.depart_raw(node)
@@ -52,8 +53,10 @@ def visit_ibkey_node(self, node): self.visit_paragraph(node)
 def depart_ibkey_node(self, node): self.depart_paragraph(node)
 def visit_keydoc_node(self, node): self.visit_paragraph(node)
 def depart_keydoc_node(self, node): self.depart_paragraph(node)
-def visit_iblist_entry_node(self, node): self.visit_paragraph(node)
-def depart_iblist_entry_node(self, node): self.depart_paragraph(node)
+def visit_iblist_entry_node(self, node):
+    self.visit_definition_list_item(node)
+def depart_iblist_entry_node(self, node):
+    self.depart_definition_list_item(node)
 def visit_keynode_node(self, node): self.visit_literal(node)
 def depart_keynode_node(self, node): self.depart_literal(node)
 
