@@ -105,8 +105,12 @@ class IBKeyDirective(ObjectDescription):
         key = self.find_key(self.content.parent)
 
         key_elem = keynode(key)
-        doc = keydoc(self.state, self.content) 
-        DocFieldTransformer(self).transform_all(doc)
+        doc = nodes.definition()
+        txt = '\n'.join(self.arguments)
+        doc += nodes.paragraph(txt, txt)
+        details = keydoc(self.state, self.content)
+        DocFieldTransformer(self).transform_all(details)
+        doc += details
 
         doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
