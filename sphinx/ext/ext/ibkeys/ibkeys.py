@@ -98,18 +98,15 @@ class IBKeyDirective(ObjectDescription):
         else:
             self.domain, self.objtype = '', self.name
 
-        #import yaml
-        #def d(x): return yaml.dump(x, default_flow_style=False)
-        #print d([i for i in dir(self.) if '' in i])
-
         key = self.find_key(self.content.parent)
 
         key_elem = keynode(key)
+
         doc = nodes.definition()
         txt = '\n'.join(self.arguments)
-        doc += nodes.paragraph(txt, txt)
         details = keydoc(self.state, self.content)
         DocFieldTransformer(self).transform_all(details)
+        doc += nodes.paragraph(txt, txt)
         doc += details
 
         doc_entry = ibkey(key, key_elem, doc)
