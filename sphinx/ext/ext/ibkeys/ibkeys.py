@@ -3,31 +3,49 @@
 from docutils import nodes
 from docutils.parsers.rst import Directive
 from sphinx.util.nodes import nested_parse_with_titles
+from sphinx import addnodes
 
-class declibkey(nodes.General, nodes.Element): pass
+def update_attrs(self, directive):
+    self.document = directive.state.document
+    self['domain'] = directive.domain
+    self['objtype'] = self['desctype'] = directive.objtype
+    self['noindex'] = ('noindex' in directive.options)
 
+def visit_declibkey_node(self, node): self.visit_raw(node)
+def depart_declibkey_node(self, node): self.depart_raw(node)
+class declibkey(nodes.General, nodes.Element):
+    pass
+
+def visit_keynode_node(self, node): self.visit_literal(node)
+def depart_keynode_node(self, node): self.depart_literal(node)
 class keynode(nodes.literal):
     def __init__(self, key):
         super(keynode, self).__init__(key, key)
 
-class keydoc(nodes.line_block):
+def visit_keydoc_node(self, node): self.visit_desc_content(node)
+def depart_keydoc_node(self, node): self.depart_desc_content(node)
+class keydoc(addnodes.desc_content):
     def __init__(self, state, content):
         super(keydoc, self).__init__('\n'.join(content))
         nested_parse_with_titles(state, content, self)
 
-class ibkey(nodes.paragraph):
-    def __init__(self, refkey, key_elem, doc):
+def visit_ibkey_node(self, node): self.visit_desc(node)
+def depart_ibkey_node(self, node): self.depart_desc(node)
+class ibkey(addnodes.desc):
+    def __init__(self, directive, refkey, key_elem, doc):
         targetnode = nodes.target('', '', ids=[refkey])
 
         label = nodes.strong('@provides', '@provides')
         sep = nodes.Text(': ', ': ')
-        par = nodes.paragraph('', '', label, sep, key_elem)
+        par = addnodes.desc_signature('', '', label, sep, key_elem)
 
-        super(ibkey, self).__init__('', '', targetnode, par, doc)
+        super(ibkey, self).__init__('', targetnode, par, doc)
+        update_attrs(self, directive)
 
-class iblist_entry(nodes.definition_list_item):
-    def __init__(self, env, docname, lineno, refkey, key_elem, doc):
-
+def visit_iblist_entry_node(self, node): self.visit_desc(node)
+def depart_iblist_entry_node(self, node): self.depart_desc(node)
+class iblist_entry(addnodes.desc):
+    def __init__(self, directive, env, docname, lineno, refkey, key_elem, doc):
         filename = env.doc2path(docname, base=None)
         linktext = "{0}:{1}".format(filename, lineno)
         refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
@@ -40,25 +58,14 @@ class iblist_entry(nodes.definition_list_item):
                                  refnode,
                                  nodes.Text(')', ')'))
 
-        entry_header = nodes.term('', '', key_elem, origentry)
-        entry_content = nodes.definition('', doc)
+        entry_header = addnodes.desc_signature('', '', key_elem, origentry)
+        entry_content = doc
 
         super(iblist_entry, self).__init__('', entry_header, entry_content)
+        update_attrs(self, directive)
 
-class ibkeylist(nodes.definition_list): pass
-
-def visit_declibkey_node(self, node): self.visit_raw(node)
-def depart_declibkey_node(self, node): self.depart_raw(node)
-def visit_ibkey_node(self, node): self.visit_paragraph(node)
-def depart_ibkey_node(self, node): self.depart_paragraph(node)
-def visit_keydoc_node(self, node): self.visit_paragraph(node)
-def depart_keydoc_node(self, node): self.depart_paragraph(node)
-def visit_iblist_entry_node(self, node):
-    self.visit_definition_list_item(node)
-def depart_iblist_entry_node(self, node):
-    self.depart_definition_list_item(node)
-def visit_keynode_node(self, node): self.visit_literal(node)
-def depart_keynode_node(self, node): self.depart_literal(node)
+class ibkeylist(addnodes.desc):
+    pass
 
 class DeclIBKey(Directive):
     has_content = True
@@ -73,10 +80,10 @@ class IBKeyListDirective(Directive):
         return [ibkeylist('')]
 
 from sphinx.util.docfields import DocFieldTransformer
-from sphinx.directives import ObjectDescription
+#from sphinx.directives import ObjectDescription
 from sphinx.domains.python import PyObject
 
-class IBKeyDirective(ObjectDescription):
+class IBKeyDirective(PyObject):
     has_content = True
     doc_field_types = PyObject.doc_field_types
 
@@ -90,28 +97,30 @@ class IBKeyDirective(ObjectDescription):
                 'There is no declared key in the scope of this directive.')
 
     def run(self):
-        env = self.state.document.settings.env
+        document = self.state.document
+        env = document.settings.env
         docname = env.docname
 
-        if ':' in self.name:
-            self.domain, self.objtype = self.name.split(':', 1)
-        else:
-            self.domain, self.objtype = '', self.name
+        self.name = 'py:method'
+        self.domain, self.objtype = self.name.split(':')
 
         key = self.find_key(self.content.parent)
 
         key_elem = keynode(key)
 
-        doc = nodes.definition()
+        doc = addnodes.desc()
+        update_attrs(doc, self)
         txt = '\n'.join(self.arguments)
+        self.before_content()
         details = keydoc(self.state, self.content)
-        DocFieldTransformer(self).transform_all(details)
+        #DocFieldTransformer(self).transform_all(details)
+        self.after_content()
         doc += nodes.paragraph(txt, txt)
         doc += details
 
-        doc_entry = ibkey(key, key_elem, doc)
+        doc_entry = ibkey(self, key, key_elem, doc)
         catalog_entry = iblist_entry(
-            env, docname, self.lineno, key, key_elem, doc)
+            self, env, docname, self.lineno, key, key_elem, doc)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
