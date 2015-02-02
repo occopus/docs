@@ -13,10 +13,7 @@ class keynode(nodes.literal):
 class keydoc(nodes.line_block):
     def __init__(self, state, content):
         super(keydoc, self).__init__('\n'.join(content))
-        self.document = state.document
-        n = nodes.table()
-        nested_parse_with_titles(state, content, n)
-        self += n
+        nested_parse_with_titles(state, content, self)
 
 class ibkey(nodes.paragraph):
     def __init__(self, refkey, key_elem, doc):
@@ -75,23 +72,13 @@ class IBKeyListDirective(Directive):
     def run(self):
         return [ibkeylist('')]
 
-from sphinx.util.docfields import DocFieldTransformer, TypedField, GroupedField
+from sphinx.util.docfields import DocFieldTransformer
 from sphinx.directives import ObjectDescription
-from sphinx.locale import l_, _
-#from sphinx.domains.python import TypedField
+from sphinx.domains.python import PyObject
 
 class IBKeyDirective(ObjectDescription):
     has_content = True
-    doc_field_types = [
-        TypedField(
-            'parameter',
-            names=('p', 'param', 'parameter', 'a', 'arg', 'argument'),
-            typenames=('type', 'paramtype', 'ptype'),
-            label=l_('Parameters'),
-            typerolename='type',
-            can_collapse=True)
-    ]
-    #doc_field_types = [GroupedField('param', names=('param',), label='Parameters', rolename='param',)]
+    doc_field_types = PyObject.doc_field_types
 
     def find_key(self, parent):
         if hasattr(parent, 'declared_ibkey'):
@@ -106,28 +93,20 @@ class IBKeyDirective(ObjectDescription):
         env = self.state.document.settings.env
         docname = env.docname
 
-        import yaml
-        def d(x): return yaml.dump(x, default_flow_style=False)
+        if ':' in self.name:
+            self.domain, self.objtype = self.name.split(':', 1)
+        else:
+            self.domain, self.objtype = '', self.name
+
+        #import yaml
+        #def d(x): return yaml.dump(x, default_flow_style=False)
         #print d([i for i in dir(self.) if '' in i])
 
         key = self.find_key(self.content.parent)
 
-        self.before_content()
-
         key_elem = keynode(key)
-        doc = keydoc(self.state, self.content)
-        self.domain = env.temp_data['default_domain']
-        print d(self.doc_field_types)
-        trans = DocFieldTransformer(self)
-        trans.typemap = trans.preprocess_fieldtypes(self.doc_field_types)
-        print d(trans.typemap)
-        def tr(n):
-            if isinstance(n, nodes.field_list):
-                trans.transform(n)
-            else:
-                for i in n:
-                    tr(i)
-        tr(doc)
+        doc = keydoc(self.state, self.content) 
+        DocFieldTransformer(self).transform_all(doc)
 
         doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
@@ -138,8 +117,6 @@ class IBKeyDirective(ObjectDescription):
 
         env.ibkey_all_ibkeys[key] = dict(docname=docname,
                                          catalog_entry=catalog_entry)
-
-        self.after_content()
 
         return [doc_entry]
 
