@@ -150,7 +150,7 @@ def process_ibkey_nodes(app, doctree, fromdocname):
     for node in doctree.traverse(ibkeylist):
         content = list()
 
-        all_ibkeys = env.ibkey_all_ibkeys
+        all_ibkeys = getattr(env, 'ibkey_all_ibkeys', dict())
 
         for key in sorted(all_ibkeys.iterkeys()):
             content.append(all_ibkeys[key]['catalog_entry'])
