@@ -96,7 +96,7 @@ class IBKeyDirective(ObjectDescription):
         if ':' in self.name:
             self.domain, self.objtype = self.name.split(':', 1)
         else:
-            self.domain, self.objtype = '', self.name
+            self.domain, self.objtype = 'py', self.name
 
         key = self.find_key(self.content.parent)
 
