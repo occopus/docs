@@ -3,6 +3,7 @@
 from docutils import nodes
 from docutils.parsers.rst import Directive
 from sphinx.util.nodes import nested_parse_with_titles
+from sphinx.util.nodes import set_source_info
 
 class declibkey(nodes.General, nodes.Element): pass
 
@@ -113,6 +114,8 @@ class IBKeyDirective(ObjectDescription):
         catalog_entry = iblist_entry(
             env, docname, self.lineno, key, key_elem, doc)
 
+        set_source_info(self, doc_entry)
+        set_source_info(self, catalog_entry)
         env.resolve_references(doc_entry, docname, env.app.builder)
         env.resolve_references(catalog_entry, docname, env.app.builder)
 
