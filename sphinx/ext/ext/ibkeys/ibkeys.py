@@ -27,10 +27,12 @@ class ibkey(nodes.paragraph):
         super(ibkey, self).__init__('', '', targetnode, par, doc)
 
 class iblist_entry(nodes.definition_list_item):
-    def __init__(self, env, docname, lineno, refkey, key_elem, doc):
+    def __init__(self, env, docname,
+                 source_class, source_file, lineno,
+                 refkey, key_elem, doc):
 
         filename = env.doc2path(docname, base=None)
-        linktext = "{0}:{1}".format(filename, lineno)
+        linktext = "{0} ({1}:{2})".format(source_class, source_file, lineno)
         refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
         refnode['refdocname'] = docname
         refnode['refuri'] = "{0}#{1}".format(
@@ -110,9 +112,16 @@ class IBKeyDirective(ObjectDescription):
         doc += nodes.paragraph(txt, txt)
         doc += details
 
+        import os
+        source_line = self.lineno
+        source, _ = self.state_machine.get_source_and_line(source_line)
+        src_file, src_other = source.split(':', 1)
+        source_file = os.path.basename(src_file)
+
         doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
-            env, docname, self.lineno, key, key_elem, doc)
+            env, docname, src_other, source_file, source_line,
+            key, key_elem, doc)
 
         set_source_info(self, doc_entry)
         set_source_info(self, catalog_entry)
