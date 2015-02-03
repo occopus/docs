@@ -4,12 +4,14 @@ from docutils import nodes
 from docutils.parsers.rst import Directive
 from sphinx.util.nodes import nested_parse_with_titles
 from sphinx import addnodes
+from sphinx.util.nodes import set_source_info
 
 def update_attrs(self, directive):
     self.document = directive.state.document
     self['domain'] = directive.domain
     self['objtype'] = self['desctype'] = directive.objtype
     self['noindex'] = ('noindex' in directive.options)
+    self['first'] = False
 
 def visit_declibkey_node(self, node): self.visit_raw(node)
 def depart_declibkey_node(self, node): self.depart_raw(node)
@@ -45,9 +47,11 @@ class ibkey(addnodes.desc):
 def visit_iblist_entry_node(self, node): self.visit_desc(node)
 def depart_iblist_entry_node(self, node): self.depart_desc(node)
 class iblist_entry(addnodes.desc):
-    def __init__(self, directive, env, docname, lineno, refkey, key_elem, doc):
+    def __init__(self, directive, env, docname,
+                 source_class, source_file, lineno,
+                 refkey, key_elem, doc):
         filename = env.doc2path(docname, base=None)
-        linktext = "{0}:{1}".format(filename, lineno)
+        linktext = "{0} ({1}:{2})".format(source_class, source_file, lineno)
         refnode = nodes.reference('', '', nodes.emphasis(linktext, linktext))
         refnode['refdocname'] = docname
         refnode['refuri'] = "{0}#{1}".format(
@@ -101,8 +105,10 @@ class IBKeyDirective(PyObject):
         env = document.settings.env
         docname = env.docname
 
-        self.name = 'py:method'
-        self.domain, self.objtype = self.name.split(':')
+        if ':' in self.name:
+            self.domain, self.objtype = self.name.split(':', 1)
+        else:
+            self.domain, self.objtype = 'py', self.name
 
         key = self.find_key(self.content.parent)
 
@@ -118,9 +124,22 @@ class IBKeyDirective(PyObject):
         doc += nodes.paragraph(txt, txt)
         doc += details
 
+        import os
+        source_line = self.lineno
+        source, _ = self.state_machine.get_source_and_line(source_line)
+        src_file, src_other = source.split(':', 1)
+        source_file = os.path.basename(src_file)
+
         doc_entry = ibkey(self, key, key_elem, doc)
         catalog_entry = iblist_entry(
-            self, env, docname, self.lineno, key, key_elem, doc)
+            self,
+            env, docname, src_other, source_file, source_line,
+            key, key_elem, doc)
+
+        set_source_info(self, doc_entry)
+        set_source_info(self, catalog_entry)
+        env.resolve_references(doc_entry, docname, env.app.builder)
+        env.resolve_references(catalog_entry, docname, env.app.builder)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
@@ -144,7 +163,7 @@ def process_ibkey_nodes(app, doctree, fromdocname):
     for node in doctree.traverse(ibkeylist):
         content = list()
 
-        all_ibkeys = env.ibkey_all_ibkeys
+        all_ibkeys = getattr(env, 'ibkey_all_ibkeys', dict())
 
         for key in sorted(all_ibkeys.iterkeys()):
             content.append(all_ibkeys[key]['catalog_entry'])

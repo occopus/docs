@@ -21,6 +21,7 @@ Contents:
    cloud-handler
    servicecomposer
    datastructures
+   meta
 
 .. ifconfig:: api_doc is False
 
