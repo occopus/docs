@@ -130,7 +130,25 @@ class IBKeyDirective(PyObject):
         src_file, src_other = source.split(':', 1)
         source_file = os.path.basename(src_file)
 
+<<<<<<< Updated upstream
         doc_entry = ibkey(self, key, key_elem, doc)
+=======
+        import inspect as ip
+        print '### {{{'
+        print '\n- '.join(
+            '{0}{1}'.format(item,
+                            '()' if ip.ismethod(tp)
+                            else ' : []' if type(tp) is list
+                            else ' : {}' if type(tp) is dict
+                            else ' : {0}'.format(type(tp)))
+            for item, tp in ((item, getattr(self.state, item))
+                             for item in dir(self.state)))
+        print self.state.parent.parent
+        #print '\n'.join(self.content.parent.parent.parent.parent.parent.parent)
+        print '}}} ###\n'
+
+        doc_entry = ibkey(key, key_elem, doc)
+>>>>>>> Stashed changes
         catalog_entry = iblist_entry(
             self,
             env, docname, src_other, source_file, source_line,
