@@ -1,8 +1,8 @@
 # Extension for Sphinx to document Info Broker keys
 
 from docutils import nodes
-from sphinx.util.nodes import nested_parse_with_titles
 from docutils.parsers.rst import Directive
+from sphinx.util.nodes import nested_parse_with_titles
 
 class declibkey(nodes.General, nodes.Element): pass
 
@@ -11,9 +11,9 @@ class keynode(nodes.literal):
         super(keynode, self).__init__(key, key)
 
 class keydoc(nodes.line_block):
-    def __init__(self, state, content, content_offset):
+    def __init__(self, state, content):
         super(keydoc, self).__init__('\n'.join(content))
-        state.nested_parse(content, content_offset, self)
+        nested_parse_with_titles(state, content, self)
 
 class ibkey(nodes.paragraph):
     def __init__(self, refkey, key_elem, doc):
@@ -72,8 +72,13 @@ class IBKeyListDirective(Directive):
     def run(self):
         return [ibkeylist('')]
 
-class IBKeyDirective(Directive):
+from sphinx.util.docfields import DocFieldTransformer
+from sphinx.directives import ObjectDescription
+from sphinx.domains.python import PyObject
+
+class IBKeyDirective(ObjectDescription):
     has_content = True
+    doc_field_types = PyObject.doc_field_types
 
     def find_key(self, parent):
         if hasattr(parent, 'declared_ibkey'):
@@ -88,14 +93,28 @@ class IBKeyDirective(Directive):
         env = self.state.document.settings.env
         docname = env.docname
 
+        if ':' in self.name:
+            self.domain, self.objtype = self.name.split(':', 1)
+        else:
+            self.domain, self.objtype = 'py', self.name
+
         key = self.find_key(self.content.parent)
 
         key_elem = keynode(key)
-        doc = keydoc(self.state, self.content, self.content_offset)
+
+        doc = nodes.definition()
+        txt = '\n'.join(self.arguments)
+        details = keydoc(self.state, self.content)
+        DocFieldTransformer(self).transform_all(details)
+        doc += nodes.paragraph(txt, txt)
+        doc += details
 
         doc_entry = ibkey(key, key_elem, doc)
         catalog_entry = iblist_entry(
             env, docname, self.lineno, key, key_elem, doc)
+
+        env.resolve_references(doc_entry, docname, env.app.builder)
+        env.resolve_references(catalog_entry, docname, env.app.builder)
 
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
