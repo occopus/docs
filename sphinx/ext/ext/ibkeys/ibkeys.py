@@ -113,6 +113,9 @@ class IBKeyDirective(ObjectDescription):
         catalog_entry = iblist_entry(
             env, docname, self.lineno, key, key_elem, doc)
 
+        env.resolve_references(doc_entry, docname, env.app.builder)
+        env.resolve_references(catalog_entry, docname, env.app.builder)
+
         if not hasattr(env, 'ibkey_all_ibkeys'):
             env.ibkey_all_ibkeys = dict()
 
