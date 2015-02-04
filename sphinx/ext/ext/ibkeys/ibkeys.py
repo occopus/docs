@@ -31,22 +31,23 @@ class keydoc(addnodes.desc_content):
         super(keydoc, self).__init__('\n'.join(content))
         nested_parse_with_titles(state, content, self)
 
-def visit_ibkey_node(self, node): self.visit_desc(node)
-def depart_ibkey_node(self, node): self.depart_desc(node)
-class ibkey(addnodes.desc):
+def visit_ibkey_node(self, node): self.visit_desc_content(node)
+def depart_ibkey_node(self, node): self.depart_desc_content(node)
+class ibkey(addnodes.desc_content):
     def __init__(self, directive, refkey, key_elem, doc):
         targetnode = nodes.target('', '', ids=[refkey])
 
         label = nodes.strong('@provides', '@provides')
         sep = nodes.Text(': ', ': ')
         par = addnodes.desc_signature('', '', label, sep, key_elem)
+        update_attrs(par, directive)
 
         super(ibkey, self).__init__('', targetnode, par, doc)
         update_attrs(self, directive)
 
-def visit_iblist_entry_node(self, node): self.visit_desc(node)
-def depart_iblist_entry_node(self, node): self.depart_desc(node)
-class iblist_entry(addnodes.desc):
+def visit_iblist_entry_node(self, node): self.visit_desc_content(node)
+def depart_iblist_entry_node(self, node): self.depart_desc_content(node)
+class iblist_entry(addnodes.desc_content):
     def __init__(self, directive, env, docname,
                  source_class, source_file, lineno,
                  refkey, key_elem, doc):
@@ -68,7 +69,7 @@ class iblist_entry(addnodes.desc):
         super(iblist_entry, self).__init__('', entry_header, entry_content)
         update_attrs(self, directive)
 
-class ibkeylist(addnodes.desc):
+class ibkeylist(addnodes.desc_content):
     pass
 
 class DeclIBKey(Directive):
@@ -114,12 +115,13 @@ class IBKeyDirective(PyObject):
 
         key_elem = keynode(key)
 
-        doc = addnodes.desc()
+        doc = addnodes.desc_content()
         update_attrs(doc, self)
         txt = '\n'.join(self.arguments)
         self.before_content()
         details = keydoc(self.state, self.content)
-        #DocFieldTransformer(self).transform_all(details)
+        update_attrs(details, self)
+        DocFieldTransformer(self).transform_all(details)
         self.after_content()
         doc += nodes.paragraph(txt, txt)
         doc += details
@@ -130,9 +132,8 @@ class IBKeyDirective(PyObject):
         src_file, src_other = source.split(':', 1)
         source_file = os.path.basename(src_file)
 
-<<<<<<< Updated upstream
         doc_entry = ibkey(self, key, key_elem, doc)
-=======
+
         import inspect as ip
         print '### {{{'
         print '\n- '.join(
@@ -147,8 +148,6 @@ class IBKeyDirective(PyObject):
         #print '\n'.join(self.content.parent.parent.parent.parent.parent.parent)
         print '}}} ###\n'
 
-        doc_entry = ibkey(key, key_elem, doc)
->>>>>>> Stashed changes
         catalog_entry = iblist_entry(
             self,
             env, docname, src_other, source_file, source_line,
