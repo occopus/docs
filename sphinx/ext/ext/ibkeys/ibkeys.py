@@ -31,9 +31,9 @@ class keydoc(addnodes.desc_content):
         super(keydoc, self).__init__('\n'.join(content))
         nested_parse_with_titles(state, content, self)
 
-def visit_ibkey_node(self, node): self.visit_desc_content(node)
-def depart_ibkey_node(self, node): self.depart_desc_content(node)
-class ibkey(addnodes.desc_content):
+def visit_ibkey_node(self, node): self.visit_desc(node)
+def depart_ibkey_node(self, node): self.depart_desc(node)
+class ibkey(addnodes.desc):
     def __init__(self, directive, refkey, key_elem, doc):
         targetnode = nodes.target('', '', ids=[refkey])
 
@@ -45,9 +45,9 @@ class ibkey(addnodes.desc_content):
         super(ibkey, self).__init__('', targetnode, par, doc)
         update_attrs(self, directive)
 
-def visit_iblist_entry_node(self, node): self.visit_desc_content(node)
-def depart_iblist_entry_node(self, node): self.depart_desc_content(node)
-class iblist_entry(addnodes.desc_content):
+def visit_iblist_entry_node(self, node): self.visit_desc(node)
+def depart_iblist_entry_node(self, node): self.depart_desc(node)
+class iblist_entry(addnodes.desc):
     def __init__(self, directive, env, docname,
                  source_class, source_file, lineno,
                  refkey, key_elem, doc):
