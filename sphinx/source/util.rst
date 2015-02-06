@@ -16,6 +16,8 @@ Configration utility functions
 .. automodule:: occo.util.config.config
     :members:
 
+.. _factory:
+
 A generic implementation of the abstract factory pattern
 --------------------------------------------------------
 
