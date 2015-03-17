@@ -204,103 +204,96 @@ built/tested/deployed in this order.
 Only interdependencies are annotated here, dependencies on external packages
 are omitted.
 
-OCCO-Util
-~~~~~~~~~
+.. table:: **OCCO-Util**
 
-Depends: --
+    ===========  ===========================================================
+    Depends      --
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/util
+    Description  | Generic utility functions, configuration, communication,
+                 | etc. See: :mod:`occo.util`.
+    ===========  ===========================================================
 
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/util
+.. table:: **OCCO-Compiler**
 
-Generic utility functions, configuration, communication, etc. See: :mod:`occo.util`.
+    ===========  ===========================================================
+    Depends      OCCO-Util
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/compiler
+    Description  | Compiler module for OCCO. See: :mod:`occo.compiler`.
+    ===========  ===========================================================
 
-OCCO-Compiler
-~~~~~~~~~~~~~
+.. table:: **OCCO-InfoBroker**
 
-Depends: OCCO-Util
+    ===========  ===========================================================
+    Depends      OCCO-Util
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/info-broker
+    Description  | Information broker for the OCCO system.
+                 | See: :mod:`occo.infobroker`.
+    ===========  ===========================================================
 
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/compiler
+.. table:: **OCCO-Enactor**
 
-Compiler module for OCCO. See: :mod:`occo.compiler`.
+    ===========  ===========================================================
+    Depends      OCCO-Util, OCCO-Compiler, OCCO-InfoBroker
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/enactor
+    Description  | Active component of the OCCO infrastructure maintenance
+                 | system. See: :mod:`occo.enactor`.
+    ===========  ===========================================================
 
-OCCO-InfoBroker
-~~~~~~~~~~~~~~~
+.. table:: **OCCO-InfraProcessor**
 
-Depends: OCCO-Util
+    ===========  ===========================================================
+    Depends      OCCO-Uti, OCCO-InfoBrokerl
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/infrastructure-processor
+    Description  | Central processor and synchronizer of the OCCO system. See:
+                 | :mod:`occo.infraprocessor`.
+    ===========  ===========================================================
 
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/info-broker
+.. table:: **OCCO-CloudHandler**
 
-Information broker for the OCCO system. See: :mod:`occo.infobroker`.
+    ===========  ===========================================================
+    Depends      OCCO-Uti, OCCO-InfoBrokerl
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/cloud-handler
+    Description  | Backend component of the OCCO system, responsible for
+                 | handling specific kinds of clouds. This includes the
+                 | generic plugin system, a dummy cloud handler for testing,
+                 | and an EC2 ``boto`` cloud handler backend. See
+                 | :mod:`occo.cloudhandler`.
+    ===========  ===========================================================
 
-OCCO-Enactor
-~~~~~~~~~~~~
+.. table:: **OCCO-ServiceComposer**
 
-Depends: OCCO-Util, OCCO-Compiler, OCCO-InfoBroker
+    ===========  ===========================================================
+    Note         *Under preliminary development; not integrated with other components yet.*
+    Depends      OCCO-Util, OCCO-InfoBroker
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/service-composer
+    Description  | Responsible for provisioning, setting up, configuring, etc.
+                 | the nodes instantiated by the cloud handler.
+    ===========  ===========================================================
 
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/enactor
+.. table:: **OCCO-API**
 
-Active component of the OCCO infrastructure maintenance system.
-See: :mod:`occo.enactor`.
+    ===========  ===========================================================
+    Note         *Under preliminary development; not integrated with other components yet.*
+    Depends      all OCCO packages
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-api
+    Description  | This package combines the primitives provided by other occo
+                 | packages into higher level services and features. This
+                 | package is intended to be the top-level package of the OCCO
+                 | system upon which use-cases, user interfaces can be built.
+    ===========  ===========================================================
 
-OCCO-InfraProcessor
-~~~~~~~~~~~~~~~~~~~
+.. table:: **OCCO-Demo**
 
-Depends: OCCO-Util, OCCO-InfoBroker
-
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/infrastructure-processor
-
-Central processor and synchronizer of the OCCO system. See:
-:mod:`occo.infraprocessor`.
-
-OCCO-CloudHandler
-~~~~~~~~~~~~~~~~~
-
-Depends: OCCO-Util, OCCO-InfoBroker
-
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/cloud-handler
-
-Backend component of the OCCO system, responsible for handling specific kinds
-of clouds. This includes the generic plugin system, a dummy cloud handler for
-testing, and an EC2 ``boto`` cloud handler backend. See
-:mod:`occo.cloudhandler`.
-
-OCCO-ServiceComposer
-~~~~~~~~~~~~~~~~~~~~
-
-*Under preliminary development; not integrated with other components yet.*
-
-Depends: OCCO-Util, OCCO-InfoBroker
-
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/service-composer
-
-Responsible for provisioning, setting up, configuring, etc. the nodes instantiated
-by the cloud handler.
-
-OCCO-API
-~~~~~~~~
-
-*Under preliminary development; not integrated with other components yet.*
-
-Depends: all OCCO packages
-
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/demo
-
-This package combines the primitives provided by other occo packages into
-higher level services and features. This package is intended to be the
-top-level package of the OCCO system upon which use-cases, user interfaces
-can be built.
-
-OCCO-Demo
-~~~~~~~~~
-
-Depends: all OCCO packages
-
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/demo
-
-This package contains code that glues the packages of OCCO together. It is not
-intended to be released.
-
-This package can be used for experimenting, developing prototype code, 
-integrating components, integration testing, demonstrating features, etc.
+    ===========  ===========================================================
+    Depends      all OCCO packages
+    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-demo
+    Description  | This package contains code that glues the packages of OCCO
+                 | together. It is not intended to be released.
+                 |
+                 | This package can be used for experimenting, developing
+                 | prototype code, integrating components, integration testing,
+                 | demonstrating features, etc.
+    ===========  ===========================================================
 
 Documentation
 =============
