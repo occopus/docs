@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# OCCO Utils documentation build configuration file, created by
+# OCCO documentation build configuration file, created by
 # sphinx-quickstart on Wed Jul 16 14:41:36 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OCCO Utils'
+project = u'OCCO'
 copyright = u'2014, Adam Visegradi'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -211,7 +211,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'OCCOUtils.tex', u'OCCO Utils Documentation',
+  ('index', 'OCCO.tex', u'OCCO Documentation',
    u'Adam Visegradi', 'manual'),
 ]
 
@@ -241,7 +241,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'occoutils', u'OCCO Utils Documentation',
+    ('index', 'occo', u'OCCO Documentation',
      [u'Adam Visegradi'], 1)
 ]
 
@@ -255,8 +255,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'OCCOUtils', u'OCCO Utils Documentation',
-   u'Adam Visegradi', 'OCCOUtils', 'One line description of project.',
+  ('index', 'OCCO', u'OCCO Documentation',
+   u'Adam Visegradi', 'OCCO', 'One line description of project.',
    'Miscellaneous'),
 ]
 
