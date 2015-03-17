@@ -53,8 +53,8 @@ repositories using the following script:
         git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/$REPO.git
     done
 
-Most scripts included in these components rely in this exact directory
-structure (especially testing and documentation dependencies).
+Most scripts included in these components rely on **this exact directory
+structure** (especially testing and documentation dependencies).
 
 It would be nice to have a Vagrantfile or a prepared VM template to bootstrap
 an OCCO environment; but right now we have to settle with this.
@@ -75,6 +75,10 @@ working on the ``util`` package:
 
     workworkwork
 
+Virtualenvs should be placed in the ``env/`` directory, so they don't linger in
+the working tree. ``git`` will ignore the contents of the ``env/`` directory so
+virtualenvs will not be commited accidentally.
+
 Testing
 ~~~~~~~
 
@@ -84,8 +88,10 @@ component there is an ``occo_test`` package containing test modules.
 To test a package, one must first create a virtualenv and install the test
 requirements in that virtualenv (see :ref:`cbe`).
 
-When the test virtualenv is prepared, one must always activate it before
-running ``nosetests``.
+When the test virtualenv is prepared, one must **always activate** it before
+running ``nosetests``. The prompt changes after activating a virtualenv, so
+it's easy to verify if it has been activated yet. Never *run* the ``activate``
+script, one must always ``source`` it.
 
 The peculiarity of ``nosetests`` is that it must always be run from the
 top-level package directory. For example, in case of the ``util`` package, it
@@ -128,7 +134,8 @@ it. This is a simple task:
   - ``pip wheel [[new_dependency_name, and possibly version specification]]``
 
 This will download the new dependency from the community servers and installs
-(caches) it on the internal PyPI server.
+(caches) it on the internal PyPI server. Locally mirroring and maintaining all
+used packages in an organization is a common practive anyway.
 
 Dependency Manifests
 ~~~~~~~~~~~~~~~~~~~~
