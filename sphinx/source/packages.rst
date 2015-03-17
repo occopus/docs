@@ -135,7 +135,7 @@ testing, and an EC2 ``boto`` cloud handler backend. See
 OCCO-ServiceComposer
 --------------------
 
-Under preliminary development; not integrated with other components yet.
+*Under preliminary development; not integrated with other components yet.*
 
 Depends: OCCO-Util, OCCO-InfoBroker
 
@@ -144,9 +144,30 @@ https://gitlab.lpds.sztaki.hu/cloud-orchestrator/service-composer
 Responsible for provisioning, setting up, configuring, etc. the nodes instantiated
 by the cloud handler.
 
+OCCO-API
+--------
+
+*Under preliminary development; not integrated with other components yet.*
+
+Depends: all OCCO packages
+
+https://gitlab.lpds.sztaki.hu/cloud-orchestrator/demo
+
+This package combines the primitives provided by other occo packages into
+higher level services and features. This package is intended to be the
+top-level package of the OCCO system upon which use-cases, user interfaces
+can be built.
+
 OCCO-Demo
 ---------
 
 Depends: all OCCO pacakges
 
 https://gitlab.lpds.sztaki.hu/cloud-orchestrator/demo
+
+This package contains code that glues the packages of OCCO together. It is not
+intended to be released.
+
+This package can be used for experimenting, developing prototype code, 
+integrating components, integration testing, demonstrating features, etc.
+
