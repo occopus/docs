@@ -249,7 +249,7 @@ are omitted.
 .. table:: **OCCO-InfraProcessor**
 
     ===========  ===========================================================
-    Depends      OCCO-Uti, OCCO-InfoBrokerl
+    Depends      OCCO-Util, OCCO-InfoBroker
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/infrastructure-processor
     Description  | Central processor and synchronizer of the OCCO system. See:
                  | :mod:`occo.infraprocessor`.
@@ -258,7 +258,7 @@ are omitted.
 .. table:: **OCCO-CloudHandler**
 
     ===========  ===========================================================
-    Depends      OCCO-Uti, OCCO-InfoBrokerl
+    Depends      OCCO-Util, OCCO-InfoBroker
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/cloud-handler
     Description  | Backend component of the OCCO system, responsible for
                  | handling specific kinds of clouds. This includes the
@@ -335,5 +335,14 @@ Continuous integration
 ======================
 
 Continuous unit- and integration testing are to be set up on http://jenkins.lpds.sztaki.hu
+
+Jenkins uses the ``c153-33.localcloud`` host as a slave for performing OCCO
+tasks, using the ``jenkins`` user. 
+
+The user ``jenkins@c153-33.localcoud`` has its own private ssh key in
+``~/.ssh/``. This key is used for ssh connections outward this host, including
+towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` is
+(or, at least, should be) enabled for all repositories used by Jenkins.
+
 
 Unit testing is partly done at the time of writing.
