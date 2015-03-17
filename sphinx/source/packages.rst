@@ -306,7 +306,7 @@ The documentation is developed using Sphinx_. Most of the documentation can be
 found in the code; part of it is in the ``docs`` repository as
 reStructuredText.
 
-The ``docs`` repository contains ``sphinx/`` directory, which contains a
+The ``docs`` repository contains a ``sphinx/`` directory, which contains a
 ``README.txt``. This README contains step-by-step instructions on how to start
 working on the documentation. The instructions in ``README.txt`` can be
 copy-pasted in the shell, and they should work flawlessly. (Naturally, if you
