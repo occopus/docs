@@ -5,6 +5,7 @@ Developer information for OCCO
 
 .. _nosetests: https://nose.readthedocs.org
 .. _virtualenv site: https://virtualenv.pypa.io
+.. _Sphinx: http://sphinx-doc.org/
 
 *Always* use ``virtualenv`` for any kind of deployment (testing, building,
 production, ... everything). This ensures there will be no dependency issues:
@@ -89,7 +90,7 @@ running ``nosetests``.
 The peculiarity of ``nosetests`` is that it must always be run from the
 top-level package directory. For example, in case of the ``util`` package, it
 must be run from e.g. ``my-occo-dir/util``. Running it from e.g.
-``my-occo-dir/util/occo_test`` (**common mistake**) of anywhere else will not
+``my-occo-dir/util/occo_test`` (**common mistake**) or anywhere else will not
 work.
 
 
@@ -301,3 +302,38 @@ intended to be released.
 This package can be used for experimenting, developing prototype code, 
 integrating components, integration testing, demonstrating features, etc.
 
+Documentation
+=============
+
+The documentation you are reading is developed in the ``docs`` repository:
+
+https://gitlab.lpds.sztaki.hu/cloud-orchestrator/docs
+
+The documentation is developed using Sphinx_. Most of the documentation can be
+found in the code; part of it is in the ``docs`` repository as
+reStructuredText.
+
+The ``docs`` repository contains ``sphinx/`` directory, which contains a
+``README.txt``. This README contains step-by-step instructions on how to start
+working on the documentation. The instructions in ``README.txt`` can be
+copy-pasted in the shell, and they should work flawlessly. (Naturally, if you
+have cloned all repositories already as described in :ref:`cbe`, you must omit
+that part of the instructions.)
+
+Hint: As Sphinx ``import``\ s the Python packages, we need to make this
+deployment clean: so it uses virtualenv too.
+
+After preparing the ``docs`` environment, you can make the html documentation:
+
+.. code:: bash
+
+    make html
+
+    ls build/html   # The result is here; it can be published in any way necessary
+
+Continuous integration
+======================
+
+Continuous unit- and integration testing are to be set up on http://jenkins.lpds.sztaki.hu
+
+Unit testing is partly done at the time of writing.
