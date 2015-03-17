@@ -314,11 +314,13 @@ found in the code; part of it is in the ``docs`` repository as
 reStructuredText.
 
 The ``docs`` repository contains a ``sphinx/`` directory, which contains a
-``README.txt``. This README contains step-by-step instructions on how to start
+`README.txt`_. This README contains step-by-step instructions on how to start
 working on the documentation. The instructions in ``README.txt`` can be
 copy-pasted in the shell, and they should work flawlessly. (Naturally, if you
 have cloned all repositories already as described in :ref:`cbe`, you must omit
 that part of the instructions.)
+
+.. _README.txt: https://gitlab.lpds.sztaki.hu/cloud-orchestrator/docs/blob/master/sphinx/README.txt
 
 Hint: As Sphinx ``import``\ s the Python packages, we need to make this
 deployment clean: so it uses virtualenv too.
