@@ -3,6 +3,8 @@
 Packages and developer information for OCCO
 ===========================================
 
+.. _nosetests: https://nose.readthedocs.org
+
 *Always* use ``virtualenv`` for any kind of deployment (testing, building,
 production, ... everything). This ensures there will be no dependency issues:
 deployment collisions, missing dependencies in releases, etc. See the
@@ -16,7 +18,24 @@ Build environment
 Creating the build environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Packages needed***
+The OCCO packages are intended to be used in ``virtualenv`` under all
+circumstances. This implies that:
+
+    #. There are only a few system-wide packages needed:
+        
+         * ``virtualenv`` version ``12.0.7`` or later. One can use any one of
+           these methods:
+
+            * ``sudo apt-get install python-virtualenv``
+            * ``sudo easy_install virtualenv``
+            * ``sudo pip install virtualenv``
+         * git
+         * Python 2.7
+
+    #. All packages must declare all of their dependencies explicitly, without
+       relying on implicit dependencies thought to be ubiquitous (e.g.
+       argparse). (Because virtualenv-s are almost empty by default, containing
+       only ``python`` and ``pip``.)
 
 Currently, the simplest way to start working on OCCO is to clone all
 repositories using the following script:
@@ -32,13 +51,32 @@ repositories using the following script:
         git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/$REPO.git
     done
 
-Most script included in these components rely in this exact directory structure
-(especially testing and documentation dependencies).
+Most scripts included in these components rely in this exact directory
+structure (especially testing and documentation dependencies).
 
 It would be nice to have a Vagrantfile or a prepared VM template to bootstrap
 an OCCO environment; but right now we have to settle with this.
 
-virtualenv pip***
+One should work on an OCCO component in a virtualenv. For example, to start
+working on the ``util`` package:
+
+.. code:: bash
+
+    cd my-occo-dir
+    
+    cd util
+    virtualenv env/util-dev                             # If does not exist yet
+    source env/util-dev/bin/activate                    # Always after opening a new shell
+    pip install --no-deps -r requirements_test.txt      # One time, after creating the virtualenv
+
+    nosetests                                           # Optional anytime; Run all tests
+
+    workworkwork
+
+Testing
+~~~~~~~
+
+All packages are developed using nosetests_\ . 
 
 Packaging and deployment
 ------------------------
@@ -117,8 +155,6 @@ There are three dependency manifests to be maintained in each package.
 
         This file must contain ``==`` type version specifications so the
         testing results are deterministic and reliable.
-
-.. _nosetests: https://nose.readthedocs.org
 
 Creating Packages
 ~~~~~~~~~~~~~~~~~
