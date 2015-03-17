@@ -1,19 +1,20 @@
 .. _packages:
 
-Packages and developer information for OCCO
-===========================================
+Developer information for OCCO
+==============================
 
 .. _nosetests: https://nose.readthedocs.org
+.. _virtualenv site: https://virtualenv.pypa.io
 
 *Always* use ``virtualenv`` for any kind of deployment (testing, building,
 production, ... everything). This ensures there will be no dependency issues:
 deployment collisions, missing dependencies in releases, etc. See the
 `virtualenv site`_ for details.
 
-.. _virtualenv site: https://virtualenv.pypa.io
-
 Build environment
 -----------------
+
+.. _cbe:
 
 Creating the build environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +77,22 @@ working on the ``util`` package:
 Testing
 ~~~~~~~
 
-All packages are developed using nosetests_\ . 
+All components are developed using nosetests_. This means that in each
+component there is an ``occo_test`` package containing test modules.
+
+To test a package, one must first create a virtualenv and install the test
+requirements in that virtualenv (see :ref:`cbe`).
+
+When the test virtualenv is prepared, one must always activate it before
+running ``nosetests``.
+
+The peculiarity of ``nosetests`` is that it must always be run from the
+top-level package directory. For example, in case of the ``util`` package, it
+must be run from e.g. ``my-occo-dir/util``. Running it from e.g.
+``my-occo-dir/util/occo_test`` (**common mistake**) of anywhere else will not
+work.
+
+
 
 Packaging and deployment
 ------------------------
