@@ -1,5 +1,7 @@
-To compile the documentation, one needs the packages to be installed.
-To prepare compilation do the following:
+#!/bin/bash
+
+# To compile the documentation, one needs the packages to be installed.
+# To prepare compilation do the following:
 
 # Create a virtual environment:
 virtualenv env/documentation
@@ -20,4 +22,4 @@ done
 pip install --no-deps -r requirements-local.txt
 
 ## Using latest release
-    TBA
+##    TBA
