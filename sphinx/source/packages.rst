@@ -10,6 +10,36 @@ deployment collisions, missing dependencies in releases, etc. See the
 
 .. _virtualenv site: https://virtualenv.pypa.io
 
+Build environment
+-----------------
+
+Creating the build environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Packages needed***
+
+Currently, the simplest way to start working on OCCO is to clone all
+repositories using the following script:
+
+.. code:: bash
+
+    mkdir my-occo-dir
+    cd my-occo-dir
+
+    REPOS='util compiler info-broker enactor infrastructure-processor cloud-handler service-composer occo-demo occo-api docs'
+
+    for REPO in $REPOS; do
+        git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/$REPO.git
+    done
+
+Most script included in these components rely in this exact directory structure
+(especially testing and documentation dependencies).
+
+It would be nice to have a Vagrantfile or a prepared VM template to bootstrap
+an OCCO environment; but right now we have to settle with this.
+
+virtualenv pip***
+
 Packaging and deployment
 ------------------------
 
