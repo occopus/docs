@@ -71,7 +71,8 @@ working on the ``util`` package:
     source env/util-dev/bin/activate                    # Always after opening a new shell
     pip install --no-deps -r requirements_test.txt      # One time, after creating the virtualenv
 
-    nosetests                                           # Optional anytime; Run all tests
+    occo_test/bootstrap_tests.sh                        # Some tests have bootstrap scripts. Some don't!
+    nosetests                                           # Optional any time; Run all tests
 
     workworkwork
 
@@ -89,9 +90,17 @@ To test a package, one must first create a virtualenv and install the test
 requirements in that virtualenv (see :ref:`cbe`).
 
 When the test virtualenv is prepared, one must **always activate** it before
-running ``nosetests``. The prompt changes after activating a virtualenv, so
-it's easy to verify if it has been activated yet. Never *run* the ``activate``
+running the tests. The prompt changes after activating a virtualenv, so it's
+easy to verify if it has been activated yet. Never *run* the ``activate``
 script, one must always ``source`` it.
+
+Some tests need the virtualenv to be bootstrapped: some configuration files
+to be copied to the ``etc/occo`` folder, verifying that authentication data
+has been deployed, etc. To bootstrap a virtualenv, activate it, then run
+``occo_test/bootstrap_test.sh``. This has to be done only once for each
+virtualenv; however, this script should be idempotent, so it doesn't hurt to
+run it multiple times. The specifics are detailed in the :ref:`OCCO package
+list <pkgs>`.
 
 The peculiarity of ``nosetests`` is that it must always be run from the
 top-level package directory. For example, in case of the ``util`` package, it
@@ -202,6 +211,8 @@ upload script dead simple.
 When a package is uploaded, its version should be bumped unless it is otherwise
 justified.
 
+.. _pkgs:
+
 Packages (in *a* topological order)
 -----------------------------------
 
@@ -218,6 +229,8 @@ are omitted.
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/util
     Description  | Generic utility functions, configuration, communication,
                  | etc. See: :mod:`occo.util`.
+    Testing      | The virtualenv must be bootstrapped by executing
+                 | ``occo_test/bootstrap_tests.sh``.
     ===========  ===========================================================
 
 .. table:: **OCCO-Compiler**
@@ -265,6 +278,19 @@ are omitted.
                  | generic plugin system, a dummy cloud handler for testing,
                  | and an EC2 ``boto`` cloud handler backend. See
                  | :mod:`occo.cloudhandler`.
+
+    Testing      | The virtualenv must be bootstrapped by executing
+                 | ``occo_test/bootstrap_tests.sh``.
+                 |
+                 | This script accepts one command line parameter: a path to the
+                 | authentication data. If specified, the given file is installed
+                 | in the virtualenv as ``(prefix)/etc/occo/auth_data.yaml``. If
+                 | not specified, it tries to find an ``auth_data.yaml`` file next
+                 | to itself.
+                 |
+                 | After bootstrapping, it verifies whether the file
+                 | ``(prefix)/etc/occo/auth_data.yaml`` exists.
+                 | If not, the script signals failure so Jenkins will stop the build.
     ===========  ===========================================================
 
 .. table:: **OCCO-ServiceComposer**
