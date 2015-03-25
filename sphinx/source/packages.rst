@@ -32,7 +32,7 @@ circumstances. This implies that:
             * ``sudo easy_install virtualenv``
             * ``sudo pip install virtualenv``
          * git
-         * Python 2.7
+         * Python **2.7**
 
     #. All packages must declare all of their dependencies explicitly, without
        relying on implicit dependencies thought to be ubiquitous (e.g.
@@ -67,7 +67,12 @@ working on the ``util`` package:
     cd my-occo-dir
     
     cd util
-    virtualenv env/util-dev                             # If does not exist yet
+
+    # This only needs to be done once for each deployment.
+    # Make sure that python 2.7 is installed (not 3!), and that
+    # global packages are not used.
+    virtualenv --python=python2.7 --no-site-packages env/util-dev
+    
     source env/util-dev/bin/activate                    # Always after opening a new shell
     pip install --no-deps -r requirements_test.txt      # One time, after creating the virtualenv
 
