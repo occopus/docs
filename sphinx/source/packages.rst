@@ -108,7 +108,28 @@ must be run from e.g. ``my-occo-dir/util``. Running it from e.g.
 ``my-occo-dir/util/occo_test`` (**common mistake**) or anywhere else will not
 work.
 
+RabbitMQ
+^^^^^^^^
 
+Some packages (Util, InfoBroker, InfraProcessor) need a message queue for some
+of their tests.
+
+In this case, a RabbitMQ server is needed to be set up. The access parameters
+to the message queue are defined in various ``yaml`` files in the ``occo_test``
+directory. Usually the hostname needs to be tweaked.
+
+If needed, the RabbitMQ server can generally be configured using the following
+commands (on the RabbitMQ server, as ``root`` ofcourse).
+
+.. code:: bash
+
+    rabbitmqctl add_vhost test
+    rabbitmqctl add_user test test      # user: test, pass: test
+    rabbitmqctl set_permissions -p test test .\* .\* .\*
+
+.. todo:: This needs to be sanitized. Now that we have ``!yaml_import``, these
+    access parameters can be extracted from the main configuration file, so
+    they're not commited to the repository.
 
 Packaging and deployment
 ------------------------
