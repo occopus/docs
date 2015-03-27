@@ -39,19 +39,16 @@ circumstances. This implies that:
        argparse). (Because virtualenv-s are almost empty by default, containing
        only ``python`` and ``pip``.)
 
-Currently, the simplest way to start working on OCCO is to clone all
-repositories using the following script:
+Git submodules can be used to clone and manage all repositories at once:
 
 .. code:: bash
 
-    mkdir my-occo-dir
+    git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/master.git my-occo-dir
+
     cd my-occo-dir
 
-    REPOS='util compiler info-broker enactor infrastructure-processor cloud-handler service-composer occo-demo occo-api docs'
-
-    for REPO in $REPOS; do
-        git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/$REPO.git
-    done
+    git submodule init
+    git submodule update
 
 Most scripts included in these components rely on **this exact directory
 structure** (especially testing and documentation dependencies).
