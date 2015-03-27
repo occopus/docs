@@ -382,6 +382,19 @@ After preparing the ``docs`` environment, you can make the html documentation:
 
     ls build/html   # The result is here; it can be published in any way necessary
 
+InfoBroker keys
+---------------
+
+InfoBroker keys are automatically documented, and collated in the
+:ref:`InfoBroker key index <ibkeyindex>` using a custom Sphinx extension (see
+:ref:`metadocs`).
+
+.. warning:: Sphinx only compiles files it sees modified. So if the
+    documentation of an InfoBroker key changes, or a key is added/removed, the
+    change will only become visible if the file
+    ``(docs repo)/sphinx/sources/ibkeys.rst`` is touched before making the
+    documentation.
+
 Continuous integration
 ======================
 

@@ -1,3 +1,5 @@
+.. _metadocs:
+
 OCCO Meta-Documentation
 =======================
 
