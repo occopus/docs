@@ -48,7 +48,7 @@ Git submodules can be used to clone and manage all repositories at once:
     cd my-occo-dir
 
     git submodule init
-    git submodule update
+    git submodule update --remote
 
 Most scripts included in these components rely on **this exact directory
 structure** (especially testing and documentation dependencies).
