@@ -197,10 +197,25 @@ backend. For details, continue to :ref:`nodedefinition`, and then to
         Nested mappings specifying node attributes.
 
     ``mappings``
-        Mapping specifying node attribute mapping. The keys of the mapping are
-        the names of the upstream nodes this node is depending on. The values
-        of the mapping are lists containing
-        :class:`~occo.compiler.compiler.Mapping` specifications.
+        Mapping specifying node attribute mapping, inbound and outbound. The
+        keys of the mapping are the names of the nodes this node is connected
+        with. The values of the mapping are lists containing mapping
+        specifications:
+
+            ``inbound``
+                List of inbound mappings; that is, mappings this node depends
+                on.
+
+            ``outbound``
+                List of outbound mappings; that is, mappings through which
+                node provides information. The InfrProcessor may synchronize
+                on these mappings.
+
+            Each mapping contains a pair of ``attributes`` to be connected, the
+            specification whether the IP must synchronize upon this mapping
+            (``synch``), and possibly other information used by specialized
+            intermediate services in the future. See
+            :func:`~occo.compiler.compiler.create_mapping`.
 
     ``variables``
         Arbitrary mapping containing static node-level information:
