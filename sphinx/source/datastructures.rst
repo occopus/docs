@@ -24,6 +24,43 @@ Infrastructure Description
 
 Dependency graph on :ref:`nodedescription`-s.
 
+The graph contains the following information:
+
+    ``user_id``
+        The identifier of the owner of the infrastructure instance.
+    ``name``
+        The name of the infrastructure.
+    ``nodes``
+        List of node desctriptions.
+    ``edges``
+        List of edge definitions. Each of these can be either
+
+            - A pair (2-list) of node references.
+
+            - A mapping containing:
+
+                ``connection``
+                    The pair (2-list) of node references.
+
+                ``mappings``
+                    List of attribute mappings. Each mapping can be
+
+                        - A pair (2-list) of strings (attribute specifications,
+                          dotted strings permitted).
+
+                        - A mapping containing:
+
+                            ``attributes``
+                                The pair of attribute specifications.
+                            ``synch``
+                                Whether to synchronize on the availability of
+                                the source attribute.
+                            ``**``
+                                Anything else that is required by mediating
+                                services.
+                ``**``
+                    Anything else that is required by mediating services.
+
 .. todo:: The use of ``environment_id``, ``infra_id``, and
     ``infrastructure_id`` is inconsistent throughout the code and the system.
     We need to refactor the code and the design so it is consistently called
@@ -60,7 +97,15 @@ Diamond
             type: yaay
     dependencies:
         - [ *D, *C ]
-        - [ *D, *B ]
+        -
+            connection: [ *D, *B ]
+            mappings:
+                - [ 'service.from_attribute', 'to_attribute' ]
+                -
+                    attributes: [ 'attrX', 'node.attribute.Y' ]
+                    synch: true
+                    extra: information
+            extra_connection_property: 1
         - [ *B, *A ]
         - [ *C, *A ]
 
