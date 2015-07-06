@@ -341,3 +341,64 @@ is required and is sufficient to manipulate a running node instance.
         id).
     ``user_id``
         User identifier of the infrastructure this node pertains to.
+
+.. _nodestatus:
+
+Node Status
+-----------
+
+The status of a node is a string, consisting of two components:
+
+* The status of the resource (e.g. VM; as reported by the :ref:`CloudHandler
+  <cloudhandler>`)
+
+* The status of the service (as reported by the :ref:`ServiceComposer
+  <servicecomposer>`)
+
+Node statuses are semantically relevant. I.e., they do not bear details or any
+information irrelevant to OCCO when making decisions. They do not necessarily
+refect any backend-specific status.
+
+    ``unknown``
+
+        This status means that OCCO does not know about this instance, and
+        therefore cannot manage it.
+
+        OCCO will refuse to do anything with such instances.
+
+    ``pending`` and ``temp_failure``
+
+        The node has been instantiated, but it is not ready to be used. The
+        status ``temp_failure`` indicates an error that is expected to be
+        recovered automatically (e.g. no physical resource is available at the
+        moment).
+
+        These nodes count towards the total number of instances of a given
+        node. Dependent nodes will not be instantiated until the node becomes
+        ``ready``. These nodes may be selected for downscaling.
+
+    ``ready``
+
+        The node has been instantiated, and, as far as the CloudHandler and
+        ServiceComposer can tell, it is fully functional.
+
+        These nodes count towards the total number of instances of a given
+        node. Dependent nodes can be initiated. These nodes may be selected for
+        downscaling.
+
+    ``shutdown``
+
+        The node is either being shut down or already is.
+
+        These nodes do not count towards the total number of instances of a
+        given node. The Enactor will not select these nodes for downscaling.
+
+    ``failed``
+
+        The node has failed and cannot be recovered.
+
+        These nodes do not count towards the total number of instances of a
+        given node. The Enactor will not select these nodes for downscaling.
+        These nodes still need to be deleted to free resources (either
+        automatically in the upkeep phase, or manually so it can be debugged,
+        or automatically by an independent garbage collector).
