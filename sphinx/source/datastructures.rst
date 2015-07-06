@@ -440,4 +440,4 @@ Creating a node should be atomic: an ``unknown`` node is instantiated, built,
 and waited for by the InfraProcessor. After that, the node will be either
 ``ready``, or ``failed`` for some reason. Because of this, the IP should never
 experience a node being in ``pending`` state. If this assumption breaks, the
-above ruleset must be reconsidered.
+ruleset above must be reconsidered.
