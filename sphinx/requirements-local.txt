@@ -1,4 +1,4 @@
---find-links http://c155-10.localcloud:8080/packages
+--find-links http://pip.lpds.sztaki.hu/packages
 --no-index
 
 boto==2.34.0
