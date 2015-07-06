@@ -1,7 +1,7 @@
 .. _datastructures:
 
-Data Structures
-===============
+Data Structures and Specification
+=================================
 
 Specification and examples of data structures used on the OCCO system.
 
@@ -37,7 +37,7 @@ The graph contains the following information:
             descriptions. We need to find a name for these, and document them
             separately.
 
-    ``edges``
+    ``dependencies``
         List of edge definitions. Each of these can be either
 
             - A pair (2-list) of node references.
@@ -71,12 +71,6 @@ The graph contains the following information:
         Arbitrary mapping containing infrastructure-wide information. This
         information is static (not parsed anywhere). Nodes will inherit these
         variables, but they may also override them.
-
-.. todo:: The use of ``environment_id``, ``infra_id``, and
-    ``infrastructure_id`` is inconsistent throughout the code and the system.
-    We need to refactor the code and the design so it is consistently called
-    ``infrastructure_id``. We should drop the "environment" terminology
-    altogether, as it is Chef-specific.
 
 Examples
 ~~~~~~~~
@@ -151,8 +145,8 @@ Node Description
 ----------------
 
 Abstract description of a node, which identifies a type of node a user may
-include in an infrastructure. It is an abstract, backend-independent definition
-of a class of nodes and can be stored in a repository.
+include in an infrastructure. It is an abstract, *backend-independent*
+definition of a class of nodes and can be stored in a repository.
 
 A node description is self-contained in the sense that a node description
 contains all the information needed to *resolve* it (i.e., in relational terms:
@@ -165,8 +159,8 @@ to instantiate the node. These implementations are described with :ref:`node
 definition <nodedefinition>` data structures.
 
 To instantiate a node, its implementations are gathered first. Then, they are
-either filtered by ``backend_id`` (if explicitly specified), or one is selected
-by some brokering algorithm (currently: randomly).
+either filtered by ``backend_ids`` (if explicitly specified), or one is
+selected by some brokering algorithm (currently: randomly).
 
 The node definition will then be resolved to a :ref:`resolved node definition
 <resolvednode>` so it contains all information required by the intended
@@ -179,7 +173,7 @@ backend. For details, continue to :ref:`nodedefinition`, and then to
     ``type``
         The type of the node.
 
-    ``backend_id``
+    ``backend_id`` (``str``) and ``backend_ids`` (``list``)
         Optional. The dedicated backend for this node. If unspecified, the
         :ref:`Infrastructure Processor <infraprocessor>` will choose among
         implementations.
@@ -242,7 +236,7 @@ Node Definition
 
 Describes an *implementation* of a :ref:`node <nodedescription>`, a template
 that is required to instantiate a node. The template pertains to a specific
-:ref:`Cloud Handler <cloudhandler>` (through ``backend_id``), and a specific
+:ref:`Cloud Handler <cloudhandler>` (through ``backend_ids``), and a specific
 :ref:`Service Composer <servicecomposer>` (to be implemented).
 
 A node definition does not contain all information needed to instantiate the
