@@ -364,7 +364,7 @@ refect any backend-specific status.
         This status means that OCCO does not know about this instance, and
         therefore cannot manage it.
 
-        OCCO will refuse to do anything with such instances.
+        This usually means that the node has not been started yet.
 
     ``pending`` and ``temp_failure``
 
@@ -402,3 +402,42 @@ refect any backend-specific status.
         These nodes still need to be deleted to free resources (either
         automatically in the upkeep phase, or manually so it can be debugged,
         or automatically by an independent garbage collector).
+
+Composite node status
+~~~~~~~~~~~~~~~~~~~~~
+
+Both the CloudHandler and the ServiceComposer provide a status string for a
+node instance: ``state(ch)`` and ``state(sc)``. The composite state ``state``
+of the instance is defined by the following rules. The rules are in order: the
+first one that applies is used.
+
+1. If a node identifier does not exist in the OCCO registry, *then* ``state =
+   unknown``. In this case, backends are not queried.
+2. If either ``state(ch)`` or ``state(sc)`` is ``failed``, *then* ``state =
+   failed``.
+3. If either ``state(ch)`` or ``state(sc)`` is ``temp_failed``, *then* ``state
+   = temp_failed``.
+4. If either ``state(ch)`` or ``state(sc)`` is ``unknown``, *then* ``state =
+   pending``.
+5. If either ``state(ch)`` or ``state(sc)`` is ``pending``, *then* ``state =
+   pending``.
+6. If both ``state(ch)`` and ``state(sc)`` is ``ready``, *then* ``state =
+   ready``.
+
+**Remarks**
+
+Rule 2 applies if either one of the backends has experienced an unrecoverable
+error; in this case, the node itself has unrecoverably failed.
+
+Rule 4 and 5 could be merged: if any of the nodes is *not ready*, then the node
+itself is not ready.
+
+Rule 4 applies when the InfraProcessor has started working on the node already,
+but at least one of the backends has not yet been contacted (e.g. the VM has
+been started, but the node has not yet been registered in the ServiceComposer).
+
+Creating a node should be atomic: an ``unknown`` node is instantiated, built,
+and waited for by the InfraProcessor. After that, the node will be either
+``ready``, or ``failed`` for some reason. Because of this, the IP should never
+experience a node being in ``pending`` state. If this assumption breaks, the
+above ruleset must be reconsidered.
