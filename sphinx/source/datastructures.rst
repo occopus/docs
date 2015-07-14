@@ -366,10 +366,10 @@ refect any backend-specific status.
 
         This usually means that the node has not been started yet.
 
-    ``pending`` and ``temp_failure``
+    ``pending`` and ``temp_failed``
 
         The node has been instantiated, but it is not ready to be used. The
-        status ``temp_failure`` indicates an error that is expected to be
+        status ``temp_failed`` indicates an error that is expected to be
         recovered automatically (e.g. no physical resource is available at the
         moment).
 
