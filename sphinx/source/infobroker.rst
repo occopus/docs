@@ -31,8 +31,8 @@ Implementation Based on Redis
 .. automodule:: occo.infobroker.rediskvstore
     :members:
 
-Cloud Information Provider
+Dynamic State Provider
 --------------------------
 
-.. automodule:: occo.infobroker.cloud_provider
+.. automodule:: occo.infobroker.dynamic_state_provider
     :members:
