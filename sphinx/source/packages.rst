@@ -34,6 +34,19 @@ circumstances. This implies that:
          * git
          * Python **2.7**
 
+         And for the tests:
+
+         * redis-server
+         * rabbitmq-server
+
+    #. For the tests to work, you need to configure RabbitMQ
+
+        .. code:: bash
+            
+            rabbitmqctl add_user test test
+            rabbitmqctl add_vhost test
+            rabbitmqctl set_permissions -p test test .\* .\* .\*
+
     #. All packages must declare all of their dependencies explicitly, without
        relying on implicit dependencies thought to be ubiquitous (e.g.
        argparse). (Because virtualenv-s are almost empty by default, containing
@@ -49,6 +62,7 @@ Git submodules can be used to clone and manage all repositories at once:
 
     git submodule init
     git submodule update --remote
+    git submodule foreach git checkout devel
 
 Most scripts included in these components rely on **this exact directory
 structure** (especially testing and documentation dependencies).
