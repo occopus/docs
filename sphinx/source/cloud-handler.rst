@@ -12,16 +12,16 @@ Abstract Cloud Handler and generic functions
 Specialized backend implementations
 -----------------------------------
 
-.. automodule:: occo.cloudhandler.backends
+.. automodule:: occo.plugins.cloudhandler
 
 Dummy backend for testing
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: occo.cloudhandler.backends.dummy
+.. automodule:: occo.plugins.cloudhandler.dummy
     :members:
 
 Boto EC2 backend
 ~~~~~~~~~~~~~~~~
 
-.. automodule:: occo.cloudhandler.backends.boto
+.. automodule:: occo.plugins.cloudhandler.boto
     :members:

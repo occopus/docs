@@ -1,7 +1,7 @@
 .. _packages:
 
-Developer information for OCCO
-==============================
+Developer information
+=====================
 
 .. _nosetests: https://nose.readthedocs.org
 .. _virtualenv site: https://virtualenv.pypa.io
@@ -24,22 +24,41 @@ The OCCO packages are intended to be used in ``virtualenv`` under all
 circumstances. This implies that:
 
     #. There are only a few system-wide packages needed:
+
+        If you experience any obscure problem during deployment, make sure that
+        these versions are okay:
         
-         * ``virtualenv`` version ``12.0.7`` or later. One can use any one of
-           these methods:
+         * ``pip`` version ``6.0.8`` or later. Make *sure* that it is at least
+           version 6. Older versions may complain about packages not being Zip
+           files.
+
+           Version ``7`` will complain about ``pip.lpds.sztaki.hu`` not being a
+           trusted host. You can use the ``--trusted-host
+           pip.lpds.sztaki.hu`` switch with ``pip``.
+
+         * ``virtualenv`` version ``12.0.7`` or later. Make *sure* that it is
+           at least version 12. One can use any one of these methods:
 
             * ``sudo apt-get install python-virtualenv``
             * ``sudo easy_install virtualenv``
-            * ``sudo pip install virtualenv``
+            * ``sudo pip install --upgrade virtualenv``
+
          * git
+
          * Python **2.7**
 
-         And for the tests:
+         These are required for testing, and may be required for deployment
+         too:
 
-         * redis-server
-         * rabbitmq-server
+         * ``sudo apt-get install redis-server``
+         * ``sudo apt-get install rabbitmq-server``
 
-    #. For the tests to work, you need to configure RabbitMQ
+    #. The following are required *globally* for the MySQL-Wordpress demo to work:
+
+        * ``sudo apt-get install libssl-dev``   # For the Chef connection to work.
+        * ``sudo apt-get install mysql-client`` # For PyMySQL
+
+    #. For the *tests* to work, you need to configure RabbitMQ
 
         .. code:: bash
             
@@ -50,7 +69,8 @@ circumstances. This implies that:
     #. All packages must declare all of their dependencies explicitly, without
        relying on implicit dependencies thought to be ubiquitous (e.g.
        argparse). (Because virtualenv-s are almost empty by default, containing
-       only ``python`` and ``pip``.)
+       only ``python`` and ``pip``.) Use ``pip freeze`` to make sure that
+       everything is in order.
 
 Git submodules can be used to clone and manage all repositories at once:
 
@@ -70,27 +90,33 @@ structure** (especially testing and documentation dependencies).
 It would be nice to have a Vagrantfile or a prepared VM template to bootstrap
 an OCCO environment; but right now we have to settle with this.
 
-One should work on an OCCO component in a virtualenv. For example, to start
-working on the ``util`` package:
+One should work on an OCCO component in a virtualenv. The following shows how
+to setup the ``occo-demo`` repo, but--aside the ``auth_data.yaml`` part--it
+works with other repos too.
+
+To understand the role of ``auth_data.yaml``, see the documentation of the
+:ref:`<OCCO Demo applications> demos`.
 
 .. code:: bash
 
     cd my-occo-dir
-    
-    cd util
+    cd occo-demo
 
-    # This only needs to be done once for each deployment.
-    # Make sure that python 2.7 is installed (not 3!), and that
-    # global packages are not used.
-    virtualenv --python=python2.7 --no-site-packages env/util-dev
-    
-    source env/util-dev/bin/activate                    # Always after opening a new shell
-    pip install --no-deps -r requirements_test.txt      # One time, after creating the virtualenv
+    # Iff necessary:
+    # Deploy auth_data.yaml in the package directory. Never commit this file in the repo!
+    cat > auth_data.yaml <<EOF
+    username: XXXXXX
+    password: YYYYYY
+    EOF
 
-    occo_test/bootstrap_tests.sh                        # Some tests have bootstrap scripts. Some don't!
+    # Use this convenience script to
+    # - Create the virtualenv
+    # - Deploy auth_data.yaml in the necessary conf dirs (only for occo-demo)
+    ./reset-env.sh
+    #
+    # This will print the path of the virtualenv; e.g.:
+    source env/occo-demo/bin/activate
     nosetests                                           # Optional any time; Run all tests
-
-    workworkwork
 
 Virtualenvs should be placed in the ``env/`` directory, so they don't linger in
 the working tree. ``git`` will ignore the contents of the ``env/`` directory so
@@ -110,19 +136,10 @@ running the tests. The prompt changes after activating a virtualenv, so it's
 easy to verify if it has been activated yet. Never *run* the ``activate``
 script, one must always ``source`` it.
 
-Some tests need the virtualenv to be bootstrapped: some configuration files
-to be copied to the ``etc/occo`` folder, verifying that authentication data
-has been deployed, etc. To bootstrap a virtualenv, activate it, then run
-``occo_test/bootstrap_test.sh``. This has to be done only once for each
-virtualenv; however, this script should be idempotent, so it doesn't hurt to
-run it multiple times. The specifics are detailed in the :ref:`OCCO package
-list <pkgs>`.
-
-The peculiarity of ``nosetests`` is that it must always be run from the
-top-level package directory. For example, in case of the ``util`` package, it
+``nosetests`` must always be run from the top-level package directory. For
+example, in case of the ``util`` package, it
 must be run from e.g. ``my-occo-dir/util``. Running it from e.g.
-``my-occo-dir/util/occo_test`` (**common mistake**) or anywhere else will not
-work.
+``my-occo-dir/util/occo_test`` or anywhere else will not work.
 
 RabbitMQ
 ^^^^^^^^
@@ -154,7 +171,14 @@ OCCO is split into several Python packages. The packages can be made available
 on the LPDS internal PyPI server (or *package index*) as `Python wheels`_.
 
 The **internal PyPI server** at the time of writing is on
-``c153-86.localcloud``.
+``c155-10.localcloud``. It is accessible through an Apache proxy using the
+``pip.lpds.sztaki.hu`` hostname.
+
+Pip can use the following switches to use this package index:
+
+.. code:: bash
+
+    pip --trusted-host pip.lpds.sztaki.hu --find-links http://pip.lpds.sztaki.hu/packages --no-index
 
 The packages must be **versioned** according to the `Semantic Versioning`_
 standard.
@@ -164,20 +188,27 @@ using package dependencies. The ``requirements_test.txt`` files rely on local
 dependencies (``pip install -e ...``) to encourage this. This is to avoid
 uploading too many useless package versions to the package index.
 
+In each repository there is a ``package.sh`` which generates the wheels to be
+published. ``upload.sh`` will upload the output package to ``c155-10``,
+provided the uploader has root access to it.
+
+
 .. _Python wheels: http://pythonwheels.com/
 .. _Semantic Versioning: http://semver.org/
 
 Managing the internal PyPI server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The internal PyPI server must be bootstrapped if and when a **new external
-dependency** is added to any of the OCCO packages. This means that the new
-dependency must be installed there, so later phases of packaging can rely on
-it. This is a simple task:
+All dependencies can be found in this index. *Future dependencies* can be added
+to the index thus:
 
-  - Login to the internal PyPI server as ``root``
-  - ``cd /opt/pypi-server/packages/``
-  - ``pip wheel [[new_dependency_name, and possibly version specification]]``
+.. code:: bash
+
+    ssh -lroot c155-10.localcloud
+
+    cd /opt/pypi-server/packages/
+
+    pip wheel pymongo==2.8        # For example
 
 This will download the new dependency from the community servers and installs
 (caches) it on the internal PyPI server. Locally mirroring and maintaining all
@@ -315,19 +346,6 @@ are omitted.
                  | generic plugin system, a dummy cloud handler for testing,
                  | and an EC2 ``boto`` cloud handler backend. See
                  | :mod:`occo.cloudhandler`.
-
-    Testing      | The virtualenv must be bootstrapped by executing
-                 | ``occo_test/bootstrap_tests.sh``.
-                 |
-                 | This script accepts one command line parameter: a path to the
-                 | authentication data. If specified, the given file is installed
-                 | in the virtualenv as ``(prefix)/etc/occo/auth_data.yaml``. If
-                 | not specified, it tries to find an ``auth_data.yaml`` file next
-                 | to itself.
-                 |
-                 | After bootstrapping, it verifies whether the file
-                 | ``(prefix)/etc/occo/auth_data.yaml`` exists.
-                 | If not, the script signals failure so Jenkins will stop the build.
     ===========  ===========================================================
 
 .. table:: **OCCO-ServiceComposer**
@@ -358,7 +376,8 @@ are omitted.
     Depends      all OCCO packages
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-demo
     Description  | This package contains code that glues the packages of OCCO
-                 | together. It is not intended to be released.
+                 | together into working example application. It is not intended
+                 | to be released.
                  |
                  | This package can be used for experimenting, developing
                  | prototype code, integrating components, integration testing,
@@ -414,13 +433,10 @@ Continuous integration
 
 Continuous unit- and integration testing are to be set up on http://jenkins.lpds.sztaki.hu
 
-Jenkins uses the ``c153-33.localcloud`` host as a slave for performing OCCO
+Jenkins uses the ``c155-16.localcloud`` host as a slave for performing OCCO
 tasks, using the ``jenkins`` user. 
 
-The user ``jenkins@c153-33.localcoud`` has its own private ssh key in
+The user ``jenkins@c155-16.localcloud`` has its own private ssh key in
 ``~/.ssh/``. This key is used for ssh connections outward this host, including
-towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` is
+towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` (sic!) is
 (or, at least, should be) enabled for all repositories used by Jenkins.
-
-
-Unit testing is partly done at the time of writing.
