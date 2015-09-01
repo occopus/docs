@@ -10,7 +10,7 @@ processes, etc.)
 
 OCCO is oblivious to the content of these resources. They can contain
 pre-installed and pre-configured services, they can be raw resources set up
-later by a :ref:`<Service Composer> servicecomposer`, or anything in-between.
+later by a :ref:`Service Composer <servicecomposer>`, or anything in-between.
 
 Abstract Cloud Handler and generic functions
 --------------------------------------------

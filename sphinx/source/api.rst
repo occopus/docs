@@ -1,7 +1,7 @@
 .. _api:
 
-Remote API
-==========
+API
+===
 
 Basic features for OCCO-based applications
 ------------------------------------------
@@ -40,4 +40,7 @@ Command line tools
     :members:
 
 .. automodule:: redisload
+    :members:
+
+.. automodule:: manager_service
     :members:

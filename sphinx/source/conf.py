@@ -18,9 +18,12 @@ import sphinx_rtd_theme
 
 # Pre-load executables as modules so they can be documented
 BASEDIR = os.path.join(sys.prefix, 'bin')
-CLI_TOOLS = ['ibclient', 'infrastart', 'infrastop',
-             'listkeys', 'listnodes',
-             'nodestart', 'nodestop', 'redisload']
+CLI_TOOLS = [
+    'ibclient', 'infrastart', 'infrastop',
+    'listkeys', 'listnodes',
+    'nodestart', 'nodestop', 'redisload',
+    'manager_service',
+]
 import imp
 for i in CLI_TOOLS:
     path = os.path.join(BASEDIR, i)
@@ -299,3 +302,6 @@ def setup(app):
     app.add_config_value('api_doc', False, 'env')
 
 api_doc = False
+import os
+if os.environ.get('API_DOC', '0')[0] in ['t', 'T', '1', 'y', 'Y']:
+    api_doc = True

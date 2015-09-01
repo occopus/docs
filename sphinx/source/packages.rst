@@ -95,7 +95,7 @@ to setup the ``occo-demo`` repo, but--aside the ``auth_data.yaml`` part--it
 works with other repos too.
 
 To understand the role of ``auth_data.yaml``, see the documentation of the
-:ref:`<OCCO Demo applications> demos`.
+:ref:`OCCO Demo applications <demos>`.
 
 .. code:: bash
 
@@ -329,16 +329,16 @@ are omitted.
 
 .. table:: **OCCO-InfraProcessor**
 
-    ===========  ===========================================================
+    ===========  =========================================================================
     Depends      OCCO-Util, OCCO-InfoBroker
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/infrastructure-processor
     Description  | Central processor and synchronizer of the OCCO system. See:
                  | :mod:`occo.infraprocessor`.
-    ===========  ===========================================================
+    ===========  =========================================================================
 
 .. table:: **OCCO-CloudHandler**
 
-    ===========  ===========================================================
+    ===========  ==============================================================
     Depends      OCCO-Util, OCCO-InfoBroker
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/cloud-handler
     Description  | Backend component of the OCCO system, responsible for
@@ -346,33 +346,31 @@ are omitted.
                  | generic plugin system, a dummy cloud handler for testing,
                  | and an EC2 ``boto`` cloud handler backend. See
                  | :mod:`occo.cloudhandler`.
-    ===========  ===========================================================
+    ===========  ==============================================================
 
 .. table:: **OCCO-ServiceComposer**
 
-    ===========  ===========================================================
-    Note         *Under preliminary development; not integrated with other components yet.*
+    ===========  =================================================================
     Depends      OCCO-Util, OCCO-InfoBroker
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/service-composer
     Description  | Responsible for provisioning, setting up, configuring, etc.
                  | the nodes instantiated by the cloud handler.
-    ===========  ===========================================================
+    ===========  =================================================================
 
 .. table:: **OCCO-API**
 
-    ===========  ===========================================================
-    Note         *Under preliminary development; not integrated with other components yet.*
+    ===========  =============================================================
     Depends      all OCCO packages
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-api
     Description  | This package combines the primitives provided by other occo
                  | packages into higher level services and features. This
                  | package is intended to be the top-level package of the OCCO
                  | system upon which use-cases, user interfaces can be built.
-    ===========  ===========================================================
+    ===========  =============================================================
 
 .. table:: **OCCO-Demo**
 
-    ===========  ===========================================================
+    ===========  ===============================================================
     Depends      all OCCO packages
     Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-demo
     Description  | This package contains code that glues the packages of OCCO
@@ -382,10 +380,23 @@ are omitted.
                  | This package can be used for experimenting, developing
                  | prototype code, integrating components, integration testing,
                  | demonstrating features, etc.
-    ===========  ===========================================================
+    ===========  ===============================================================
+
+Continuous integration
+----------------------
+
+Continuous unit- and integration testing are to be set up on http://jenkins.lpds.sztaki.hu
+
+Jenkins uses the ``c155-16.localcloud`` host as a slave for performing OCCO
+tasks, using the ``jenkins`` user. 
+
+The user ``jenkins@c155-16.localcloud`` has its own private ssh key in
+``~/.ssh/``. This key is used for ssh connections outward this host, including
+towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` (sic!) is
+(or, at least, should be) enabled for all repositories used by Jenkins.
 
 Documentation
-=============
+-------------
 
 The documentation you are reading is developed in the ``docs`` repository:
 
@@ -415,12 +426,41 @@ After preparing the ``docs`` environment, you can make the html documentation:
 
     ls build/html   # The result is here; it can be published in any way necessary
 
-InfoBroker keys
----------------
+Documentation parameters
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Rendering the documentation can be configured and parameterized through the
+Sphinx configuration file: ``source/conf.py``.
+
+As this file is a dynamic module, it can be used to gather configuration
+parameters dynamically (e.g.: environment variables). The current ``conf.py``
+uses the following environment variables.
+
+A string parsed as ``bool`` is considered to be :data:`True` if and only if it
+starts with ``'t'``, ``'y'``, or ``'1'`` (``true``, ``yes``, ``1``; case-\
+*in*\ sensitive).
+
+
+    API_DOC
+
+        If ``True``, parts of the documentation intended for OCCO developers
+        are left out from the final document (e.g.: some warnings, todos, and
+        this section altogether).
+
+Example
+~~~~~~~
+
+.. code:: bash
+
+    API_DOC=YES make html
+
+.. _metadocs:
+
+Sphinx plugin to autodoc InfoBroker keys
+----------------------------------------
 
 InfoBroker keys are automatically documented, and collated in the
-:ref:`InfoBroker key index <ibkeyindex>` using a custom Sphinx extension (see
-:ref:`metadocs`).
+:ref:`InfoBroker key index <ibkeyindex>` using a custom Sphinx extension.
 
 .. warning:: Sphinx only compiles files it sees modified. So if the
     documentation of an InfoBroker key changes, or a key is added/removed, the
@@ -428,15 +468,58 @@ InfoBroker keys are automatically documented, and collated in the
     ``(docs repo)/sphinx/sources/ibkeys.rst`` is touched before making the
     documentation.
 
-Continuous integration
-======================
+Info Broker Keys
+~~~~~~~~~~~~~~~~
 
-Continuous unit- and integration testing are to be set up on http://jenkins.lpds.sztaki.hu
+The query keys provided by the :ref:`Info Broker <infobroker>` are documented,
+and an index is created, automatically from the code.
 
-Jenkins uses the ``c155-16.localcloud`` host as a slave for performing OCCO
-tasks, using the ``jenkins`` user. 
+For this, an extension for Sphinx has been developed, providing three
+directives:
 
-The user ``jenkins@c155-16.localcloud`` has its own private ssh key in
-``~/.ssh/``. This key is used for ssh connections outward this host, including
-towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` (sic!) is
-(or, at least, should be) enabled for all repositories used by Jenkins.
+    ``.. decl_ibkey::``
+        
+        This directive is prepended to all documented methods automatically,
+        by the :class:`@provides <occo.infobroker.provider.provides>`
+        decorator. It declares the provided key in the scope of the docstring;
+        developers need not bother with it.
+
+    ``.. ibkey::``
+
+        This directive can be used to specify query key documentation. The
+        documentation inside this directive will be rendered in both the method
+        documentation and the key catalog.
+
+        It has a required argument: the one-liner synopsis of the key.
+
+        The required parameters should be documented using ``:param ...:``
+        fields.
+
+    ``.. ibkeylist::``
+
+        This directive will be replaced with the alphabetically sorted catalog
+        of all the keys documented throughout the code.
+
+Example
+~~~~~~~
+
+.. code:: python
+
+    @provides('node.state')
+    def query_state(self, instance_data, **kwargs):
+        """
+        This part of the documentation will not be rendered in the catalog.
+
+        .. ibkey::
+            Query the state of an infrastructure node.
+            
+            :param dict instance_data: Data required to identify the node.
+
+            This block will be rendered in both the method documentation and
+            the key catalog.
+
+        This part of the documentation will not be rendered in the catalog
+        either.
+        """
+        pass
+

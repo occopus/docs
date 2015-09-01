@@ -37,7 +37,7 @@ Global constants
 Node status constants
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: occo.constants
+.. automodule:: occo.constants.status
     :members:
 
 Exceptions

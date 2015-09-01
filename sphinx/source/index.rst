@@ -6,31 +6,31 @@
 One-Click Cloud Orchestrator Documentation
 ==========================================
 
-Contents:
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
-   api
    packages
-   amqp
+   api
+   datastructures
    infobroker
-   util
    uds
    compiler
    enactor
    infrastructure-processor
    cloud-handler
    servicecomposer
-   datastructures
-   meta
+   util
+   amqp
 
 .. ifconfig:: api_doc is False
 
     .. todolist::
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
