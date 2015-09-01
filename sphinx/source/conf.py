@@ -290,8 +290,6 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
 
-todo_include_todos = True
-
 def setup(app):
     # If set to True, an API documentation will be generated.
     # If False, an documentation for internal use will be generated.
@@ -305,3 +303,6 @@ api_doc = False
 import os
 if os.environ.get('API_DOC', '0')[0] in ['t', 'T', '1', 'y', 'Y']:
     api_doc = True
+
+todo_include_todos = not api_doc
+
