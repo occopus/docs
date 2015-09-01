@@ -1,13 +1,13 @@
 .. _metadocs:
 
-OCCO Meta-Documentation
-=======================
+Meta-Documentation -- Sphinx plugin to autodoc InfoBroker keys
+==============================================================
 
 Info Broker Keys
 ----------------
 
-The query keys provided by the :ref:`Info Broker <infobroker>` are documented
-automatically from the code.
+The query keys provided by the :ref:`Info Broker <infobroker>` are documented,
+and an index is created, automatically from the code.
 
 For this, an extension for Sphinx has been developed, providing three
 directives:

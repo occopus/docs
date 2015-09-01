@@ -1,5 +1,5 @@
-Utilities for OCCO
-================================
+Utilities and global facilities
+===============================
 
 Generic utility functions
 -------------------------
@@ -8,8 +8,8 @@ Generic utility functions
     :members:
     :show-inheritance:
 
-Configration utility functions
-------------------------------
+Configration utility functions and YAML extensions
+--------------------------------------------------
 
 .. automodule:: occo.util.config
     :members:
@@ -20,4 +20,28 @@ A generic implementation of the abstract factory pattern
 --------------------------------------------------------
 
 .. automodule:: occo.util.factory
+    :members:
+
+Parallelization utilities
+-------------------------
+
+.. automodule:: occo.util.parproc
+    :members:
+
+Global constants
+----------------
+
+.. automodule:: occo.constants
+    :members:
+
+Node status constants
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: occo.constants
+    :members:
+
+Exceptions
+----------
+
+.. automodule:: occo.exceptions
     :members:

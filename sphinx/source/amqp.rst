@@ -1,7 +1,7 @@
 .. _comm:
 
-Component Communication in OCCO
-===============================
+Communication Model
+===================
 
 .. automodule:: occo.util.communication
 

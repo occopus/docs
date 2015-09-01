@@ -1,14 +1,10 @@
 .. _api:
 
 Remote API
-===============
+==========
 
-Basic features for OCCO applications
-------------------------------------
-
-This module can be used to implement OCCO-based applications in a unified way.
-The module provides features for command-line and file based configuration of
-an OCCO application, and other generic features.
+Basic features for OCCO-based applications
+------------------------------------------
 
 .. automodule:: occo.api.occoapp
     :members:

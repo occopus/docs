@@ -9,11 +9,22 @@ Glossary
     :sorted:
 
     IP
-        Infrastructure Processor. See: :ref:`IP`.
+    InfraProcessor
+        :ref:`Infrastructure Processor <IP>`
 
     YAML
         Data serialization language, esp. its Python implementation:
         http://pyyaml.org/
 
     IB
-        Information Broker. See: :ref:`infobroker`.
+    InfoBroker
+        :ref:`Information Broker <infobroker>`
+
+    CH
+        :ref:`Cloud Handler <cloudhandler>`
+
+    SC 
+        :ref:`Service Composer <servicecomposer>`
+
+    UDS
+        :ref:`User Data Store <uds>`

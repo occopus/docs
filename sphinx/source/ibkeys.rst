@@ -2,7 +2,7 @@
 
 .. _ibkeyindex:
 
-InfoBroker key index
---------------------
+:term:`InfoBroker` key index
+----------------------------
 
 .. ibkeylist::

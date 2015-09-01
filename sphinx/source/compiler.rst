@@ -1,8 +1,7 @@
 .. _compiler:
 
-Compiler for OCCO
-================================
+Compiler
+========
 
 .. automodule:: occo.compiler
-.. automodule:: occo.compiler.compiler
     :members:

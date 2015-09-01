@@ -1,8 +1,7 @@
 .. _enactor:
 
-Enactor for OCCO
-================================
+Enactor
+=======
 
 .. automodule:: occo.enactor
-.. automodule:: occo.enactor.enactor
     :members:

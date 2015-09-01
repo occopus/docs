@@ -1,7 +1,9 @@
 .. _infobroker:
 
-Information Distribution in OCCO
-================================
+(See :ref:`list of keys <ibkeyindex>` provided by the InfoBroker components.)
+
+Information Distribution
+========================
 
 .. automodule:: occo.infobroker
 
@@ -16,8 +18,10 @@ Distributed Information Provider
 .. automodule:: occo.infobroker.remote
     :members:
 
-Key-Value Store
----------------
+Persistent storage
+------------------
+
+See also :ref:`User Data Store <uds>`.
 
 Interface and Naive Implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +36,7 @@ Implementation Based on Redis
     :members:
 
 Dynamic State Provider
---------------------------
+----------------------
 
 .. automodule:: occo.infobroker.dynamic_state_provider
     :members:

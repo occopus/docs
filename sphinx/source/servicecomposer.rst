@@ -1,8 +1,16 @@
 .. _servicecomposer:
 
-Service Composer for OCCO
-================================
+Service Composer
+================
 
-.. .. automodule:: occo.servicecomposer
-.. .. automodule:: occo.servicecomposer.servicecomposer
-..     :members:
+Abstract interface and mockup implementation
+--------------------------------------------
+
+.. automodule:: occo.servicecomposer
+    :members:
+
+Chef-based Service Composer
+---------------------------
+
+.. automodule:: occo.plugins.servicecomposer.chef
+    :members:
