@@ -94,8 +94,15 @@ One should work on an OCCO component in a virtualenv. The following shows how
 to setup the ``occo-demo`` repo, but--aside the ``auth_data.yaml`` part--it
 works with other repos too.
 
-To understand the role of ``auth_data.yaml``, see the documentation of the
-:ref:`OCCO Demo applications <demos>`.
+The demo applications need authentication information to access their
+configured EC2 backends. While example configuration files are stored in the
+git repo, this authentication information *must not* be stored in the
+repository for security reasons. Therefore, it is factored out using an
+extension to YAML provided by OCCO: :class:`\!yaml_import
+<occo.util.config.YAMLImport>` (see example).
+
+The content of ``auth_data.yaml`` is specified by the module that uses the
+configuration: :mod:`Boto CloudHandler <occo.plugins.cloudhandler.boto>`.
 
 .. code:: bash
 
@@ -105,8 +112,8 @@ To understand the role of ``auth_data.yaml``, see the documentation of the
     # Iff necessary:
     # Deploy auth_data.yaml in the package directory. Never commit this file in the repo!
     cat > auth_data.yaml <<EOF
-    username: XXXXXX
-    password: YYYYYY
+    username: <<<EC2_ACCESS_KEY>>>
+    password: <<<EC2_SECRET_KEY>>>
     EOF
 
     # Use this convenience script to
