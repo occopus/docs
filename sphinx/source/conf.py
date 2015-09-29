@@ -20,9 +20,7 @@ import sphinx_rtd_theme
 BASEDIR = os.path.join(sys.prefix, 'bin')
 CLI_TOOLS = [
     'ibclient', 'infrastart', 'infrastop',
-    'listkeys', 'listnodes',
-    'nodestart', 'nodestop', 'redisload',
-    'manager_service',
+    'listnodes', 'redisload', 'manager_service',
 ]
 import imp
 for i in CLI_TOOLS:

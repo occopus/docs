@@ -27,16 +27,7 @@ Command line tools
 .. automodule:: infrastop
     :members:
 
-.. automodule:: listkeys
-    :members:
-
 .. automodule:: listnodes
-    :members:
-
-.. automodule:: nodestart
-    :members:
-
-.. automodule:: nodestop
     :members:
 
 .. automodule:: redisload
