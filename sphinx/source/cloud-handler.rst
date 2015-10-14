@@ -44,5 +44,5 @@ CloudBroker plugin
 Docker plugin
 ~~~~~~~~~~~~~
 
-.. automodule:: occo.plugins.cloudhandler.docker
+.. automodule:: occo.plugins.cloudhandler.dockerp
     :members:
