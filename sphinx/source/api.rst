@@ -33,5 +33,9 @@ Command line tools
 .. automodule:: redisload
     :members:
 
-.. automodule:: manager_service
-    :members:
+REST API
+------------------
+
+.. autoflask:: occo.api.rest:app
+   :endpoints: 
+   :include-empty-docstring:

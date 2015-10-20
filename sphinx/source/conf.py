@@ -20,7 +20,7 @@ import sphinx_rtd_theme
 BASEDIR = os.path.join(sys.prefix, 'bin')
 CLI_TOOLS = [
     'ibclient', 'infrastart', 'infrastop',
-    'listnodes', 'redisload', 'manager_service',
+    'listnodes', 'redisload', 'manager_service'
 ]
 import imp
 for i in CLI_TOOLS:
@@ -50,6 +50,7 @@ extensions = [
     'sphinx.ext.pngmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
+    'sphinxcontrib.autohttp.flask',
     'ext.ibkeys'
 ]
 

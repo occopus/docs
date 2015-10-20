@@ -24,6 +24,7 @@ Pygments==2.0.1
 Sphinx==1.2.3
 docutils==0.12
 sphinx_rtd_theme
+sphinxcontrib_httpdomain
 
 -e ./ext
 -e ../../util
