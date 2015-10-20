@@ -3,8 +3,10 @@
 Users' guide
 ============
 
-API
-------------------
+.. toctree::
 
-HELLO
+   introduction
+   concept
+   api
+
 

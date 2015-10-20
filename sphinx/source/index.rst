@@ -6,6 +6,9 @@
 One-Click Cloud Orchestrator Documentation
 ==========================================
 
+OCCOpus is a framework that provides automatic features for configuring and
+orchestrating distributed applications on single or multi cloud systems. 
+
 .. toctree::
 
    userguide
