@@ -19,7 +19,7 @@ done
 
 # Install the locally checked out packages:
 
-pip install --no-deps -r requirements-local.txt
+pip install --no-deps -r requirements-local.txt --trusted-host pip.lpds.sztaki.hu
 
 ## Using latest release
 ##    TBA
