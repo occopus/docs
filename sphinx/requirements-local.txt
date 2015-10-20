@@ -23,7 +23,7 @@ Werkzeug==0.10.4
 Pygments==2.0.1
 Sphinx==1.2.3
 docutils==0.12
-sphinx_rtd_theme
+cloud_sptheme
 sphinxcontrib_httpdomain
 
 -e ./ext

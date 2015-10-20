@@ -14,7 +14,7 @@
 
 import sys
 import os
-import sphinx_rtd_theme
+import cloud_sptheme as csp
 
 # Pre-load executables as modules so they can be documented
 BASEDIR = os.path.join(sys.prefix, 'bin')
@@ -122,7 +122,7 @@ keep_warnings = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'cloud'
 #html_theme = 'default' # Used for debugging the documentation (working and
                        # not-working links are indistinguishable in the nature
                        # theme. But this is not OK for the final output, as
@@ -131,10 +131,10 @@ html_theme = 'sphinx_rtd_theme'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = { "roottarget": "index" }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [csp.get_theme_dir()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
