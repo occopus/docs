@@ -17,17 +17,6 @@ import os
 import cloud_sptheme as csp
 
 # Pre-load executables as modules so they can be documented
-BASEDIR = os.path.join(sys.prefix, 'bin')
-CLI_TOOLS = [
-    'ibclient', 'infrastart', 'infrastop',
-    'listnodes', 'redisload', 'manager_service'
-]
-import imp
-for i in CLI_TOOLS:
-    path = os.path.join(BASEDIR, i)
-    print 'Loading script as module: %r'%path
-    imp.load_source(i, path)
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
