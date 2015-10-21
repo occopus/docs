@@ -7,6 +7,6 @@ Users' guide
 
    introduction
    concept
-   api
+   api-user
 
 
