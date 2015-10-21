@@ -6,6 +6,8 @@ Usage
 Command line tools
 ------------------
 
+OCCOpus can be used via CLI commands to create, manage and tear down infrastructures. The commands and their usages are described below.
+
 occo-infra-start
 ~~~~~~~~~~~~~~~~
 
@@ -28,6 +30,15 @@ This script tears down an infrastructure using OCCO-CloudHandler and
 OCCO-InfraProcessor.
 
 An infra_id is required.
+
+**Usage:** 
+
+``occo-infra-stop [-h] [--cfg CFG_PATH] -i INFRA_ID``
+
+**Parameters:**
+    * ``-h, --help:`` (optional) shows help message
+    * ``--cfg CFG_PATH:`` (optional) loads configuration from CFG_PATH file
+    * ``-i INFRA_ID:`` provides the identifier of the infrastructure to destroy
 
 REST API
 --------
