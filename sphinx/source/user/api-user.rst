@@ -18,21 +18,6 @@ Infrastructure Manager
 Command line tools
 ------------------
 
-.. automodule:: ibclient
-    :members:
-
-.. automodule:: infrastart
-    :members:
-
-.. automodule:: infrastop
-    :members:
-
-.. automodule:: listnodes
-    :members:
-
-.. automodule:: redisload
-    :members:
-
 REST API
 ------------------
 
