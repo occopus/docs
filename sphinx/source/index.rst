@@ -3,11 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-One-Click Cloud Orchestrator Documentation
-==========================================
+OCCOpus documentation
+=====================
 
 OCCOpus is a framework that provides automatic features for configuring and
-orchestrating distributed applications on single or multi cloud systems. 
+orchestrating distributed services running on on single or multi cloud systems. 
 
 .. toctree::
 

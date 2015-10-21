@@ -7,6 +7,8 @@ Users' guide
 
    introduction
    concept
+   installation
+   createinfra
    api-user
 
 
