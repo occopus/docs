@@ -11,6 +11,6 @@ orchestrating distributed applications on single or multi cloud systems.
 
 .. toctree::
 
-   userguide
-   developerguide
+   user/userguide
+   devel/developerguide
 
