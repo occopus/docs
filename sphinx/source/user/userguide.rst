@@ -10,5 +10,6 @@ Users' guide
    installation
    createinfra
    api-user
+   tutorial
 
 
