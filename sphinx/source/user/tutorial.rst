@@ -50,7 +50,7 @@ The following steps are suggested to be peformed:
         username: your_ec2_auth_key
         password: your_ec2_secret_key
 
-#. Edit ``init_data/uds_init_data.yaml``. Set the image id for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support.
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support.
      .. code::
 
         ... 
@@ -88,9 +88,107 @@ The following steps are suggested to be peformed:
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
     .. code::
 
-        occo-infra-stop --cfg conf/occo.yaml -i <infraid>
+        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
 Ping
 ----
+This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+
+Features
+~~~~~~~~
+In this example, the following feature(s) will be demonstrated:
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - querying a node's ip address and passing the address to another
+
+Prerequisites
+~~~~~~~~~~~~~
+ - accessing a cloud through EC2 interface (access key, secret key, endpoint, regionname)
+ - target cloud contains a base OS image with cloud-init support (image id, flavour)
+
+Download
+~~~~~~~~
+The example can be downloaded from `this link <http://www.lpds.sztaki.hu/services/sw/download.php?download=e43450ba820b5a4115506a8f72a9274a>`_.
+
+Instructions
+~~~~~~~~~~~~
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
+    .. code::
+
+        my_cloud:
+            protocol: boto
+            name: MYCLOUD
+            target:
+                endpoint: endpoint_of_ec2_interface_of_your_cloud
+                regionname: regionname_of_your_ec2_interface
+
+#. Edit ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
+     .. code::
+
+        username: your_ec2_auth_key
+        password: your_ec2_secret_key
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the nodes called ``ping_receiver_node`` and ``ping_sender_node``. Select an image containing a base os installation with cloud-init support.
+     .. code::
+
+        'node_def:ping_receiver_node':
+            ... 
+            image_id: id_of_your_image_on_your_target_cloud
+            instance_type: instance_type_of_your_image_on_your_target_cloud
+            ...
+        'node_def:ping_sender_node':
+            ...
+            image_id: id_of_your_image_on_your_target_cloud
+            instance_type: instance_type_of_your_image_on_your_target_cloud
+            ...
+
+#. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database. 
+    .. code::
+
+        cd init_data
+        redisload redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-ping.yaml 
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        ping_receiver:
+            192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+        ping_sender:
+            192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+        30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+    .. code::
+        
+        ssh user@192.168.xxx.xxx
+        # cat /tmp/message.txt
+        Hello World! I am the sender node.
+        # cat /tmp/ping-result.txt
+        PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+        64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+        --- 192.168.xxx.xxx ping statistics ---
+        5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+        rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
 
