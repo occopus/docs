@@ -40,6 +40,25 @@ An infra_id is required.
     * ``--cfg CFG_PATH:`` (optional) loads configuration from CFG_PATH file
     * ``-i INFRA_ID:`` provides the identifier of the infrastructure to destroy
 
+occo-manager-service
+~~~~~~~~~~~~~~~~~~~~
+
+This script launches occo as a web service. The occo manager service can create,
+maintain and manipulate the infrastructures started through the service. This
+service provides a restful interface described by `REST API`_.
+
+**Usage:** 
+
+``occo-manager-service [-h] [--cfg CFG_PATH] [--host HOST] [--port PORT]
+[--parallelize]``
+
+**Parameters:**
+    * ``-h, --help:`` (optional) shows help message
+    * ``--cfg CFG_PATH:`` (optional) loads configuration from CFG_PATH file
+    * ``--host HOST:`` (optional) sets the host for the web service to be assigned to [default: 127.0.0.1]
+    * ``--port PORT:`` (optional) sets the port for the web service to be assigned to [default: 5000]
+    * ``--parallelize:`` (optional) parallelize processing instructions (default: sequential)
+
 REST API
 --------
 
