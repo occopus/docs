@@ -196,6 +196,14 @@ repository (cf. with :ref:`usernodedescription`, which is backend-\ *independent
         this to select the correct resolver. This string should identify the
         cloud handler + service composer pair that can handle this
         implementation. E.g. ``"chef+cloudinit"``.
+    ``backend_id``
+        Refers to the cloud handler backend which can handle this node. OCCO
+        configuration must contain a cloud handler definition having this value
+        as its **protocol** attribute.
+    ``service_composer_id``
+        Refers to the service composer which can handle this node. OCCO
+        configuration must contain a serice composer definition having this value
+        as its **protocol** attribute.
     ``...``
         Extra information required by the resolver handling this type of
         implementation. E.g. ``"context_template"`` in case of cloud-init
@@ -207,14 +215,6 @@ Implementation-dependent attributes
 chef+cloudinit
 ^^^^^^^^^^^^^^
 
-    ``backend_id``
-        Refers to the cloud handler backend which can handle this node. OCCO
-        configuration must contain a cloud handler definition having this value
-        as its **protocol** attribute.
-    ``service_composer_id``
-        Refers to the service composer which can handle this node. OCCO
-        configuration must contain a serice composer definition having this value
-        as its **protocol** attribute.
     ``image_id``
         The identifier of the image behind the cloud handled by the cloud
         handler selected through the **backend_id** attribute.
