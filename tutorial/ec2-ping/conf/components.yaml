@@ -5,8 +5,8 @@ cloudhandler: !CloudHandler &ch
             protocol: boto
             name: MYCLOUD
             target:
-                endpoint: endpoint_of_ec2_interface_of_your_cloud
-                regionname: regionname_of_your_ec2_interface
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
             auth_data: !yaml_import
                 url: file://auth_data.yaml
 

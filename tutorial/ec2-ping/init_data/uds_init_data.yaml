@@ -4,8 +4,8 @@
         implementation_type: chef+cloudinit
         backend_id: my_cloud
         service_composer_id: dummy
-        image_id: id_of_your_image_on_your_target_cloud
-        instance_type: instance_type_of_your_image_on_your_target_cloud
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
         context_template: !text_import
                 url: file://ping-receiver-node.yaml
         synch_strategy: 

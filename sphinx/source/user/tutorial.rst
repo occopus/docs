@@ -28,7 +28,7 @@ Prerequisites
 
 Download
 ~~~~~~~~
-The example can be downloaded from `here <http://www.lpds.sztaki.hu/services/sw/download.php?download=2f4ab6dc7fc0608501faa97e5ab9b8a0>`_.
+You can download the example as `tutorial.examples.ec2-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=73672d0086bb4493fdf8dd29c0dbb0d1>`_ .
 
 Instructions
 ~~~~~~~~~~~~
@@ -41,21 +41,21 @@ The following steps are suggested to be peformed:
             protocol: boto
             name: MYCLOUD
             target:
-                endpoint: endpoint_of_ec2_interface_of_your_cloud
-                regionname: regionname_of_your_ec2_interface
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
 
-#. Edit ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
      .. code::
 
-        username: your_ec2_auth_key
-        password: your_ec2_secret_key
+        username: replace_with_your_ec2_auth_key
+        password: replace_with_your_ec2_secret_key
 
 #. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support.
      .. code::
 
         ... 
-        image_id: id_of_your_image_on_your_target_cloud
-        instance_type: instance_type_of_your_image_on_your_target_cloud
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
         ...
 
 #. Load the node definition for ``helloworld`` node into the database. 
@@ -108,7 +108,7 @@ Prerequisites
 
 Download
 ~~~~~~~~
-The example can be downloaded from `this link <http://www.lpds.sztaki.hu/services/sw/download.php?download=e43450ba820b5a4115506a8f72a9274a>`_.
+You can download the example as `tutorial.examples.ec2-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
 
 Instructions
 ~~~~~~~~~~~~
@@ -121,27 +121,27 @@ The following steps are suggested to be peformed:
             protocol: boto
             name: MYCLOUD
             target:
-                endpoint: endpoint_of_ec2_interface_of_your_cloud
-                regionname: regionname_of_your_ec2_interface
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
 
-#. Edit ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
      .. code::
 
-        username: your_ec2_auth_key
-        password: your_ec2_secret_key
+        username: replace_with_your_ec2_auth_key
+        password: replace_with_your_ec2_secret_key
 
 #. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the nodes called ``ping_receiver_node`` and ``ping_sender_node``. Select an image containing a base os installation with cloud-init support.
      .. code::
 
         'node_def:ping_receiver_node':
             ... 
-            image_id: id_of_your_image_on_your_target_cloud
-            instance_type: instance_type_of_your_image_on_your_target_cloud
+            image_id: replace_with_id_of_your_image_on_your_target_cloud
+            instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
             ...
         'node_def:ping_sender_node':
             ...
-            image_id: id_of_your_image_on_your_target_cloud
-            instance_type: instance_type_of_your_image_on_your_target_cloud
+            image_id: replace_with_id_of_your_image_on_your_target_cloud
+            instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
             ...
 
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database. 
