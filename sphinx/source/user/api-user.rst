@@ -6,30 +6,40 @@ Usage
 Command line tools
 ------------------
 
-OCCOpus can be used via CLI commands to create, manage and tear down infrastructures. The commands and their usages are described below.
+OCCO can be used via CLI commands to create, manage and tear down infrastructures. The commands and their usages are described below.
 
 occo-infra-start
 ~~~~~~~~~~~~~~~~
 
-This script builds up an infrastructure. It requires a ``configuration file``
-as a parameter, and builds the corresponding infrastructure using an Enactor +
-InfraProcessor pair. Returns the infra_id, and also stores it in the Information
-Broker.
+This script deploys an infrastructure based on an infrastructure description
+and configuration.
 
 On error during creating the infrastructure it rolls back everything to the
 initial state. The user can also stop the process manually by executing a SIGINT
-(Ctrl + C). The resources will be rolled back in this case as well.
+(Ctrl + C). Allocation of resources will be rolled back in this case as well.
 
-The script provides no lifecycle-management, as it detaches from the
-infrastructure after building it.
+Once the infrastructure is successfully deployed, OCCO exits. This script provides no lifecycle-management.
+
+**Usage:** 
+
+``occo-infra-start [-h] [--cfg CFG_PATH] [--parallelize] [--listips] infra_def``
+
+**Parameters:**
+    * ``-h, --help:`` (optional) shows help message
+    * ``--cfg CFG_PATH:`` (optional) loads configuration from CFG_PATH file
+    * ``--parallelize:`` (optional) parallelize processing instructions (default: sequential)
+    * ``--listips:`` (optional) on exit it logs the list of node and ip addresses 
+    * ``infra_def:`` file containing an infrastructure definition
+
+**Return type:**
+    On sucessful finish it returns the identifier of the infrastructure. Note:
+    you must store the identifier for further instruction on the infrastructure.
 
 occo-infra-stop
 ~~~~~~~~~~~~~~~
 
-This script tears down an infrastructure using OCCO-CloudHandler and
-OCCO-InfraProcessor.
-
-An infra_id is required.
+This script destroys an infrastructure built previously by OCCO. All the nodes
+are destoyed, no recover is possible.
 
 **Usage:** 
 
