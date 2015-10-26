@@ -40,6 +40,38 @@ An infra_id is required.
     * ``--cfg CFG_PATH:`` (optional) loads configuration from CFG_PATH file
     * ``-i INFRA_ID:`` provides the identifier of the infrastructure to destroy
 
+occo-import-node
+~~~~~~~~~~~~~~~~
+
+This script imports i.e. loads the node definitions from file to the database
+behind OCCO is using. 
+
+**IMPORTANT**: each time a node definition changes, this script must be used!
+
+**Usage:**
+
+``occo-import-node [-h] redis_data``
+
+**Parameters:**
+    * ``-h, --help:`` (optional) shows help message
+    * ``redis_data`` file describing the database access and the location of the
+      node definitions, see the following example for this file.
+
+.. code:: yaml
+
+    redis_data.yaml:
+        kvs: !KeyValueStore
+            protocol: redis
+            host: localhost
+            port: 6379
+            db: 0
+            altdbs:
+                node_def: 1
+        init_data: !yaml_import
+            url: file://uds_init_data.yaml
+
+The example above assumes that the name of the file containing node definitions is "uds_init_data.yaml".
+
 occo-manager-service
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -74,10 +106,12 @@ Basic features for OCCO-based applications
 
 .. automodule:: occo.api.occoapp
     :members:
+    :noindex:
 
 Infrastructure Manager
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: occo.api.manager
     :members:
+    :noindex:
 

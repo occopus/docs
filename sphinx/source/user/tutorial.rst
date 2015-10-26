@@ -62,7 +62,7 @@ The following steps are suggested to be peformed:
     .. code::
 
         cd init_data
-        redisload redis_data.yaml
+        occo-import-node redis_data.yaml
         cd ..
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
@@ -148,7 +148,7 @@ The following steps are suggested to be peformed:
     .. code::
 
         cd init_data
-        redisload redis_data.yaml
+        occo-import-node redis_data.yaml
         cd ..
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
