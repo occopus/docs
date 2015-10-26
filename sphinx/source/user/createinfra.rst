@@ -6,7 +6,7 @@ Composing an infrastructure
 .. _cloudinit site: https://cloudinit.readthedocs.org/en/latest
 
 In order to deploy an infrastructure, OCCO requires 
- #. description of the overall infrastructure
+ #. description of the infrastructure
  #. description and definition of the individual nodes
   
 The following section explains how the various descriptions must be formatted.
@@ -231,16 +231,16 @@ chef+cloudinit
 
 .. code:: yaml
 
-    'service_composer:dummy': {}
-    'node_def:my_node':
-        -
-            implementation_type: chef+cloudinit
-            backend_id: my_cloud
-            service_composer_id: dummy
-            image_id: ami-00001234
-            instance_type: m1.small
-            context_template: !text_import
-                    url: file://my_cloudinit_config_file.yaml
+    uds_init_data.yaml:
+        'node_def:my_node':
+            -
+                implementation_type: chef+cloudinit
+                backend_id: my_cloud
+                service_composer_id: dummy
+                image_id: ami-00001234
+                instance_type: m1.small
+                context_template: !text_import
+                        url: file://my_cloudinit_config_file.yaml
 
     my_cloudinit_config_file.yaml:
         #cloud-config
