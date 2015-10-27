@@ -9,8 +9,8 @@ different features can be utilised.
 
 Please, note that the following examples require a properly configured tool.
 
-Helloworld
-----------
+EC2-Helloworld
+--------------
 This tutorial sets up an infrastructure containing a single node. The node will
 receive information (i.e. a message string) through contextualisation. The node
 will store this information in ``/tmp`` directory.
@@ -90,8 +90,8 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
-Ping
-----
+EC2-Ping
+--------
 This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
 

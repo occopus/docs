@@ -26,26 +26,8 @@ the services can call each other, i.e. they can collaborate to realize a higher
 level service called as virtual infrastructure.
 OCCOpus can be used in two different ways:
 
-# Desktop software: In this case virtual infrastructure developers can run
-OCCOpus on their desktop machine and they give the service descriptor file as
-input to OCCOpus together with their login information to the cloud where they
-want to deploy the virtual infrastructure. Based on the descriptor file OCCOpus
-deploys and activates the virtual infrastructure in the cloud and then exits.
-Then any potential user can use the virtual infrastructure that were built by
-OCCOpus in the cloud(s). If the virtual infrastructure developer wants to build
-another virtual infrastructure in the cloud they have to run again OCCOpus with
-the descriptor file of the new virtual infrastructure as input file.
+#. Desktop software: In this case virtual infrastructure developers can run OCCOpus on their desktop machine and they give the service descriptor file as input to OCCOpus together with their login information to the cloud where they want to deploy the virtual infrastructure. Based on the descriptor file OCCOpus deploys and activates the virtual infrastructure in the cloud and then exits. Then any potential user can use the virtual infrastructure that were built by OCCOpus in the cloud(s). If the virtual infrastructure developer wants to build another virtual infrastructure in the cloud they have to run again OCCOpus with the descriptor file of the new virtual infrastructure as input file.
 
-# Library providing the OCCOpus API: In this case virtual infrastructure
-developers create a program that deploys the virtual infrastructure in the cloud
-by calling the OCCOpus APIs when it is needed.
-It is also planned to create an OCCOpus service that accepts descriptor files
-and cloud identifiers and deploys the virtual infrastructure described by the
-descriptor files in the identified clouds. It will have the advantage that will
-not only deploy the virtual infrastructure but will take care of its monitoring,
-self-healing and scale up and down according to its actual load.
-In order to enhance the understanding of OCCOpus and its operations, one should
-familiarize themselves with a number of founding concepts for OCCOpus. These
-concepts are presented here.
+#. Library providing the OCCOpus API: In this case virtual infrastructure developers create a program that deploys the virtual infrastructure in the cloud by calling the OCCOpus APIs when it is needed. It is also planned to create an OCCOpus service that accepts descriptor files and cloud identifiers and deploys the virtual infrastructure described by the descriptor files in the identified clouds. It will have the advantage that will not only deploy the virtual infrastructure but will take care of its monitoring, self-healing and scale up and down according to its actual load. In order to enhance the understanding of OCCOpus and its operations, one should familiarize themselves with a number of founding concepts for OCCOpus. These concepts are presented here.
 
 
