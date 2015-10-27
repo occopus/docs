@@ -7,7 +7,7 @@ Users' guide
 
    introduction
    concept
-   installation
+   setup
    createinfra
    api-user
    tutorial
