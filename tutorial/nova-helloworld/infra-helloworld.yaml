@@ -1,0 +1,9 @@
+name: nova_helloworld_infra
+user_id: somebody@somewhere.com
+
+nodes:
+    - &A
+        name: helloworld
+        type: hw_node
+        my_variables:
+            message: "Hello World! I have been created by OCCO"

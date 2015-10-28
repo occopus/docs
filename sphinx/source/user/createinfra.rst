@@ -207,8 +207,8 @@ repository (cf. with :ref:`usernodedescription`, which is backend-\ *independent
 Implementation-dependent attributes 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-chef+cloudinit
-^^^^^^^^^^^^^^
+boto
+^^^^
 
     ``image_id``
         The identifier of the image behind the cloud handled by the cloud
@@ -217,10 +217,47 @@ chef+cloudinit
         The type of instance to be instantiated through EC2 when realising this
         node. This value refers to a flavour (e.g. m1.small) of the target cloud. 
         It determines the resources (CPU, memory, storage, networking) of the node. 
+
+nova
+^^^^
+
+    ``image_id``
+        The identifier of the image behind the cloud handled by the cloud
+        handler selected through the **backend_id** attribute.
+    ``flavor_name``
+        The type of flavor to be instantiated through Nova when realising this
+        node. This value refers to a flavour (e.g. m1.small) of the target cloud.
+        It determines the resources (CPU, memory, storage, networking) of the node.
+    ``key_name``
+        The name of the keypair to be associated to the instance.
+    ``security_groups``
+        List of security groups to be associated to the instance.
+    ``floating_ip``
+        If defined (with any value), new floating IP address will be allocated
+        and assigned for the instance.
+
+chef+cloudinit
+^^^^^^^^^^^^^^
+
     ``context_template``
         This section can contain a cloud init configuration template. It must
         follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples
         and details.
+
+
+
+cloudbroker
+^^^^^^^^^^^
+
+    ``template_files``
+        A list of file templates. These templates will be actualized, and passed
+        as input files to the jobs instantiated. The following attributes must
+        be defined:
+            ``file_name``
+                The name of the file. This name will be used to upload the
+                actualized content.
+            ``content_template``
+                This section contains the template.
 
 **Example:**
 
@@ -236,6 +273,20 @@ chef+cloudinit
                 instance_type: m1.small
                 context_template: !text_import
                         url: file://my_cloudinit_config_file.yaml
+        'node_def:cloudbroker_node':
+            -
+                implementation_type: cloudbroker
+                backend_id: cloudbroker
+                service_composer_id: dummy
+                template_files:
+                        -
+                            file_name: input1.yaml
+                            content_template: !text_import
+                                url: file://input1_template.yaml
+                        -
+                            file_name: data.yaml
+                            content_template: !text_import
+                                url: file://data.yaml
 
     my_cloudinit_config_file.yaml:
         #cloud-config
@@ -243,4 +294,9 @@ chef+cloudinit
         - content: "something important static data"
           path: /tmp/my_data.txt
           permissions: '0644'
-        
+
+    input1_template.yaml:
+        This is the data to be passed.
+
+    data.yaml:
+        Some more important data.
