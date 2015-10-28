@@ -245,7 +245,6 @@ chef+cloudinit
         and details.
 
 
-
 cloudbroker
 ^^^^^^^^^^^
 
@@ -253,11 +252,29 @@ cloudbroker
         A list of file templates. These templates will be actualized, and passed
         as input files to the jobs instantiated. The following attributes must
         be defined:
+
             ``file_name``
                 The name of the file. This name will be used to upload the
                 actualized content.
             ``content_template``
                 This section contains the template.
+
+    ``attributes``
+        The attributes defined here specify the VM image to be started up on a selected cloud
+        infrastructure. In order to determine the values for the below enumerated attributes, one
+        needs to log in to the CloudBroker service's web interface and collect the values.
+
+            ``software_id``
+                The ID of the CloudBroker Software to use.
+            ``executable_id``
+                The ID of the CloudBroker Executable to use.
+            ``resource_id``
+                The ID of the CloudBroker Resource (cloud) to use.
+            ``region_id``
+                The ID of the CloudBroker Region (cloud region) to use.
+            ``instance_id``
+                The ID of the CloudBroker Instance to use.
+
 
 **Example:**
 
