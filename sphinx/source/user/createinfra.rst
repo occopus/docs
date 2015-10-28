@@ -276,7 +276,14 @@ cloudbroker
                 The ID of the CloudBroker Instance to use.
 
 
-**Example:**
+Examples
+~~~~~~~~
+
+**Example1**
+
+- implementation_type is ``chef+cloudinit``
+- backend_id points to a ``boto`` type handler
+- service_composer_id poits to ``dummy`` type composer
 
 .. code:: yaml
 
@@ -290,6 +297,23 @@ cloudbroker
                 instance_type: m1.small
                 context_template: !text_import
                         url: file://my_cloudinit_config_file.yaml
+
+    my_cloudinit_config_file.yaml:
+        #cloud-config
+        write_files:
+        - content: "something important static data"
+          path: /tmp/my_data.txt
+          permissions: '0644'
+
+**Example2**
+
+- implementation_type is ``cloudbroker``
+- backend_id points to a ``cloudbroker`` type handler
+- service_composer_id poits to ``dummy`` type composer
+
+.. code:: yaml
+
+    uds_init_data.yaml:
         'node_def:cloudbroker_node':
             -
                 implementation_type: cloudbroker
@@ -304,13 +328,6 @@ cloudbroker
                             file_name: data.yaml
                             content_template: !text_import
                                 url: file://data.yaml
-
-    my_cloudinit_config_file.yaml:
-        #cloud-config
-        write_files:
-        - content: "something important static data"
-          path: /tmp/my_data.txt
-          permissions: '0644'
 
     input1_template.yaml:
         This is the data to be passed.
