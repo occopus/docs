@@ -396,3 +396,80 @@ The following steps are suggested to be peformed:
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
 
+CloudBroker-RunExe
+------------------
+This tutorial sets up an infrastructure containing one node with the help of the CloudBroker
+Platform. The node initiated is using the a VM image which executes the input file uploaded
+with the name ``execute.bin``.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating a node with minimal setup
+ - uploading the content of two files, one as the executable, and one as the input for the executable.
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, username and password)
+ - Software, Executabe, Resource, Region and Instance type properly registered
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-runexe <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``target`` to match the URL of the CloudBroker service you are accessing.
+    .. code::
+
+        cloudbroker:
+            protocol: cloudbroker
+            name: CloudBroker
+            target: https://cloudsme-prototype.cloudbroker.com/
+
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` and  ``password`` to match your CloudBroker login credentials.
+     .. code::
+
+        username: replace_with_your_cloudbroker_login
+        password: replace_with_your_cloudbroker_password
+
+#. Edit ``singlenode_cb.yaml``. Set the ``software_id``, ``executable_id``, ``resource_id``, ``region_id``, and ``instance_type_id`` variables to match a software on a resource which is capable of running user-uploaded executables.
+     .. code::
+
+        ...
+        attributes:
+                software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
+                executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
+                resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
+                region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
+                instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+        ...
+
+#. Load the node definition for the node into the database. 
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml singlenode_cb.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        Single:
+            192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+        14032858-d628-40a2-b611-71381bd463fa
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
+
+

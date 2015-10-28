@@ -1,0 +1,7 @@
+'service_composer:dummy': {}
+'node_def:cloudbroker_node':
+    -
+        implementation_type: cloudbroker
+        backend_id: cloudbroker
+        service_composer_id: dummy
+        synch_strategy: basic
