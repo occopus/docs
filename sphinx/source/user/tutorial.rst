@@ -211,7 +211,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=73672d0086bb4493fdf8dd29c0dbb0d1>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=9645eec25fcc95a40817e54dc77ae8ff>`_ .
 
 **Steps**
 
@@ -224,7 +224,7 @@ The following steps are suggested to be peformed:
             protocol: nova
             name: MYCLOUD
             target:
-                endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+                auth_url: replace_with_endpoint_of_nova_interface_of_your_cloud
                 tenant_name: replace_with_tenant_to_use
 
 #. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` and  ``password`` to match your Nova login credentials.
@@ -298,7 +298,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
+You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=a302af14b40734271b6aa1c79c8db3ed>`_ .
 
 **Steps**
 
@@ -311,7 +311,7 @@ The following steps are suggested to be peformed:
             protocol: nova
             name: MYCLOUD
             target:
-                endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+                auth_url: replace_with_endpoint_of_nova_interface_of_your_cloud
                 tenant_name: replace_with_tenant_to_use
 
 #. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` and  ``password`` to match your Nova login credentials.
