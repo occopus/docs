@@ -11,6 +11,6 @@ orchestrating distributed services running on on single or multi cloud systems.
 
 .. toctree::
 
-   user/userguide
-   devel/developerguide
+   user/index
+   devel/index
 

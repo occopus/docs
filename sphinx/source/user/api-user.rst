@@ -111,17 +111,5 @@ REST API
 Python API
 ----------
 
-Basic features for OCCO-based applications
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: occo.api.occoapp
-    :members:
-    :noindex:
-
-Infrastructure Manager
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: occo.api.manager
-    :members:
-    :noindex:
+OCCO provides a Python API which can be used to implement OCCO-based applications in a unified way. The API gives the possibility to utilise OCCO functionalities inside an application. To read about this possibility, please go to the :ref:`API section of Developers' guide<api>`.
 

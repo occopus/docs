@@ -26,11 +26,6 @@ The graph contains the following information:
         The name of the infrastructure.
     ``nodes``
         List of node.
-
-        .. todo:: These descriptions are different from compiled node
-            descriptions. We need to find a name for these, and document them
-            separately.
-
     ``dependencies``
         List of edge definitions. Each of these can be either
 
@@ -197,13 +192,13 @@ repository (cf. with :ref:`usernodedescription`, which is backend-\ *independent
         cloud handler + service composer pair that can handle this
         implementation. E.g. ``"chef+cloudinit"``.
     ``backend_id``
-        Refers to the cloud handler backend which can handle this node. OCCO
+        Refers to the cloud handler backend instance which can handle this node. OCCO
         configuration must contain a cloud handler definition having this value
-        as its **protocol** attribute.
+        as one of its **cloud handler instance**.
     ``service_composer_id``
         Refers to the service composer which can handle this node. OCCO
-        configuration must contain a serice composer definition having this value
-        as its **protocol** attribute.
+        configuration must contain a service composer definition having this value
+        as its **service composer instance**.
     ``...``
         Extra information required by the resolver handling this type of
         implementation. E.g. ``"context_template"`` in case of cloud-init
