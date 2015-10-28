@@ -211,7 +211,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=9645eec25fcc95a40817e54dc77ae8ff>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=e4c7d6bbc306ab230132ac133b657986>`_ .
 
 **Steps**
 
@@ -298,7 +298,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=a302af14b40734271b6aa1c79c8db3ed>`_ .
+You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=19d568a0cca718b633ddcbac552e1226>`_ .
 
 **Steps**
 
