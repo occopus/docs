@@ -15,23 +15,23 @@ This tutorial sets up an infrastructure containing a single node. The node will
 receive information (i.e. a message string) through contextualisation. The node
 will store this information in ``/tmp`` directory.
 
-Features
-~~~~~~~~
+**Features**
+
 In this example, the following feature(s) will be demonstrated:
  - creating a node with minimal setup
  - passing information to a target node
 
-Prerequisites
-~~~~~~~~~~~~~
+**Prerequisites**
+
  - accessing a cloud through EC2 interface (access key, secret key, endpoint, regionname)
  - target cloud contains a base OS image with cloud-init support (image id, flavour)
 
-Download
-~~~~~~~~
+**Download**
+
 You can download the example as `tutorial.examples.ec2-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=73672d0086bb4493fdf8dd29c0dbb0d1>`_ .
 
-Instructions
-~~~~~~~~~~~~
+**Steps**
+
 The following steps are suggested to be peformed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
@@ -95,23 +95,23 @@ EC2-Ping
 This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
 
-Features
-~~~~~~~~
+**Features**
+
 In this example, the following feature(s) will be demonstrated:
  - creating two nodes with dependencies (i.e ordering or deployment)
  - querying a node's ip address and passing the address to another
 
-Prerequisites
-~~~~~~~~~~~~~
+**Prerequisites**
+
  - accessing a cloud through EC2 interface (access key, secret key, endpoint, regionname)
  - target cloud contains a base OS image with cloud-init support (image id, flavour)
 
-Download
-~~~~~~~~
+**Download**
+
 You can download the example as `tutorial.examples.ec2-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
 
-Instructions
-~~~~~~~~~~~~
+**Steps**
+
 The following steps are suggested to be peformed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
@@ -198,23 +198,23 @@ This tutorial sets up an infrastructure containing a single node. The node will
 receive information (i.e. a message string) through contextualisation. The node
 will store this information in ``/tmp`` directory.
 
-Features
-~~~~~~~~
+**Features**
+
 In this example, the following feature(s) will be demonstrated:
  - creating a node with minimal setup
  - passing information to a target node
 
-Prerequisites
-~~~~~~~~~~~~~
+**Prerequisites**
+
  - accessing an OpenStack cloud through Nova interface (access key, secret key, endpoint, tenant name)
  - target cloud contains a base OS image with cloud-init support (image id, flavor)
 
-Download
-~~~~~~~~
+**Download**
+
 You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=73672d0086bb4493fdf8dd29c0dbb0d1>`_ .
 
-Instructions
-~~~~~~~~~~~~
+**Steps**
+
 The following steps are suggested to be peformed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``tenant_name`` of your Nova interface to your target cloud.
@@ -285,23 +285,23 @@ Nova-Ping
 This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
 
-Features
-~~~~~~~~
+**Features**
+
 In this example, the following feature(s) will be demonstrated:
  - creating two nodes with dependencies (i.e ordering or deployment)
  - querying a node's ip address and passing the address to another
 
-Prerequisites
-~~~~~~~~~~~~~
+**Prerequisites**
+
  - accessing an OpenStack cloud through Nova interface (access key, secret key, endpoint, tenant name)
  - target cloud contains a base OS image with cloud-init support (image id, flavour)
 
-Download
-~~~~~~~~
+**Download**
+
 You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
 
-Instructions
-~~~~~~~~~~~~
+**Steps**
+
 The following steps are suggested to be peformed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``tenant_name`` of your Nova interface to your target cloud.
