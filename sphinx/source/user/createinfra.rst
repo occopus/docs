@@ -186,11 +186,10 @@ A node definition does not contain all information needed to instantiate the
 data. It is just a backend-\ *dependent* description that can be stored in a
 repository (cf. with :ref:`usernodedescription`, which is backend-\ *independent*).
 
+A node can be handled by different plugins on 3 dimension:
+
     ``implementation_type``
-        The :mod:`Resolver <occo.infraprocessor.node_resolution>` module uses
-        this to select the correct resolver. This string should identify the
-        cloud handler + service composer pair that can handle this
-        implementation. E.g. ``"chef+cloudinit"``.
+        Refers to the resolver module to parse node definition and inject values from node description (which is part of the infrastructure description). Node definition is a template, which is resolved by the `Jinja2 library <http://jinja.pocoo.org/docs/dev>`_. There are a few implementation e.g. ``"chef+cloudinit"``.
     ``backend_id``
         Refers to the cloud handler backend instance which can handle this node. OCCO
         configuration must contain a cloud handler definition having this value
@@ -201,14 +200,45 @@ repository (cf. with :ref:`usernodedescription`, which is backend-\ *independent
         as its **service composer instance**.
     ``...``
         Extra information required by the resolver handling this type of
-        implementation. E.g. ``"context_template"`` in case of cloud-init
-        backends.
+        implementation. E.g. ``"context_template"`` in case of certain backends.
 
-Implementation-dependent attributes 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The combination of the 3 different handler/resolver instances configured in OCCO configuration file and referenced in node definition altogether realises node deployment. The various handlers/resolvers require different keywords to be defined in the node definition. The handler/resolver specific attributes are summarised in the next subsections.
 
-boto
-^^^^
+Node resolver-dependent attributes 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+chef+cloudinit
+^^^^^^^^^^^^^^
+
+    ``context_template``
+        This section can contain a cloud init configuration template. It must
+        follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples
+        and details.
+
+
+cloudbroker
+^^^^^^^^^^^
+
+    ``template_files``
+        A list of file templates. These templates will be actualized, and passed
+        as input files to the jobs instantiated. The following attributes must
+        be defined:
+
+            ``file_name``
+                The name of the file. This name will be used to upload the
+                actualized content.
+            ``content_template``
+                This section contains the template.
+
+    ``files``
+        A list of files. The files listed under this section will not be
+        resolved i.e. their content will be used without any modification.
+
+Cloud handler-dependent attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+boto (EC2)
+^^^^^^^^^^
 
     ``image_id``
         The identifier of the image behind the cloud handled by the cloud
@@ -236,14 +266,6 @@ nova
         If defined (with any value), new floating IP address will be allocated
         and assigned for the instance.
 
-chef+cloudinit
-^^^^^^^^^^^^^^
-
-    ``context_template``
-        This section can contain a cloud init configuration template. It must
-        follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples
-        and details.
-
 
 cloudbroker
 ^^^^^^^^^^^
@@ -258,6 +280,10 @@ cloudbroker
                 actualized content.
             ``content_template``
                 This section contains the template.
+
+    ``files``
+        A list of files. The files listed under this section will not be
+        resolved i.e. their content will be used without any modification.
 
     ``attributes``
         The attributes defined here specify the VM image to be started up on a selected cloud
@@ -274,6 +300,51 @@ cloudbroker
                 The ID of the CloudBroker Region (cloud region) to use.
             ``instance_id``
                 The ID of the CloudBroker Instance to use.
+
+Service composer-dependent attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+dummy
+^^^^^
+
+    No attributes required for this components as this has no real functionality
+    behind.
+
+chef
+^^^^
+
+    ``run_list``
+        The list of recepies to be executed by chef on the node after startup.
+
+Valid combinations of handlers/resolvers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Until now, the following combinations have been tested and proved to be valid.
+
+.. list-table:: 
+   :header-rows: 1
+   :widths: 1 4 5 5 
+
+   *  - 
+      -  Cloud Handler (backend_id)
+      -  Node Resolver (implementation_type)
+      -  Service Composer (service_composer_id)
+   *  -  1.
+      -  boto
+      -  chef+cloudinit
+      -  dummy
+   *  -  2.
+      -  boto
+      -  chef+cloudinit
+      -  chef
+   *  -  3.
+      -  nova
+      -  chef+cloudinit
+      -  dummy
+   *  -  4.
+      -  cloudbroker
+      -  cloudbroker
+      -  dummy
 
 
 Examples
