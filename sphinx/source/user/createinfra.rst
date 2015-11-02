@@ -353,8 +353,8 @@ Examples
 **Example1**
 
 - implementation_type is ``chef+cloudinit``
-- backend_id points to a ``boto`` type handler
-- service_composer_id poits to ``dummy`` type composer
+- backend_id refers to a ``boto`` type handler
+- service_composer_id refers to ``dummy`` type composer
 
 .. code:: yaml
 
@@ -379,8 +379,8 @@ Examples
 **Example2**
 
 - implementation_type is ``cloudbroker``
-- backend_id points to a ``cloudbroker`` type handler
-- service_composer_id poits to ``dummy`` type composer
+- backend_id refers to a ``cloudbroker`` type handler
+- service_composer_id refers to ``dummy`` type composer
 
 .. code:: yaml
 

@@ -7,6 +7,7 @@ Users' guide
 
    introduction
    concept
+   clouds
    setup
    createinfra
    api-user
