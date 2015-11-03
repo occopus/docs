@@ -5,9 +5,11 @@ Tutorial
 
 In this section, examples will be shown, how this tool can be used. Each
 subsection details a certain infrastructure by which the user can learn how the
-different features can be utilised.
+different features can be utilised, or how the different plugins or clouds can
+be driven.
 
-Please, note that the following examples require a properly configured tool.
+Please, note that the following examples require a properly configured tool,
+therefore we suggest to start with the :ref:`Installation <installation>` section.
 
 EC2-Helloworld
 --------------

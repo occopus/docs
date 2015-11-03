@@ -1,7 +1,8 @@
-.. _installation:
 
 Setup
 =====
+
+.. _installation:
 
 Installation
 ------------
