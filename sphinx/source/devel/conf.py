@@ -69,7 +69,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OCCO'
+project = u'Occopus'
 copyright = u'2014, Adam Visegradi'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -141,6 +141,7 @@ html_theme_path = [csp.get_theme_dir()]
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 #html_title = None
+html_title = '{0} v{1} Developers\' Guide'.format(project,release)
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -206,7 +207,7 @@ html_theme_path = [csp.get_theme_dir()]
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'OCCO'
+htmlhelp_basename = 'Occopus'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -226,7 +227,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'OCCO.tex', u'OCCO Documentation',
+  ('index', 'Occopus.tex', u'Occopus Developers\' Guide',
    u'Adam Visegradi', 'manual'),
 ]
 
@@ -256,7 +257,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'occo', u'OCCO Documentation',
+    ('index', 'occopus', u'Occopus Developers\' Guide',
      [u'Adam Visegradi'], 1)
 ]
 
@@ -270,8 +271,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'OCCO', u'OCCO Documentation',
-   u'Adam Visegradi', 'OCCO', 'One line description of project.',
+  ('index', 'Occopus', u'Occopus Developers\' Guide',
+   u'Adam Visegradi', 'Occopus', 'One line description of project.',
    'Miscellaneous'),
 ]
 

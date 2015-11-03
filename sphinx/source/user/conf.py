@@ -140,7 +140,7 @@ html_theme_path = [csp.get_theme_dir()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = '{0} v{1} Users\' Guide'.format(project,release)
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -226,7 +226,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Occopus.tex', u'Occopus Documentation',
+  ('index', 'Occopus.tex', u'Occopus Users\' Guide',
    u'Adam Visegradi', 'manual'),
 ]
 
@@ -256,7 +256,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'occo', u'Occopus Documentation',
+    ('index', 'occo', u'Occopus Users\' Guide',
      [u'Adam Visegradi'], 1)
 ]
 
@@ -270,7 +270,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Occopus', u'Occopus Documentation',
+  ('index', 'Occopus', u'Occopus Users\' Guide',
    u'Adam Visegradi', 'Occopus', 'One line description of project.',
    'Miscellaneous'),
 ]
