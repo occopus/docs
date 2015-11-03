@@ -1,7 +1,7 @@
 cloudhandler: !CloudHandler &ch
     protocol: null
     cloud_cfgs:
-        my_cloud:
+        my_nova_cloud:
             protocol: nova
             name: MYCLOUD
             target:

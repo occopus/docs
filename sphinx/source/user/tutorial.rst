@@ -37,7 +37,7 @@ The following steps are suggested to be peformed:
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
     .. code::
 
-        my_cloud:
+        my_ec2_cloud:
             protocol: boto
             name: MYCLOUD
             target:
@@ -117,7 +117,7 @@ The following steps are suggested to be peformed:
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
     .. code::
 
-        my_cloud:
+        my_ec2_cloud:
             protocol: boto
             name: MYCLOUD
             target:
@@ -211,7 +211,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=e4c7d6bbc306ab230132ac133b657986>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=a1d501ebcf129b0bd49d8c134c1b20ff>`_ .
 
 **Steps**
 
@@ -220,7 +220,7 @@ The following steps are suggested to be peformed:
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``tenant_name`` of your Nova interface to your target cloud.
     .. code::
 
-        my_cloud:
+        my_nova_cloud:
             protocol: nova
             name: MYCLOUD
             target:
@@ -298,7 +298,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=19d568a0cca718b633ddcbac552e1226>`_ .
+You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=30320b9324ca8d236cc4ba826ab927c3>`_ .
 
 **Steps**
 
@@ -307,7 +307,7 @@ The following steps are suggested to be peformed:
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``tenant_name`` of your Nova interface to your target cloud.
     .. code::
 
-        my_cloud:
+        my_nova_cloud:
             protocol: nova
             name: MYCLOUD
             target:
