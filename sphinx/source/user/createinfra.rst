@@ -5,13 +5,13 @@ Composing an infrastructure
 
 .. _cloudinit site: https://cloudinit.readthedocs.org/en/latest
 
-In order to deploy an infrastructure, OCCO requires 
+In order to deploy an infrastructure, Occopus requires 
  #. description of the infrastructure
  #. description and definition of the individual nodes
   
 The following section explains how the various descriptions must be formatted.
 
-.. _userinfradescription:
+.. _infradescription:
 
 Infrastructure Description
 --------------------------
@@ -130,15 +130,14 @@ selected by some brokering algorithm (currently: randomly).
 
     ``backend_id`` (``str``) and ``backend_ids`` (``list``)
         Optional. The dedicated backend for this node. If unspecified, the
-        :ref:`Infrastructure Processor <infraprocessor>` will choose among
-        implementations.
+        one will be choosen among implementations.
 
     ``environment_id``
         Back reference to the containing infrastructure instance.
 
     ``user_id``
         User identifier of the infrastructure instance. This is an
-        optimization.  The :term:`IP` could resolve this by querying the static
+        optimization. This could be resolved by querying the static
         description of the containing infrastructure, but it is much more
         efficient to simply copy the ``user_id`` to each node's description.
 
@@ -191,18 +190,18 @@ A node can be handled by different plugins on 3 dimension:
     ``implementation_type``
         Refers to the resolver module to parse node definition and inject values from node description (which is part of the infrastructure description). Node definition is a template, which is resolved by the `Jinja2 library <http://jinja.pocoo.org/docs/dev>`_. There are a few implementation e.g. ``"chef+cloudinit"``.
     ``backend_id``
-        Refers to the cloud handler backend instance which can handle this node. OCCO
+        Refers to the cloud handler backend instance which can handle this node. Occopus
         configuration must contain a cloud handler definition having this value
         as one of its **cloud handler instance**.
     ``service_composer_id``
-        Refers to the service composer which can handle this node. OCCO
+        Refers to the service composer which can handle this node. Occopus
         configuration must contain a service composer definition having this value
         as its **service composer instance**.
     ``...``
         Extra information required by the resolver handling this type of
         implementation. E.g. ``"context_template"`` in case of certain backends.
 
-The combination of the 3 different handler/resolver instances configured in OCCO configuration file and referenced in node definition altogether realises node deployment. The various handlers/resolvers require different keywords to be defined in the node definition. The handler/resolver specific attributes are summarised in the next subsections.
+The combination of the 3 different handler/resolver instances configured in Occopus configuration file and referenced in node definition altogether realises node deployment. The various handlers/resolvers require different keywords to be defined in the node definition. The handler/resolver specific attributes are summarised in the next subsections.
 
 Node resolver-dependent attributes 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -6,7 +6,7 @@ Usage
 Command line tools
 ------------------
 
-OCCO can be used via CLI commands to create, manage and tear down infrastructures. The commands and their usages are described below.
+Occopus can be used via CLI commands to create, manage and tear down infrastructures. The commands and their usages are described below.
 
 occo-infra-start
 ~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ On error during creating the infrastructure it rolls back everything to the
 initial state. The user can also stop the process manually by executing a SIGINT
 (Ctrl + C). Allocation of resources will be rolled back in this case as well.
 
-Once the infrastructure is successfully deployed, OCCO exits. This script provides no lifecycle-management.
+Once the infrastructure is successfully deployed, Occopus exits. This script provides no lifecycle-management.
 
 **Usage:** 
 
@@ -38,7 +38,7 @@ Once the infrastructure is successfully deployed, OCCO exits. This script provid
 occo-infra-stop
 ~~~~~~~~~~~~~~~
 
-This script destroys an infrastructure built previously by OCCO. All the nodes
+This script destroys an infrastructure built previously by Occopus. All the nodes
 are destoyed, no recover is possible.
 
 **Usage:** 
@@ -54,7 +54,7 @@ occo-import-node
 ~~~~~~~~~~~~~~~~
 
 This script imports i.e. loads the node definitions from file to the database
-behind OCCO is using. 
+behind Occopus is using. 
 
 **IMPORTANT**: each time a node definition changes, this script must be used!
 
@@ -111,5 +111,5 @@ REST API
 Python API
 ----------
 
-OCCO provides a Python API which can be used to implement OCCO-based applications in a unified way. The API gives the possibility to utilise OCCO functionalities inside an application. To read about this possibility, please go to the :ref:`API section of Developers' guide<api>`.
+Occopus provides a Python API which can be used to implement Occopus-based applications in a unified way. The API gives the possibility to utilise Occopus functionalities inside an application. To read about this possibility, please go to the API section of the Developers' guide.
 

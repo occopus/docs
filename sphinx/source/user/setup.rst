@@ -6,7 +6,7 @@ Setup
 Installation
 ------------
 
-Please, perform the following steps to deploy OCCO and its dependencies in your environment:
+Please, perform the following steps to deploy Occopus and its dependencies in your environment:
 
     #. Install a few system-wide packages
 
@@ -18,7 +18,7 @@ Please, perform the following steps to deploy OCCO and its dependencies in your 
 
          * ``sudo apt-get install python-virtualenv``
 
-        Redis server for OCCO to store persistent data
+        Redis server for Occopus to store persistent data
 
          * ``sudo apt-get install redis-server``
 
@@ -36,11 +36,11 @@ Please, perform the following steps to deploy OCCO and its dependencies in your 
          * ``source occo/bin/activate``   # to activate virtualenv
          * ``pip install --upgrade pip``  # to make sure the latest pip version
 
-    #. Deploy all OCCO pacakges
+    #. Deploy all Occopus packages
 
          * ``pip install --find-links http://pip.lpds.sztaki.hu/packages --no-index --trusted-host pip.lpds.sztaki.hu OCCO-API``
         
-    Now, all OCCO packages are deployed under your virtualenv ``occo``. 
+    Now, all Occopus packages are deployed under your virtualenv ``occo``. 
 
 .. note::
 
@@ -51,13 +51,13 @@ Configuration
 
 This section is suggested to be read after some of the basic :ref:`examples of the tutorial section <tutorial>` have been successfully executed. The main purpose of this section is to provide an explanation of the configuration the examples contain.
 
-OCCO uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects already instantiated (or executed, sometimes!) by the YAML parser.
+Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects already instantiated (or executed, sometimes!) by the YAML parser.
 
 The configuration must contain the following items.
 
 ``plugins``
 
-    List of python modules OCCO is going to use during its operation. For a basic list, see the configuration in :ref:`one of the tutorial examples <tutorial>` or use this:
+    List of python modules Occopus is going to use during its operation. For a basic list, see the configuration in :ref:`one of the tutorial examples <tutorial>` or use this:
 
     .. code::
 
@@ -86,9 +86,9 @@ The configuration must contain the following items.
 
 ``logging``
 
-    Contains configuration for the ``Logging facility of Python``. Settings in this part of the configuration has effect on the way, location and format of the information the logger component in the various OCCO components emits. 
+    Contains configuration for the ``Logging facility of Python``. Settings in this part of the configuration has effect on the way, location and format of the information the logger component in the various Occopus components emits. 
 
-    For detaild explanation of the various attributes please read the `Manual for Logging facility for Python <https://docs.python.org/2/library/logging.html#module-logging>`_. Settings in this part of the configuration has effect on the location, format, etc. of the internal messages the loggeris in the various OCCO components emit during its operation.
+    For detaild explanation of the various attributes please read the `Manual for Logging facility for Python <https://docs.python.org/2/library/logging.html#module-logging>`_. Settings in this part of the configuration has effect on the location, format, etc. of the internal messages the loggeris in the various Occopus components emit during its operation.
 
     A sample configuration file can be found in :ref:`any of the tutorial examples <tutorial>`. Alternatively, use this basic configuration:
 
@@ -146,11 +146,11 @@ The configuration must contain the following items.
             
 ``components``
 
-    The components of the OCCO architecture that’s need to be built.
+    The components of the Occopus architecture that’s need to be built.
 
     ``cloudhandler``
         
-    The ``CloudHandler`` instance (singleton) is a component responsible for interacting with the cloud interface (e.g. EC2, Nova, etc.) of the target cloud. One or multiple instances can be defined i.e. OCCO can deploy infrastructures containing resources from more than one cloud. A multi-vm configuration can be realised the following way:
+    The ``CloudHandler`` instance (singleton) is a component responsible for interacting with the cloud interface (e.g. EC2, Nova, etc.) of the target cloud. One or multiple instances can be defined i.e. Occopus can deploy infrastructures containing resources from more than one cloud. A multi-vm configuration can be realised the following way:
 
     .. code::
 
@@ -203,7 +203,7 @@ The configuration must contain the following items.
 
     ``uds``
 
-    The ``UDS`` (Universal Data Storage) instance is a component responsible for storing persistent data for OCCO to operate properly. The default configuration which works with `redis databases <http://redis.io>`_ are as follows:
+    The ``UDS`` (Universal Data Storage) instance is a component responsible for storing persistent data for Occopus to operate properly. The default configuration which works with `redis databases <http://redis.io>`_ are as follows:
 
     .. code::
 
@@ -220,7 +220,7 @@ The configuration must contain the following items.
      
     ``infobroker``
 
-    The ``Information Broker`` is a component providing a simple interface for serving data by any components in the OCCO architecture. The modules serving as information provider can then be congregated into a hierarchy to realise a distributed architecture of information provider components. In OCCO, all the components are information provider in this architecture, therefore the default configuration is as follows:
+    The ``Information Broker`` is a component providing a simple interface for serving data by any components in the Occopus architecture. The modules serving as information provider can then be congregated into a hierarchy to realise a distributed architecture of information provider components. In Occopus, all the components are information provider in this architecture, therefore the default configuration is as follows:
 
     .. code::
         
