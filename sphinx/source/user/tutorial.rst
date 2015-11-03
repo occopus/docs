@@ -28,7 +28,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=73672d0086bb4493fdf8dd29c0dbb0d1>`_ .
+You can download the example as `tutorial.examples.ec2-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=4131e76b0bb784e94ab3c2d25e4c0fdd>`_ .
 
 **Steps**
 
@@ -108,7 +108,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
+You can download the example as `tutorial.examples.ec2-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=851de651dacb9b711b35d00071a2e432>`_ .
 
 **Steps**
 
