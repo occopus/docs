@@ -1,0 +1,30 @@
+cloudhandler: !CloudHandler &ch
+    protocol: null
+    cloud_cfgs:
+        cloudbroker:
+            protocol: cloudbroker
+            name: CloudBroker
+            target: https://cloudsme-prototype.cloudbroker.com/
+            auth_data: !yaml_import
+                url: file://auth_data.yaml
+
+uds: !UDS &uds
+    protocol: redis
+    altdbs:
+        node_def: 1
+        infra: 10
+servicecomposer: !ServiceComposer &sc
+    protocol: dummy
+
+infobroker: !InfoRouter
+    sub_providers:
+        - !DynamicStateProvider
+            cloud_handler: *ch
+            service_composer: *sc
+        - !CloudHandlerProvider
+            cloud_handler: *ch
+        - *uds
+        - !SynchronizationProvider
+        - *sc
+
+dry_run: False
