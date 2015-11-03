@@ -457,7 +457,7 @@ The following steps are suggested to be peformed:
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
 
-       occo-infra-start --listips --cfg conf/occo.yaml singlenode_cb.yaml 
+       occo-infra-start --listips --cfg conf/occo.yaml infra-runexe.yaml 
 
 #. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
     .. code::
