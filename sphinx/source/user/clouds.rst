@@ -27,4 +27,18 @@ CloudBroker
 
 This is special plugin serving resource allocation and program execution on
 CloudBroker platform operated by `CloudBroker Inc. <http://cloudbroker.com>`_.
+
+Using the CloudBroker plugin you can access all the different cloud types that are supported by
+CloudBroker platform. These are:
+
+- Amazon
+- CloudSigma
+- OpenStack
+- OpenNebula
+
+If you want to use clouds via the  CloudBroker platform, please, contact the CloudBroker GmbH:
+
+- Email: info@cloudbroker.com
+- Phone: +41 44 515 21 70
+- Web: http://www.cloudbroker.com
    
