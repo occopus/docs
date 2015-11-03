@@ -5,9 +5,9 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = build
-BUILDDIRUSER  = build/user
-BUILDDIRDEVEL = build/devel
+BUILDDIR      = build/html
+BUILDDIRUSER  = build/html/user
+BUILDDIRDEVEL = build/html/devel
 
 
 # User-friendly check for sphinx-build
