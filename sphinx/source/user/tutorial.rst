@@ -415,7 +415,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-runexe <https://www.lpds.sztaki.hu/services/sw/download.php?download=97a95c3739811463b7c37d197afd650d>`_ .
+You can download the example as `tutorial.examples.cloudbroker-runexe <https://www.lpds.sztaki.hu/services/sw/download.php?download=4119ece6b1c3b4b00d1111af841e16f3>`_ .
 
 **Steps**
 
@@ -491,7 +491,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=19d568a0cca718b633ddcbac552e1226>`_ .
+You can download the example as `tutorial.examples.cloudbroker-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=2a15df258105415b6e05538e11e4a304>`_ .
 
 **Steps**
 
