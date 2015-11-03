@@ -429,13 +429,13 @@ The following steps are suggested to be peformed:
             name: CloudBroker
             target: https://cloudsme-prototype.cloudbroker.com/
 
-#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` and  ``password`` to match your CloudBroker login credentials.
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``email`` and  ``password`` to match your CloudBroker login credentials.
      .. code::
 
-        username: replace_with_your_cloudbroker_login
+        email: replace_with_your_cloudbroker_login
         password: replace_with_your_cloudbroker_password
 
-#. Edit ``singlenode_cb.yaml``. Set the ``software_id``, ``executable_id``, ``resource_id``, ``region_id``, and ``instance_type_id`` variables to match a software on a resource which is capable of running user-uploaded executables.
+#. Edit ``init_data/uds_init_data.yaml``. Set the ``software_id``, ``executable_id``, ``resource_id``, ``region_id``, and ``instance_type_id`` variables to match a software on a resource which is capable of running user-uploaded executables.
      .. code::
 
         ...
@@ -466,6 +466,114 @@ The following steps are suggested to be peformed:
         Single:
             192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
         14032858-d628-40a2-b611-71381bd463fa
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
+
+
+CloudBroker-Ping
+----------------
+This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - querying a node's ip address and passing the address to another
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, username and password)
+ - Software, Executabe, Resource, Region and Instance type properly registered
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=19d568a0cca718b633ddcbac552e1226>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``target`` to match the URL of the CloudBroker service you are accessing.
+    .. code::
+
+        cloudbroker:
+            protocol: cloudbroker
+            name: CloudBroker
+            target: https://cloudsme-prototype.cloudbroker.com/
+
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``email`` and  ``password`` to match your CloudBroker login credentials.
+     .. code::
+
+        email: replace_with_your_cloudbroker_login
+        password: replace_with_your_cloudbroker_password
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the ``software_id``, ``executable_id``, ``resource_id``, ``region_id``, and ``instance_type_id`` variables to match a software on a resource which is capable of running user-uploaded executables for the nodes called ``ping_receiver_node`` and ``ping_sender_node``.
+     .. code::
+
+        'node_def:ping_receiver_node':
+            ...
+        attributes:
+                software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
+                executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
+                resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
+                region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
+                instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+            ...
+        'node_def:ping_sender_node':
+            ...
+        attributes:
+                software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
+                executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
+                resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
+                region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
+                instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+            ...
+
+#. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-ping.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        ping_receiver:
+            192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+        ping_sender:
+            192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+        30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+    .. code::
+
+        ssh user@192.168.xxx.xxx
+        # cat /tmp/message.txt
+        Hello World! I am the sender node.
+        # cat /tmp/ping-result.txt
+        PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+        64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+        --- 192.168.xxx.xxx ping statistics ---
+        5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+        rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
     .. code::
