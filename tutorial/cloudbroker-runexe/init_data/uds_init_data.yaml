@@ -1,5 +1,5 @@
 'service_composer:dummy': {}
-'node_def:cloudbroker_node':
+'node_def:cloudbroker_runexe_node':
     -
         implementation_type: cloudbroker
         backend_id: cloudbroker
