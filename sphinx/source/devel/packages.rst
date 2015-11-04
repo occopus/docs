@@ -102,7 +102,7 @@ and work correctly.
     
     #
     # This will print the path of the virtualenv; e.g.:
-    source env/occo-api/bin/activate
+    source env/occo/bin/activate
 
 To try the ``occo-`` commands, go to the Tutorial section of the Users' Guide
 and follow the instructions. There you will find examples prepared for different
