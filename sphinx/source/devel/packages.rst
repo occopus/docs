@@ -286,7 +286,7 @@ are omitted.
 
     ===========  ===========================================================
     Depends      --
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/util
+    Repository   https://github.com/occopus/util.git
     Description  | Generic utility functions, configuration, communication,
                  | etc. See: :mod:`occo.util`.
     Testing      | The virtualenv must be bootstrapped by executing
@@ -297,7 +297,7 @@ are omitted.
 
     ===========  ===========================================================
     Depends      OCCO-Util
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/compiler
+    Repository   https://github.com/occopus/compiler.git
     Description  | Compiler module for OCCO. See: :mod:`occo.compiler`.
     ===========  ===========================================================
 
@@ -305,7 +305,7 @@ are omitted.
 
     ===========  ===========================================================
     Depends      OCCO-Util
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/info-broker
+    Repository   https://github.com/occopus/info-broker.git
     Description  | Information broker for the OCCO system.
                  | See: :mod:`occo.infobroker`.
     ===========  ===========================================================
@@ -314,7 +314,7 @@ are omitted.
 
     ===========  ===========================================================
     Depends      OCCO-Util, OCCO-Compiler, OCCO-InfoBroker
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/enactor
+    Repository   https://github.com/occopus/enactor.git
     Description  | Active component of the OCCO infrastructure maintenance
                  | system. See: :mod:`occo.enactor`.
     ===========  ===========================================================
@@ -323,7 +323,7 @@ are omitted.
 
     ===========  =========================================================================
     Depends      OCCO-Util, OCCO-InfoBroker
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/infrastructure-processor
+    Repository   https://github.com/occopus/infra-processor.git
     Description  | Central processor and synchronizer of the OCCO system. See:
                  | :mod:`occo.infraprocessor`.
     ===========  =========================================================================
@@ -332,7 +332,7 @@ are omitted.
 
     ===========  ==============================================================
     Depends      OCCO-Util, OCCO-InfoBroker
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/cloud-handler
+    Repository   https://github.com/occopus/cloud-handler.git
     Description  | Backend component of the OCCO system, responsible for
                  | handling specific kinds of clouds. This includes the
                  | generic plugin system, a dummy cloud handler for testing,
@@ -344,7 +344,7 @@ are omitted.
 
     ===========  =================================================================
     Depends      OCCO-Util, OCCO-InfoBroker
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/service-composer
+    Repository   https://github.com/occopus/service-composer.git
     Description  | Responsible for provisioning, setting up, configuring, etc.
                  | the nodes instantiated by the cloud handler.
     ===========  =================================================================
@@ -353,26 +353,12 @@ are omitted.
 
     ===========  =============================================================
     Depends      all OCCO packages
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-api
+    Repository   https://github.com/occopus/api.git
     Description  | This package combines the primitives provided by other occo
                  | packages into higher level services and features. This
-                 | package is intended to be the top-level package of the OCCO
+                 | package is intended to be the top-level package of the Occopus
                  | system upon which use-cases, user interfaces can be built.
     ===========  =============================================================
-
-.. table:: **OCCO-Demo**
-
-    ===========  ===============================================================
-    Depends      all OCCO packages
-    Repository   https://gitlab.lpds.sztaki.hu/cloud-orchestrator/occo-demo
-    Description  | This package contains code that glues the packages of OCCO
-                 | together into working example application. It is not intended
-                 | to be released.
-                 |
-                 | This package can be used for experimenting, developing
-                 | prototype code, integrating components, integration testing,
-                 | demonstrating features, etc.
-    ===========  ===============================================================
 
 Continuous integration
 ----------------------
@@ -383,16 +369,14 @@ Jenkins uses the ``c155-16.localcloud`` host as a slave for performing OCCO
 tasks, using the ``jenkins`` user. 
 
 The user ``jenkins@c155-16.localcloud`` has its own private ssh key in
-``~/.ssh/``. This key is used for ssh connections outward this host, including
-towards ``gitlab``. On ``gitlab``, the deploy key ``jenkins@c153-33`` (sic!) is
-(or, at least, should be) enabled for all repositories used by Jenkins.
+``~/.ssh/``. This key is used for ssh connections outward this host. 
 
 Documentation
 -------------
 
 The documentation you are reading is developed in the ``docs`` repository:
 
-https://gitlab.lpds.sztaki.hu/cloud-orchestrator/docs
+https://github.com/occopus/docs.git
 
 The documentation is developed using Sphinx_. Most of the documentation can be
 found in the code; part of it is in the ``docs`` repository as
@@ -405,7 +389,7 @@ copy-pasted in the shell, and they should work flawlessly. (Naturally, if you
 have cloned all repositories already as described in :ref:`cbe`, you must omit
 that part of the instructions.)
 
-.. _README.txt: https://gitlab.lpds.sztaki.hu/cloud-orchestrator/docs/blob/master/sphinx/README.txt
+.. _README.txt: https://github.com/occopus/docs/blob/devel/sphinx/README.txt
 
 Hint: As Sphinx ``import``\ s the Python packages, we need to make this
 deployment clean: so it uses virtualenv too.
