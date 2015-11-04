@@ -12,9 +12,9 @@ source env/documentation/bin/activate
 ## Using bleeding-edge code
 
 # Clone all repositories next to this repository:
-REPOS='compiler enactor info-broker infrastructure-processor cloud-handler util'
+REPOS='compiler enactor info-broker infra-processor cloud-handler util'
 for i in $REPOS; do
-    git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/$i.git ../../$i
+    git clone git@github.com:occopus/$i.git ../../$i
 done
 
 # Install the locally checked out packages:

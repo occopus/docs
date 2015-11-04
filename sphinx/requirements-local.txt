@@ -33,5 +33,5 @@ sphinxcontrib_httpdomain
 -e ../../service-composer
 -e ../../enactor
 -e ../../compiler
--e ../../infrastructure-processor
--e ../../occo-api
+-e ../../infra-processor
+-e ../../api
