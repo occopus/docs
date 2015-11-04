@@ -6,6 +6,7 @@ Developer information
 .. _nosetests: https://nose.readthedocs.org
 .. _virtualenv site: https://virtualenv.pypa.io
 .. _Sphinx: http://sphinx-doc.org/
+.. _Occopus Website: http://occopus.lpds.sztaki.hu
 
 *Always* use ``virtualenv`` for any kind of deployment (testing, building,
 production, ... everything). This ensures there will be no dependency issues:
@@ -76,54 +77,38 @@ Git submodules can be used to clone and manage all repositories at once:
 
 .. code:: bash
 
-    git clone git@gitlab.lpds.sztaki.hu:cloud-orchestrator/master.git my-occo-dir
-
+    git clone git@github.com:occopus/master.git my-occo-dir --recursive
     cd my-occo-dir
-
-    git submodule init
-    git submodule update --remote
     git submodule foreach git checkout devel
 
 Most scripts included in these components rely on **this exact directory
 structure** (especially testing and documentation dependencies).
 
-It would be nice to have a Vagrantfile or a prepared VM template to bootstrap
-an OCCO environment; but right now we have to settle with this.
+There is a Vagrantfile to bootstrap the OCCO environment. After checkout just
+simply execute ``vagrant up`` and the virtual machine (created by VirtualBox) should be
+correctly set up on your machine.
 
 One should work on an OCCO component in a virtualenv. The following shows how
-to setup the ``occo-demo`` repo, but--aside the ``auth_data.yaml`` part--it
-works with other repos too.
-
-The demo applications need authentication information to access their
-configured EC2 backends. While example configuration files are stored in the
-git repo, this authentication information *must not* be stored in the
-repository for security reasons. Therefore, it is factored out using an
-extension to YAML provided by OCCO: :class:`\!yaml_import
-<occo.util.config.YAMLImport>` (see example).
-
-The content of ``auth_data.yaml`` is specified by the module that uses the
-configuration: :mod:`Boto CloudHandler <occo.plugins.cloudhandler.boto>`.
+to setup the ``api`` repo. By doing this the ``occo-`` commands will appear
+and work correctly.
 
 .. code:: bash
 
     cd my-occo-dir
-    cd occo-demo
+    cd api
 
-    # Iff necessary:
-    # Deploy auth_data.yaml in the package directory. Never commit this file in the repo!
-    cat > auth_data.yaml <<EOF
-    username: <<<EC2_ACCESS_KEY>>>
-    password: <<<EC2_SECRET_KEY>>>
-    EOF
-
-    # Use this convenience script to
-    # - Create the virtualenv
-    # - Deploy auth_data.yaml in the necessary conf dirs (only for occo-demo)
+    # Use this convenience script
     ./reset-env.sh
+    
     #
     # This will print the path of the virtualenv; e.g.:
-    source env/occo-demo/bin/activate
-    nosetests                                           # Optional any time; Run all tests
+    source env/occo-api/bin/activate
+
+To try the ``occo-`` commands, go to the Tutorial section of the Users' Guide
+and follow the instructions. There you will find examples prepared for different
+cloud backends and you can have proper configuration very fast. Users'
+Guide can be found at the `Occopus Website`_. Alternatively, you can go to the 
+``docs`` reporisory and find examples under the ``tutorial`` directory.
 
 Virtualenvs should be placed in the ``env/`` directory, so they don't linger in
 the working tree. ``git`` will ignore the contents of the ``env/`` directory so
