@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cat > /tmp/message.txt <<EOF
+{{my_variables.message}}
+EOF
+
+ping {{ibget('node.resource.address', find_node_id(my_variables.targetnode))}} -c 5 > /tmp/ping-result.txt 2>&1

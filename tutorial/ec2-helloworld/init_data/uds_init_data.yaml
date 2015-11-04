@@ -1,0 +1,13 @@
+'service_composer:dummy': {}
+'node_def:hw_node':
+    -
+        implementation_type: chef+cloudinit
+        backend_id: my_ec2_cloud
+        service_composer_id: dummy
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+        context_template: !text_import
+                url: file://hw.yaml
+        synch_strategy: 
+            protocol: basic
+            ping: True

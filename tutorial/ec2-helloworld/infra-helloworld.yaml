@@ -1,0 +1,11 @@
+name: ec2_helloworld_infra
+user_id: somebody@somewhere.com
+
+nodes:
+    - &A
+        name: helloworld
+        type: hw_node
+        backend_id: my_ec2_cloud
+        my_variables:
+            message: "Hello World! I have been created by OCCO"
+
