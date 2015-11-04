@@ -77,7 +77,7 @@ Git submodules can be used to clone and manage all repositories at once:
 
 .. code:: bash
 
-    git clone git@github.com:occopus/master.git my-occo-dir --recursive
+    git clone https://github.com/occopus/master.git my-occo-dir --recursive
     cd my-occo-dir
     git submodule foreach git checkout devel
 
