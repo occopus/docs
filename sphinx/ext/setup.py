@@ -18,15 +18,15 @@ from pip.req import parse_requirements
 
 setuptools.setup(
     name='Sphinx-IBKey',
-    version='0.1.0',
-    author='Adam Visegradi',
-    author_email='adam.visegradi@sztaki.mta.hu',
+    version='0.2.0',
+    author='MTA SZTAKI',
+    author_email='occopus@lpds.sztaki.hu',
     namespace_packages=['ext'],
     packages=['ext.ibkeys'],
 #    scripts=['bin/stowe-towels.py','bin/wash-towels.py'],
-    url='http://www.lpds.sztaki.hu/',
+    url='https://github.com/occopus',
     license='LICENSE.txt',
-    description='IBKey extension to Sphinx for documenting OCCO',
+    description='IBKey extension to Sphinx for documenting Occopus',
     long_description=open('README.txt').read(),
     install_requires=[],
 )
