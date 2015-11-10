@@ -52,7 +52,7 @@ The following steps are suggested to be peformed:
         username: replace_with_your_ec2_auth_key
         password: replace_with_your_ec2_secret_key
 
-#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support. Optinally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
      .. code::
 
         ... 
@@ -139,7 +139,7 @@ The following steps are suggested to be peformed:
         username: replace_with_your_ec2_auth_key
         password: replace_with_your_ec2_secret_key
 
-#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the nodes called ``ping_receiver_node`` and ``ping_sender_node``. Select an image containing a base os installation with cloud-init support. Optinally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM (in the EC2-Ping example, we're setting these properties only for the node called ``ping_receiver_node``).
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the nodes called ``ping_receiver_node`` and ``ping_sender_node``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM. Do not forget to set the attributes for both nodes!
      .. code::
 
         'node_def:ping_receiver_node':
@@ -152,11 +152,19 @@ The following steps are suggested to be peformed:
                     replace_with_security_group_id1_on_your_target_cloud
                 -
                     replace_with_security_group_id2_on_your_target_cloud
+            subnet_id: replace_with_subnet_id_on_your_target_cloud
             ...
         'node_def:ping_sender_node':
             ...
             image_id: replace_with_id_of_your_image_on_your_target_cloud
             instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+            key_name: replace_with_key_name_on_your_target_cloud
+            security_group_ids:
+                -
+                    replace_with_security_group_id1_on_your_target_cloud
+                -
+                    replace_with_security_group_id2_on_your_target_cloud
+            subnet_id: replace_with_subnet_id_on_your_target_cloud
             ...
 
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database. 
