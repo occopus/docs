@@ -30,7 +30,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=4131e76b0bb784e94ab3c2d25e4c0fdd>`_ .
+You can download the example as `tutorial.examples.ec2-helloworld <../../examples/ec2-helloworld.tgz>`_ .
 
 **Steps**
 
@@ -117,7 +117,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=851de651dacb9b711b35d00071a2e432>`_ .
+You can download the example as `tutorial.examples.ec2-ping <../../examples/ec2-ping.tgz>`_ .
 
 **Steps**
 
@@ -226,7 +226,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://www.lpds.sztaki.hu/services/sw/download.php?download=a1d501ebcf129b0bd49d8c134c1b20ff>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <../../examples/nova-helloworld.tgz>`_ .
 
 **Steps**
 
@@ -313,7 +313,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=30320b9324ca8d236cc4ba826ab927c3>`_ .
+You can download the example as `tutorial.examples.nova-ping <../../examples/nova-ping.tgz>`_ .
 
 **Steps**
 
@@ -430,7 +430,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-runexe <https://www.lpds.sztaki.hu/services/sw/download.php?download=4119ece6b1c3b4b00d1111af841e16f3>`_ .
+You can download the example as `tutorial.examples.cloudbroker-runexe <../../examples/cloudbroker-runexe.tgz>`_ .
 
 **Steps**
 
@@ -506,7 +506,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-ping <https://www.lpds.sztaki.hu/services/sw/download.php?download=2a15df258105415b6e05538e11e4a304>`_ .
+You can download the example as `tutorial.examples.cloudbroker-ping <../../examples/cloudbroker-ping.tgz>`_ .
 
 **Steps**
 

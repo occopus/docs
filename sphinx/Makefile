@@ -58,8 +58,12 @@ html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTSUSER) $(BUILDDIRUSER)/html
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTSDEVEL) $(BUILDDIRDEVEL)/html
 	cp source/index.html $(BUILDDIR)
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)."
+	rm -rf $(BUILDDIR)/examples
+	mkdir -p $(BUILDDIR)/examples
+	$(foreach dir, $(notdir $(wildcard ../tutorial/*)), tar zcvf $(BUILDDIR)/examples/$(dir).tgz --directory $(BUILDDIR)/../../../tutorial $(dir);)
+	echo
+	echo "Build finished. The HTML pages are in $(BUILDDIR)."
+
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
