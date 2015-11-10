@@ -212,7 +212,8 @@ chef+cloudinit
     ``context_template``
         This section can contain a cloud init configuration template. It must
         follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples
-        and details.
+        and details. Please note that Amazon AWS currently limits the length of this data
+        in 16384 bytes.
 
 
 cloudbroker
@@ -244,8 +245,17 @@ boto (EC2)
         handler selected through the **backend_id** attribute.
     ``instance_type``
         The type of instance to be instantiated through EC2 when realising this
-        node. This value refers to a flavour (e.g. m1.small) of the target cloud. 
-        It determines the resources (CPU, memory, storage, networking) of the node. 
+        node. This value refers to a flavour (e.g. m1.small) of the target cloud.
+        It determines the resources (CPU, memory, storage, networking) of the node.
+    ``key_name``
+        Optional. The name of the keypair to assign to the allocated virtual machine.
+    ``security_group_ids``
+        Optional. The list of security group IDs which should be assigned to the
+        allocated virtual machine.
+    ``subnet_id``
+        Optional. The ID of the subnet which should be assigned to the allocated
+        virtual machine.
+
 
 nova
 ^^^^
