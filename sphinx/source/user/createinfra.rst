@@ -274,6 +274,13 @@ nova
     ``floating_ip``
         If defined (with any value), new floating IP address will be allocated
         and assigned for the instance.
+    ``auth_type``
+        If defined (with any value), the default access key and secret key-based
+        authentication is overriden. Currently, the type ``voms`` is supported,
+        which will imply using X.509 proxy certificates with VOMS attributes for
+        authentication agains the Nova endpoint. In this case the value of the
+        ``auth_data`` configuration option contains the path of the proxy file
+        which should be used.
 
 
 cloudbroker
