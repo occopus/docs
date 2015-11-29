@@ -5,7 +5,7 @@ Supported Clouds
 
 Occopus has an extendible, pluginable architecture for interfacing external
 tools and services. The actual version contains 3 different plugin implementations 
-for handling clouds.
+for handling clouds and one for docker containers. 
 
 EC2
 ---
@@ -41,4 +41,9 @@ If you want to use clouds via the  CloudBroker platform, please, contact the Clo
 - Email: info@cloudbroker.com
 - Phone: +41 44 515 21 70
 - Web: http://www.cloudbroker.com
-   
+
+Docker
+------
+
+This is not a cloud. This plugin enables to utilise 
+pure `Docker <http://www.docker.com>`_ or `Swarm <http://www.docker.com/docker-swarm>`_ resources. 

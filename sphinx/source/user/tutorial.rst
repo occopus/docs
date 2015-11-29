@@ -603,4 +603,60 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
+Docker-Sleep
+---------------
+This tutorial sets up an infrastructure containing a single node. 
+An Ubuntu Linux container will start, sleep for 120 seconds and terminate. 
 
+**Features**
+
+In this example, the following feature will be demonstrated:
+ - creating a docker container with minimal setup
+
+**Prerequisites**
+
+ - Accessing a docker host or a swarm cluster
+ - Encrypted connection is not supported (yet)
+
+**Download**
+
+You can download the example as `tutorial.examples.docker-sleep <../../examples/docker-sleep.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``base_url`` of your docker host or swarm cluster.
+    .. code::
+
+        cloud_cfgs:
+            docker:
+                protocol: docker
+                name: Docker
+                base_url: unix://var/run/docker.sock #or tcp://$IP:$PORT
+
+#. Load the node definition for ``docker-node`` into the database. 
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml singlenode_docker.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. 
+
+#. Check the result on your docker host.
+    .. code::
+
+        # docker ps
+        CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS               NAMES
+        a9f077b7b230        ubuntu:trusty-20150427   "/bin/sleep 180"    3 seconds ago       Up 2 seconds                            tender_bhaskara
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa

@@ -1,0 +1,13 @@
+'service_composer:dummy': {}
+'node_def:docker_node':
+    -
+        implementation_type: docker
+        backend_id: docker
+        service_composer_id: dummy
+        attributes:
+                origin: origin
+                image: image
+                env: env
+                tag: tag
+                command: command
+        synch_strategy: basic
