@@ -1,0 +1,32 @@
+'service_composer:dummy': {}
+'node_def:ping_receiver_node':
+  -
+        implementation_type: docker
+        backend_id: docker
+        service_composer_id: dummy
+        attributes:
+                origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
+                image: busybox_helloworld
+                network_mode: overlaynet
+                env: ["message={{my_variables.message}}"]
+                tag: latest
+                command: "sh -c /root/start.sh"
+        synch_strategy:
+            protocol: basic
+            ping: False
+
+'node_def:ping_sender_node':
+    -
+        implementation_type: docker
+        backend_id: docker
+        service_composer_id: dummy
+        attributes:
+                origin: https://s3.lpds.sztaki.hu/docker/busybox_ping.tar
+                image: busybox_ping
+                network_mode: overlaynet
+                env: ["target_ip={{ibget('node.resource.address', find_node_id(my_variables.targetnode))}}"]
+                tag: latest
+                command: "sh -c /root/start.sh"
+        synch_strategy:
+            protocol: basic
+            ping: False
