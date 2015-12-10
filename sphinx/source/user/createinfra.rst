@@ -325,6 +325,8 @@ docker
         The URL of an image or leave it empty and default will be set to dockerhub.
     ``image``
         The name of the image, e.g ubuntu, debian, mysql ..
+    ``network_mode``
+        One of 'bridge', 'none', 'container:<name|id>', 'host' or an existing network.
     ``tag``
         Docker tag. (default = latest)
     ``env``
