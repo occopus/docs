@@ -603,24 +603,26 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
-Docker-Sleep
+Docker-Helloworld
 ---------------
-This tutorial sets up an infrastructure containing a single node. 
-An Ubuntu Linux container will start, sleep for 120 seconds and terminate. 
+This tutorial sets up an infrastructure containing a single node. The node will
+receive information (i.e. a message string) through environment variable. The node
+will store this information in ``/root/message.txt`` file.
 
 **Features**
 
-In this example, the following feature will be demonstrated:
- - creating a docker container with minimal setup
+In this example, the following features will be demonstrated:
+ - creating a node with minimal setup
+ - passing information to a target node
 
 **Prerequisites**
 
  - Accessing a docker host or a swarm cluster
- - Encrypted connection is not supported (yet)
+ - Note: encrypted connection is not supported yet
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-sleep <../../examples/docker-sleep.tgz>`_ .
+You can download the example as `tutorial.examples.docker-helloworld <../../examples/docker-helloworld.tgz>`_ .
 
 **Steps**
 
@@ -638,25 +640,27 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``docker-node`` into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
 
-       occo-infra-start --listips --cfg conf/occo.yaml singlenode_docker.yaml 
+       occo-infra-start --listips --cfg conf/occo.yaml docker-helloworld.yaml 
 
 #. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. 
 
 #. Check the result on your docker host.
     .. code::
 
-        # docker ps
-        CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS               NAMES
-        a9f077b7b230        ubuntu:trusty-20150427   "/bin/sleep 180"    3 seconds ago       Up 2 seconds                            tender_bhaskara
+    # docker ps
+    CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+    13bb8c94b5f4        busybox_helloworld:latest   "sh -c /root/start.sh"   3 seconds ago       Up 2 seconds                            admiring_joliot
+
+    # docker exec -it 13bb8c94b5f4 cat /root/message.txt
+    Hello World! I have been created by OCCO.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
     .. code::
 
-        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
+        occo-infra-stop --cfg conf/occo.yaml -i 6b19b640-1b41-4970-ab0a-b13a0c6e2800
+

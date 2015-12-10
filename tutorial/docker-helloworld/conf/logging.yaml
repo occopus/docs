@@ -5,7 +5,6 @@ root:
 formatters:
     simpleFormater:
         format: "** %(asctime)s\t%(levelname)s\t%(processName)s\t%(message)s"
-#            datefmt: '%Y-%m-%d %H:%M:%S.%f'
 
 handlers:
     console:

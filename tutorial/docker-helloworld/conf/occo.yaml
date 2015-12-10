@@ -9,7 +9,6 @@ autoimport: !python_import
     - occo.plugins.infraprocessor.node_resolution.dockerp
     - occo.infraprocessor.synchronization.primitives
     - occo.servicecomposer
-    - occo.plugins.servicecomposer.chef
 logging: !yaml_import
     url: file://logging.yaml
 components: !yaml_import
