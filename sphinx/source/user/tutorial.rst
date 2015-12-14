@@ -603,4 +603,104 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
+Chef - Hello World (Apache2)
+----------------------------
+This tutorial demonstrates the capabilites of Occopus to work together with chef, by setting up a single-node infrastructure with an Apache2 web server service on it.
 
+**Prerequisites**
+ - A chef server for your organization
+ - A chef-validator key and a client key for occopus
+ - accessing a cloud through ec2 interface
+ - target cloud contains a base OS image with cloud-init support
+
+ **Download**
+
+ **Steps**
+
+ The following steps are suggested to be performed:
+
+ #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
+     ..code::
+
+        my_ec2_cloud:
+            protcol: boto
+            name: MYCLOUD
+            target:
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
+
+    Also, provide the url, client, and client key for your Chef server.
+    ..code::
+
+        servicecomposer: !ServiceCimposer &sc
+            protocol: chef
+            url: replace_with_url_of_chef_server
+            key: !text_import
+                url: replace_with_url_of_client_key
+            client: replace_with 
+
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key.
+     .. code::
+
+        username: replace_with_your_ec2_auth_key
+        password: replace_with_your_ec2_secret_key
+
+#. Edit ``init_data/default_context_template.yaml`` and ``helloworld_context.yaml``. Set the url of your Chef server and the chef-validator key.
+
+    Default context template:
+    .. code::
+
+        chef:
+            install_type: omnibus
+            omnibus_url: "https://www.opscode.com/chef/install.sh"
+            force_install: false
+            server_url: replace_with_your_chef_server_url
+            environment: {{environment_id}}
+            node_name: {{node_id}}
+            validation_name: "chef-validator"
+            validation_key: |
+                [Insert RSA Private key here]
+
+    Helloworld context:
+
+    .. code::
+
+        chef:
+            install_type: omnibus
+            omnibus_url: "https://www.opscode.com/chef/install.sh"
+            force_install: false
+            server_url: replace_with_your_chef_server_url
+            environment: {{infra_id}}
+            node_name: {{node_id}}
+            validation_name: "chef-validator"
+            validation_key: |
+                [Insert RSA Private key here]
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``chef_helloworld``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
+     .. code::
+
+        ...
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+        key_name: replace_with_key_name_on_your_target_cloud
+        security_group_ids:
+            -
+                replace_with_security_group_id1_on_your_target_cloud
+            -
+                replace_with_security_group_id2_on_your_target_cloud
+        subnet_id: replace_with_subnet_id_on_your_target_cloud
+        ...
+
+#. Load the node definition for ``helloworld`` node into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-helloworld.yaml
+
+#. After successful finish, you can log onto the node and start the installed Apache2 web service.
