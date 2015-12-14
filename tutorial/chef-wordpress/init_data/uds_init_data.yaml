@@ -1,0 +1,47 @@
+'service_composer:chef_wordpress':
+    context_template: !text_import
+        url: file://chef_context.yaml
+'node_def:mysql_server':
+    -
+        implementation_type: chef+cloudinit
+        backend_id: my_ec2_cloud
+        service_composer_id: chef_wordpress
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+        context_template: !text_import
+            url: file://mysql_server_context.yaml
+        run_list: 
+            - recipe[wordpress-app::db]
+        synch_strategy: 
+            protocol: mysql_server
+            databases: 
+                - {name: '{{ variables.mysql_database_name }}', user: '{{ variables.mysql_dbuser_username }}', pass: '{{ variables.mysql_dbuser_password }}'}
+        attributes:
+            mysql:
+                server_root_password: '{{ variables.mysql_root_password }}'
+            database_management:
+                database_name: '{{ variables.mysql_database_name }}'
+                dbuser_username: '{{ variables.mysql_dbuser_username }}'
+                dbuser_password: '{{ variables.mysql_dbuser_password }}'
+'node_def:wordpress':
+    -
+        implementation_type: chef+cloudinit
+        backend_id: my_ec2_cloud
+        service_composer_id: chef_wordpress
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+        context_template: !text_import
+            url: file://wordpress_context.yaml
+        run_list:
+            - recipe[wordpress]
+        attributes:
+            wordpress:
+                db:
+                    name: '{{ variables.mysql_database_name }}'
+                    user: '{{ variables.mysql_dbuser_username }}'
+                    pass: '{{ variables.mysql_dbuser_password }}'
+        synch_strategy:
+            protocol: basic
+            ping: true
+            urls:
+                - http://{{addr}}/wordpress
