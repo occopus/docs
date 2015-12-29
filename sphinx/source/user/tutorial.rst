@@ -815,7 +815,7 @@ The following steps are suggested to be performed:
 #. Also in ``init_data/uds_init_data.yaml``, provide the database parameters you set in step 1 for the synchronization of ``mysql_server`` node.
    .. code::
 
-     'node_def:mysql_server':
+    'node_def:mysql_server':
       ...
         synch_strategy:
             protocol: mysql_server
