@@ -1,6 +1,3 @@
-'service_composer:chef_wordpress':
-    context_template: !text_import
-        url: file://chef_context.yaml
 'node_def:mysql_server':
     -
         implementation_type: chef+cloudinit
@@ -9,9 +6,9 @@
         image_id: replace_with_id_of_your_image_on_your_target_cloud
         instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
         context_template: !text_import
-            url: file://mysql_server_context.yaml
+            url: file://wordpress_context.yaml
         run_list: 
-            - recipe[wordpress-app::db]
+            - recipe[database-setup::db]
         synch_strategy: 
             protocol: mysql_server
             databases: 
@@ -23,6 +20,7 @@
                 database_name: '{{ variables.mysql_database_name }}'
                 dbuser_username: '{{ variables.mysql_dbuser_username }}'
                 dbuser_password: '{{ variables.mysql_dbuser_password }}'
+
 'node_def:wordpress':
     -
         implementation_type: chef+cloudinit

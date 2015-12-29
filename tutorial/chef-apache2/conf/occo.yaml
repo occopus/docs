@@ -11,7 +11,6 @@ autoimport: !python_import
     - occo.infraprocessor.synchronization.primitives
     - occo.servicecomposer
     - occo.plugins.servicecomposer.chef
-    - occo.infraprocessor.synchronization.mysql
 logging: !yaml_import
     url: file://logging.yaml
 components: !yaml_import
