@@ -813,15 +813,15 @@ The following steps are suggested to be performed:
         ...
 
 #. Also in ``init_data/uds_init_data.yaml``, provide the database parameters you set in step 1 for the synchronization of ``mysql_server`` node.
-   .. code::
+    .. code::
 
-    'node_def:mysql_server':
-      ...
-        synch_strategy:
-            protocol: mysql_server
-            databases:
-                - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}
-      ...
+        'node_def:mysql_server':
+        ...
+            synch_strategy:
+                protocol: mysql_server
+                databases:
+                    - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}
+        ...
 
 #. Load the node definition for ``chef_wordpress`` node into the database.
     .. code::
