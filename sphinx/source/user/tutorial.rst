@@ -732,6 +732,15 @@ You can download the example as `tutorial.examples.chef-apache2 <../../examples/
 
 The following steps are suggested to be performed:
 
+#. Edit the infrastructure description, ``infra_chef_wordpress.yaml``. Set the database's desired name, the username and password, and the root password.
+    .. code::
+        
+        variables:
+            mysql_root_password: replace_with_database_root_password
+            mysql_database_name: replace_with_database_name
+            mysql_dbuser_username: replace_with_database_name
+            mysql_dbuser_password: replace_with_database_user_password
+    
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
      .. code::
 
@@ -803,15 +812,17 @@ The following steps are suggested to be performed:
             subnet_id: replace_with_subnet_id_on_your_target_cloud
         ...
 
-#. Edit the infrastructure description, ``infra_chef_wordpress.yaml``. Set the database's desired name, the username and password, and the root password.
-    .. code::
-        
-        variables:
-            mysql_root_password: replace_with_database_root_password
-            mysql_database_name: replace_with_database_name
-            mysql_dbuser_username: replace_with_database_name
-            mysql_dbuser_password: replace_with_database_user_password
-    
+#. Also in ``init_data/uds_init_data.yaml``, provide the database parameters you set in step 1 for the synchronization of ``mysql_server`` node.
+   .. code::
+
+     'node_def:mysql_server':
+      ...
+        synch_strategy:
+            protocol: mysql_server
+            databases:
+                - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}
+      ...
+
 #. Load the node definition for ``chef_wordpress`` node into the database.
     .. code::
 
