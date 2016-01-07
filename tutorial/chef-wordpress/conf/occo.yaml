@@ -1,0 +1,18 @@
+autoimport: !python_import
+    - occo.infobroker
+    - occo.infobroker.dynamic_state_provider
+    - occo.infobroker.uds
+    - occo.infobroker.rediskvstore
+    - occo.cloudhandler
+    - occo.plugins.cloudhandler.boto
+    - occo.plugins.infraprocessor.basic_infraprocessor
+    - occo.plugins.servicecomposer.chef
+    - occo.plugins.infraprocessor.node_resolution.chef_cloudinit
+    - occo.infraprocessor.synchronization.primitives
+    - occo.servicecomposer
+    - occo.plugins.servicecomposer.chef
+    - occo.infraprocessor.synchronization.mysql
+logging: !yaml_import
+    url: file://logging.yaml
+components: !yaml_import
+    url: file://components.yaml

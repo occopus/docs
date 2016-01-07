@@ -603,4 +603,254 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
+Chef - Apache2
+--------------
+This tutorial demonstrates the capabilites of Occopus to work together with chef, by setting up a single-node infrastructure with an Apache2 web server service on it.
+
+**Prerequisites**
+
+ - chef server for your organization
+ - chef-validator key for occopus
+ - accessing a cloud through ec2 interface
+ - target cloud contains a base OS image with cloud-init support
+ - apache2 chef recipe (available via the community store) uploaded to chef server
+
+**Download**
+
+You can download the example as `tutorial.examples.chef-apache2 <../../examples/chef-apache2.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
+     .. code::
+
+        my_ec2_cloud:
+            protcol: boto
+            name: MYCLOUD
+            target:
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
+
+#. Also in ``conf/components.yaml``, provide the url and client name for your Chef server.
+    .. code::
+
+        servicecomposer: !ServiceCimposer &sc
+            protocol: chef
+            url: replace_with_url_of_chef_server
+            key: !text_import
+                url: file://client_key.pem
+            client: replace_with_name_of_chef_client 
+
+
+#. Create ``conf/client_key.pem`` and copy the private key of your chef client into it.
+
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key.
+     .. code::
+
+        username: replace_with_your_ec2_auth_key
+        password: replace_with_your_ec2_secret_key
+
+#. Edit ``init_data/apache2_context.yaml``. Provide the url of your Chef server and the chef-validator key. This context file validates the occopus for the chef server. Please note that quotation marks around the url are necessary.
+    .. code::
+
+        chef:
+            install_type: omnibus
+            omnibus_url: "https://www.opscode.com/chef/install.sh"
+            force_install: false
+            server_url: "replace_with_your_chef_server_url"
+            environment: {{infra_id}}
+            node_name: {{node_id}}
+            validation_name: "chef-validator"
+            validation_key: |
+                replace_with_chef-validator_key
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``chef_apache2``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
+     .. code::
+
+        ...
+        image_id: replace_with_id_of_your_image_on_your_target_cloud
+        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+        key_name: replace_with_key_name_on_your_target_cloud
+        security_group_ids:
+            -
+                replace_with_security_group_id1_on_your_target_cloud
+            -
+                replace_with_security_group_id2_on_your_target_cloud
+        subnet_id: replace_with_subnet_id_on_your_target_cloud
+        ...
+
+#. Load the node definition for ``chef_apache2`` node into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-chef-apache2.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        helloworld:
+            192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+        14032858-d628-40a2-b611-71381bd463fa
+
+#. You can check the result on your virtual machine.
+    .. code::
+
+        ssh user@192.168.xxx.xxx
+        # apache2 -V
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
+
+Chef - WPress+MySQL 
+-------------------
+This tutorial demonstrates the capabilites of Occopus to work together with chef and how certain variables can be passed around. For this, Occopus creates a wordpress node and a separate mysql database node. The wordpress node automatically receives the parameters of the database.
+
+**Prerequisites**
+
+ - chef server for your organization
+ - chef-validator key for occopus
+ - accessing a cloud through ec2 interface
+ - target cloud contains a base OS image with cloud-init support
+ - the database-setup cookbook (included in the tutorial) and its prerequisite cookbooks (mysql, database) uploaded to your chef server
+ - the wordpress cookbook (available via community store) and its prerequisite cookbooks uploaded to your chef server
+
+**Download**
+
+You can download the example as `tutorial.examples.chef-wordpress <../../examples/chef-wordpress.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Edit the infrastructure description, ``infra_chef_wordpress.yaml``. Set the database's desired name, the username and password, and the root password.
+    .. code::
+        
+        variables:
+            mysql_root_password: replace_with_database_root_password
+            mysql_database_name: replace_with_database_name
+            mysql_dbuser_username: replace_with_database_name
+            mysql_dbuser_password: replace_with_database_user_password
+    
+#. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
+     .. code::
+
+        my_ec2_cloud:
+            protcol: boto
+            name: MYCLOUD
+            target:
+                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                regionname: replace_with_regionname_of_your_ec2_interface
+
+#. Also in ``conf/components.yaml``, provide the url and client name for your Chef server.
+    .. code::
+
+        servicecomposer: !ServiceCimposer &sc
+            protocol: chef
+            url: replace_with_url_of_chef_server
+            key: !text_import
+                url: file://client_key.pem
+            client: replace_with_name_of_chef_client 
+
+
+#. Create ``conf/client_key.pem`` and copy the private key of your chef client into it.
+
+#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key.
+     .. code::
+
+        username: replace_with_your_ec2_auth_key
+        password: replace_with_your_ec2_secret_key
+
+#. Edit ``init_data/wordpress_context.yaml``. Provide the url of your Chef server and the chef-validator key. This context file validates the occopus for the chef server. Please note that quotation marks around the url are necessary.
+    .. code::
+
+        chef:
+            install_type: omnibus
+            omnibus_url: "https://www.opscode.com/chef/install.sh"
+            force_install: false
+            server_url: "replace_with_your_chef_server_url"
+            environment: {{infra_id}}
+            node_name: {{node_id}}
+            validation_name: "chef-validator"
+            validation_key: |
+                replace_with_chef-validator_key
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for both the nodes called ``mysql_server`` and ``wordpress``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
+     .. code::
+        
+       'node_def:mysql_server':
+        ...
+            image_id: replace_with_id_of_your_image_on_your_target_cloud
+            instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+            key_name: replace_with_key_name_on_your_target_cloud
+            security_group_ids:
+                -
+                    replace_with_security_group_id1_on_your_target_cloud
+                -
+                    replace_with_security_group_id2_on_your_target_cloud
+            subnet_id: replace_with_subnet_id_on_your_target_cloud
+        ...
+        'node-def:wordpress':
+        ...
+            image_id: replace_with_id_of_your_image_on_your_target_cloud
+            instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+            key_name: replace_with_key_name_on_your_target_cloud
+            security_group_ids:
+                -
+                    replace_with_security_group_id1_on_your_target_cloud
+                -
+                    replace_with_security_group_id2_on_your_target_cloud
+            subnet_id: replace_with_subnet_id_on_your_target_cloud
+        ...
+
+#. Also in ``init_data/uds_init_data.yaml``, provide the database parameters you set in step 1 for the synchronization of ``mysql_server`` node.
+    .. code::
+
+        'node_def:mysql_server':
+        ...
+            synch_strategy:
+                protocol: mysql_server
+                databases:
+                    - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}
+        ...
+
+#. Load the node definition for ``chef_wordpress`` node into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-chef-wordpress.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        chef-wordpress:
+            192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+        14032858-d628-40a2-b611-71381bd463fa
+
+#. You can check the result on your virtual machine.
+    .. code::
+
+        ssh user@192.168.xxx.xxx
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
