@@ -712,9 +712,10 @@ The following steps are suggested to be performed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
-Chef - Wordpress 
-----------------
+Chef - WPress+MySQL 
+-------------------
 This tutorial demonstrates the capabilites of Occopus to work together with chef and how certain variables can be passed around. For this, Occopus creates a wordpress node and a separate mysql database node. The wordpress node automatically receives the parameters of the database.
+
 **Prerequisites**
 
  - chef server for your organization
@@ -726,7 +727,7 @@ This tutorial demonstrates the capabilites of Occopus to work together with chef
 
 **Download**
 
-You can download the example as `tutorial.examples.chef-apache2 <../../examples/chef-wordpress.tgz>`_ .
+You can download the example as `tutorial.examples.chef-wordpress <../../examples/chef-wordpress.tgz>`_ .
 
 **Steps**
 
