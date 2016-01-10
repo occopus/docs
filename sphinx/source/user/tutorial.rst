@@ -652,12 +652,12 @@ The following steps are suggested to be peformed:
 #. Check the result on your docker host.
     .. code::
 
-    # docker ps
-    CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
-    13bb8c94b5f4        busybox_helloworld:latest   "sh -c /root/start.sh"   3 seconds ago       Up 2 seconds                            admiring_joliot
+        # docker ps
+        CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+        13bb8c94b5f4        busybox_helloworld:latest   "sh -c /root/start.sh"   3 seconds ago       Up 2 seconds                            admiring_joliot
 
-    # docker exec -it 13bb8c94b5f4 cat /root/message.txt
-    Hello World! I have been created by OCCO.
+        # docker exec -it 13bb8c94b5f4 cat /root/message.txt
+        Hello World! I have been created by OCCO.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
     .. code::
