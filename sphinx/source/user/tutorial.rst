@@ -420,7 +420,7 @@ The following steps are suggested to be peformed:
         occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
 
 
-OCCO-Helloworld
+OCCI-Helloworld
 ---------------
 This tutorial sets up an infrastructure containing a single node. The node will
 receive information (i.e. a message string) through contextualisation. The node
