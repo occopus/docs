@@ -8,7 +8,7 @@
         resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
         link:
             -
-                replace_with_link_to_attach 
+                replace_with_link_to_attach
             -
                 replace_with_link_to_attach
         context_template: !text_import
@@ -25,7 +25,7 @@
         resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
         link:
             -
-                replace_with_link_to_attach 
+                replace_with_link_to_attach
             -
                 replace_with_link_to_attach
         context_template: !text_import
