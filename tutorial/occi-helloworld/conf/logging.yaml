@@ -1,0 +1,44 @@
+version: 1
+root:
+    level: DEBUG
+    handlers: [console, file]
+formatters:
+    simpleFormater:
+        format: "** %(asctime)s\t%(levelname)s\t%(processName)s\t%(message)s"
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        formatter: simpleFormater
+        level: DEBUG
+        stream: ext://sys.stdout
+    file:
+        class : logging.FileHandler
+        formatter: simpleFormater
+        mode: w
+        level: DEBUG
+        filename: rabbit.log
+    datafile:
+        class : logging.FileHandler
+        formatter: simpleFormater
+        mode: w
+        level: DEBUG
+        filename: rabbit-data.log
+
+loggers:
+    pika:
+        propagate: false
+        level: ERROR
+        handlers: [console]
+    occo:
+        propagate: false
+        level: DEBUG
+        handlers: [console, file]
+    occo.data:
+        propagate: false
+        level: DEBUG
+        handlers: [datafile]
+    occo.infobroker.kvstore:
+        propagate: false
+        level: INFO
+        handlers: [console, file]

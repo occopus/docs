@@ -283,6 +283,20 @@ nova
         which should be used.
 
 
+occi
+^^^^
+
+    ``os_tpl``
+        The identifier of the VM image on the cloud.
+    ``resource_tpl``
+        The identifier of the instance type to be used to intantiate the VM
+        image on the target cloud.
+    ``link``
+        List of compute or network resources to be attached to the VM. Using this
+        option enables one to attach additional disk images or public networks
+        to the VM.
+
+
 cloudbroker
 ^^^^^^^^^^^
 
