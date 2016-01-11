@@ -854,3 +854,134 @@ The following steps are suggested to be performed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
+Docker-Helloworld
+-----------------
+This tutorial sets up an infrastructure containing a single node. The node will
+receive information (i.e. a message string) through environment variable. The node
+will store this information in ``/root/message.txt`` file.
+
+**Features**
+
+In this example, the following features will be demonstrated:
+ - creating a node with minimal setup
+ - passing information to a target node
+
+**Prerequisites**
+
+ - Accessing a docker host or a swarm cluster
+ - Note: encrypted connection is not supported yet
+
+**Download**
+
+You can download the example as `tutorial.examples.docker-helloworld <../../examples/docker-helloworld.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``base_url`` of your docker host or swarm cluster.
+    .. code::
+
+        cloud_cfgs:
+            docker:
+                protocol: docker
+                name: Docker
+                base_url: unix://var/run/docker.sock #or tcp://$IP:$PORT
+
+#. Load the node definition for ``docker-node`` into the database.
+    .. code::
+
+        occo-import-node init_data/redis_data.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml docker-helloworld.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. 
+
+#. Check the result on your docker host.
+    .. code::
+
+        # docker ps
+        CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+        13bb8c94b5f4        busybox_helloworld:latest   "sh -c /root/start.sh"   3 seconds ago       Up 2 seconds                            admiring_joliot
+
+        # docker exec -it 13bb8c94b5f4 cat /root/message.txt
+        Hello World! I have been created by OCCO.
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 6b19b640-1b41-4970-ab0a-b13a0c6e2800
+
+Docker-Ping
+-----------
+This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/root/ping-result.txt`` file.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - querying a node's ip address and passing the address to another
+
+**Prerequisites**
+
+ - Accessing a docker host or a swarm cluster
+ - In case of swarm cluster, multi-host (overlay) network must be available
+ - Note: encrypted connection is not supported yet
+
+**Download**
+
+You can download the example as `tutorial.examples.docker-ping <../../examples/docker-ping.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``base_url`` of your docker host or swarm cluster.
+    .. code::
+
+        cloud_cfgs:
+            docker:
+                protocol: docker
+                name: Docker
+                base_url: unix://var/run/docker.sock #or tcp://$IP:$PORT
+
+#. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database.
+    .. code::
+
+        occo-import-node init_data/redis_data.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml docker-ping.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+
+#. Check the result on your docker container.
+    .. code::
+
+        # docker ps
+        CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+        4e83c45e8378        busybox_ping:latest         "sh -c /root/start.sh"   16 seconds ago      Up 15 seconds                           romantic_brown
+        10b27bc4d978        busybox_helloworld:latest   "sh -c /root/start.sh"   17 seconds ago      Up 16 seconds                           jovial_mayer
+
+        # docker exec -it 4e83c45e8378 cat /root/ping-result.txt
+        PING 172.17.0.2 (172.17.0.2): 56 data bytes
+        64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.195 ms
+        64 bytes from 172.17.0.2: seq=1 ttl=64 time=0.105 ms
+        64 bytes from 172.17.0.2: seq=2 ttl=64 time=0.124 ms
+        64 bytes from 172.17.0.2: seq=3 ttl=64 time=0.095 ms
+        64 bytes from 172.17.0.2: seq=4 ttl=64 time=0.085 ms
+
+        --- 172.17.0.2 ping statistics ---
+        5 packets transmitted, 5 packets received, 0% packet loss
+        round-trip min/avg/max = 0.085/0.120/0.195 ms
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 6e259ac2-6f4d-4cae-8a05-f802fe5a4ac3
