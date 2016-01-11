@@ -303,6 +303,7 @@ The following steps are suggested to be peformed:
 
         occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
 
+
 Nova-Ping
 ---------
 This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
@@ -397,6 +398,193 @@ The following steps are suggested to be peformed:
 #. Check the result on your virtual machine.
     .. code::
         
+        ssh user@192.168.xxx.xxx
+        # cat /tmp/message.txt
+        Hello World! I am the sender node.
+        # cat /tmp/ping-result.txt
+        PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+        64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+        64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+        --- 192.168.xxx.xxx ping statistics ---
+        5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+        rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 30f566d1-9945-42be-b603-795d604b362f
+
+
+OCCI-Helloworld
+---------------
+This tutorial sets up an infrastructure containing a single node. The node will
+receive information (i.e. a message string) through contextualisation. The node
+will store this information in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating a node with minimal setup
+ - passing information to a target node
+
+**Prerequisites**
+
+ - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
+ - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
+
+**Download**
+
+You can download the example as `tutorial.examples.occi-helloworld <../../examples/occi-helloworld.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``endpoint`` to the OCCI service URL of your target cloud, and set ``auth_data`` to the path of your X.509 VOMS proxy certificate accepted by the OCCI endpoint for authentication.
+    .. code::
+
+        my_occi_cloud:
+            protocol: occi
+            name: MYCLOUD
+            target:
+                endpoint: replace_with_endpoint_of_occi_interface_of_your_cloud
+            auth_data: path_to_your_vomsified_x509_proxy
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the ``os_tpl``, ``resource_tpl``, and ``link`` (as needed) for the node called ``hw_node``. The variable ``os_tpl`` specifies the VM image to be used, ``resource_tpl`` selects the intance type to be used, and the optional list specified in ``link`` specifies the network and storage resources to be attached to the VM. Select an image containing a base os installation with cloud-init support.
+     .. code::
+
+        ...
+        os_tpl: replace_with_id_of_your_image_on_your_target_cloud
+        resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
+        link:
+            -
+                replace_with_link_to_attach
+            -
+                replace_with_link_to_attach
+        ...
+
+#. Load the node definition for ``helloworld`` node into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-helloworld.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        helloworld:
+            192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+        14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+    .. code::
+
+        ssh user@192.168.xxx.xxx
+        # cat /tmp/helloworld.txt
+        Hello World! I have been created by OCCO
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
+    .. code::
+
+        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
+
+
+OCCI-Ping
+---------
+This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - querying a node's ip address and passing the address to another
+
+**Prerequisites**
+
+ - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
+ - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
+
+**Download**
+
+You can download the example as `tutorial.examples.occi-ping <../../examples/occi-ping.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be peformed:
+
+#. Edit ``conf/components.yaml``. Set the ``endpoint`` to the OCCI service URL of your target cloud, and set ``auth_data`` to the path of your X.509 VOMS proxy certificate accepted by the OCCI endpoint for authentication.
+    .. code::
+
+        my_occi_cloud:
+            protocol: occi
+            name: MYCLOUD
+            target:
+                endpoint: replace_with_endpoint_of_occi_interface_of_your_cloud
+            auth_data: path_to_your_vomsified_x509_proxy
+
+#. Edit ``init_data/uds_init_data.yaml``. Set the ``os_tpl``, ``resource_tpl``, and ``link`` (as needed) for the nodes called ``ping_receiver_node`` and ``ping_sender_node``. The variable ``os_tpl`` specifies the VM image to be used, ``resource_tpl`` selects the intance type to be used, and the optional list specified in ``link`` specifies the network and storage resources to be attached to the VM. Select an image containing a base os installation with cloud-init support.
+     .. code::
+
+        'node_def:ping_receiver_node':
+            ...
+            os_tpl: replace_with_id_of_your_image_on_your_target_cloud
+            resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
+            link:
+                -
+                    replace_with_link_to_attach
+                -
+                    replace_with_link_to_attach
+            ...
+        'node_def:ping_sender_node':
+            ...
+            os_tpl: replace_with_id_of_your_image_on_your_target_cloud
+            resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
+            link:
+                -
+                    replace_with_link_to_attach
+                -
+                    replace_with_link_to_attach
+            ...
+
+#. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database.
+    .. code::
+
+        cd init_data
+        occo-import-node redis_data.yaml
+        cd ..
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
+    .. code::
+
+       occo-infra-start --listips --cfg conf/occo.yaml infra-ping.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
+    .. code::
+
+        List of ip addresses:
+        ping_receiver:
+            192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+        ping_sender:
+            192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+        30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+    .. code::
+
         ssh user@192.168.xxx.xxx
         # cat /tmp/message.txt
         Hello World! I am the sender node.

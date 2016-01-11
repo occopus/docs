@@ -22,6 +22,12 @@ Occopus has a backend implementation to interface with `NOVA API
 <http://www.openstack.org/>`_ type cloud systems
 can be utilised.
 
+OCCI
+----
+Occopus can use OCCI-enabled cloud providers of the 'EGI Federated Cloud
+<https://www.egi.eu/infrastructure/cloud/>'_. For this, one must possess an X.509
+certificate accepted within the FedCloud VO.
+
 CloudBroker
 -----------
 
