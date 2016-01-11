@@ -37,21 +37,17 @@ The graph contains the following information:
                     The pair (2-list) of node references.
 
                 ``mappings``
-                    List of attribute mappings. Each mapping can be
+                    List of attribute mappings. Each mapping can be a pair (2-list) of strings (attribute specifications, dotted strings permitted) or a mapping containing:
 
-                        - A pair (2-list) of strings (attribute specifications,
-                          dotted strings permitted).
+                    ``attributes``
+                        The pair of attribute specifications.
 
-                        - A mapping containing:
+                    ``synch``
+                        Whether to synchronize on the availability of the source attribute.
 
-                            ``attributes``
-                                The pair of attribute specifications.
-                            ``synch``
-                                Whether to synchronize on the availability of
-                                the source attribute.
-                            ``**``
-                                Anything else that is required by mediating
-                                services.
+                    ``**``
+                        Anything else that is required by mediating services.
+
                 ``**``
                     Anything else that is required by mediating services.
 
@@ -389,10 +385,14 @@ Until now, the following combinations have been tested and proved to be valid.
       -  chef+cloudinit
       -  dummy
    *  -  4.
+      -  occi
+      -  chef+cloudinit
+      -  dummy
+   *  -  5.
       -  cloudbroker
       -  cloudbroker
       -  dummy
-   *  -  5.
+   *  -  6.
       -  docker
       -  docker
       -  dummy

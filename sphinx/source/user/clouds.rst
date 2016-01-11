@@ -24,8 +24,8 @@ can be utilised.
 
 OCCI
 ----
-Occopus can use OCCI-enabled cloud providers of the 'EGI Federated Cloud
-<https://www.egi.eu/infrastructure/cloud/>'_. For this, one must possess an X.509
+Occopus can use OCCI-enabled cloud providers of the `EGI Federated Cloud
+<https://www.egi.eu/infrastructure/cloud/>`_. For this, one must possess an X.509
 certificate accepted within the FedCloud VO.
 
 CloudBroker
