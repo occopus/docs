@@ -53,7 +53,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
     'sphinxcontrib.autohttp.flask',
-    'ext.ibkeys',
+    'ext.ibkeys'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
