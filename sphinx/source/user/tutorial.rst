@@ -795,6 +795,12 @@ Chef - Apache2
 --------------
 This tutorial demonstrates the capabilites of Occopus to work together with chef, by setting up a single-node infrastructure with an Apache2 web server service on it.
 
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating a node with minimal setup
+ - running a Chef recipe to configure the node
+
 **Prerequisites**
 
  - chef server for your organization
@@ -903,6 +909,13 @@ The following steps are suggested to be performed:
 Chef - WPress+MySQL 
 -------------------
 This tutorial demonstrates the capabilites of Occopus to work together with chef and how certain variables can be passed around. For this, Occopus creates a wordpress node and a separate mysql database node. The wordpress node automatically receives the parameters of the database.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - using Chef to configure the nodes
+ - providing the database node's parameters as chef variables to the wordpress node
 
 **Prerequisites**
 
