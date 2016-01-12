@@ -54,7 +54,6 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinxcontrib.autohttp.flask',
     'ext.ibkeys',
-    'rst2pdf.pdfbuilder'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -308,5 +307,3 @@ if os.environ.get('API_DOC', '0')[0] in ['t', 'T', '1', 'y', 'Y']:
 
 todo_include_todos = not api_doc
 
-# pdf_documents variable for rst2pdf
-pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'novakadam'),]
