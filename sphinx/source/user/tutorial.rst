@@ -1019,7 +1019,7 @@ The following steps are suggested to be performed:
 
         'node_def:mysql_server':
         ...
-            synch_strategy:
+            service_health_check:
                 protocol: mysql_server
                 databases:
                     - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}

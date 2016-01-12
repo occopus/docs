@@ -15,6 +15,6 @@
         subnet_id: replace_with_subnet_id_on_your_target_cloud
         context_template: !text_import
                 url: file://hw.yaml
-        synch_strategy: 
+        service_health_check: 
             protocol: basic
             ping: True

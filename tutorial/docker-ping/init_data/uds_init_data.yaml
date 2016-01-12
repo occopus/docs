@@ -11,7 +11,7 @@
                 env: ["message={{my_variables.message}}"]
                 tag: latest
                 command: "sh -c /root/start.sh"
-        synch_strategy:
+        service_health_check:
             protocol: basic
             ping: False
 
@@ -27,6 +27,6 @@
                 env: ["target_ip={{ibget('node.resource.address', find_node_id(my_variables.targetnode))}}"]
                 tag: latest
                 command: "sh -c /root/start.sh"
-        synch_strategy:
+        service_health_check:
             protocol: basic
             ping: False

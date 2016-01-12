@@ -9,6 +9,6 @@
             url: file://apache2_context.yaml
         run_list:
             - recipe[apache2]
-        synch_strategy:
+        service_health_check:
             protocol: basic
             ping: true

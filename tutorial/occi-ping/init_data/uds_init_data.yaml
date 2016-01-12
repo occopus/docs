@@ -13,7 +13,7 @@
                 replace_with_link_to_attach
         context_template: !text_import
                 url: file://ping-receiver-node.yaml
-        synch_strategy: 
+        service_health_check: 
             protocol: basic
             ping: True
 'node_def:ping_sender_node':
@@ -30,6 +30,6 @@
                 replace_with_link_to_attach
         context_template: !text_import
                 url: file://ping-sender-node.yaml
-        synch_strategy: 
+        service_health_check: 
             protocol: basic
             ping: True

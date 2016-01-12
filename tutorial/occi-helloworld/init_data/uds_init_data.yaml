@@ -13,6 +13,6 @@
                 replace_with_link_to_attach
         context_template: !text_import
                 url: file://hw.yaml
-        synch_strategy: 
+        service_health_check: 
             protocol: basic
             ping: True

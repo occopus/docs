@@ -11,6 +11,6 @@
                 env: ["message={{my_variables.message}}"]
                 tag: latest
                 command: "sh -c /root/start.sh"
-        synch_strategy:
+        service_health_check:
             protocol: basic
             ping: False
