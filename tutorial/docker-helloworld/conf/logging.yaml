@@ -18,6 +18,12 @@ handlers:
         mode: w
         level: DEBUG
         filename: rabbit.log
+    datafile:
+        class : logging.FileHandler
+        formatter: simpleFormater
+        mode: w
+        level: DEBUG
+        filename: rabbit-data.log
 
 loggers:
     pika:
@@ -28,7 +34,11 @@ loggers:
         propagate: false
         level: DEBUG
         handlers: [console, file]
-    occo.infobroker.kvstore:
+    occo.data:
+        propagate: false
+        level: DEBUG
+        handlers: [datafile]
+    occo.infobroker:
         propagate: false
         level: INFO
         handlers: [console, file]

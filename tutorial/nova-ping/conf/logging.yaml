@@ -38,7 +38,7 @@ loggers:
         propagate: false
         level: DEBUG
         handlers: [datafile]
-    occo.infobroker.kvstore:
+    occo.infobroker:
         propagate: false
         level: INFO
         handlers: [console, file]
