@@ -10,9 +10,11 @@
         run_list: 
             - recipe[database-setup::db]
         service_health_check: 
-            protocol: mysql_server
-            databases: 
-                - {name: 'replace_with_database_name' user: 'replace_with_database_username', pass: 'replace_with_password_for_username'}
+            protocol: basic
+            mysqldbs:
+                - {name: '{{ variables.mysql_database_name }}',
+                   user: '{{ variables.mysql_dbuser_username }}',
+                   pass: '{{ variables.mysql_dbuser_password }}'}
         attributes:
             mysql:
                 server_root_password: '{{ variables.mysql_root_password }}'
