@@ -70,9 +70,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``helloworld`` node into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -170,9 +168,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -274,9 +270,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``helloworld`` node into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -375,9 +369,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -471,9 +463,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``helloworld`` node into the database.
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -562,9 +552,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database.
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -661,9 +649,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for the node into the database. 
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -747,9 +733,7 @@ The following steps are suggested to be peformed:
 #. Load the node definition for ``ping-receiver`` and ``ping-sender`` nodes into the database.
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -878,9 +862,7 @@ The following steps are suggested to be performed:
 #. Load the node definition for ``chef_apache2`` node into the database.
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
@@ -1017,9 +999,7 @@ The following steps are suggested to be performed:
 #. Load the node definition for ``chef_wordpress`` node into the database.
     .. code::
 
-        cd init_data
-        occo-import-node redis_data.yaml
-        cd ..
+        occo-import-node init_data/redis_data.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
     .. code::
