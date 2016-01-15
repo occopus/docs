@@ -37,21 +37,17 @@ The graph contains the following information:
                     The pair (2-list) of node references.
 
                 ``mappings``
-                    List of attribute mappings. Each mapping can be
+                    List of attribute mappings. Each mapping can be a pair (2-list) of strings (attribute specifications, dotted strings permitted) or a mapping containing:
 
-                        - A pair (2-list) of strings (attribute specifications,
-                          dotted strings permitted).
+                    ``attributes``
+                        The pair of attribute specifications.
 
-                        - A mapping containing:
+                    ``synch``
+                        Whether to synchronize on the availability of the source attribute.
 
-                            ``attributes``
-                                The pair of attribute specifications.
-                            ``synch``
-                                Whether to synchronize on the availability of
-                                the source attribute.
-                            ``**``
-                                Anything else that is required by mediating
-                                services.
+                    ``**``
+                        Anything else that is required by mediating services.
+
                 ``**``
                     Anything else that is required by mediating services.
 
@@ -274,6 +270,27 @@ nova
     ``floating_ip``
         If defined (with any value), new floating IP address will be allocated
         and assigned for the instance.
+    ``auth_type``
+        If defined (with any value), the default access key and secret key-based
+        authentication is overriden. Currently, the type ``voms`` is supported,
+        which will imply using X.509 proxy certificates with VOMS attributes for
+        authentication agains the Nova endpoint. In this case the value of the
+        ``auth_data`` configuration option contains the path of the proxy file
+        which should be used.
+
+
+occi
+^^^^
+
+    ``os_tpl``
+        The identifier of the VM image on the cloud.
+    ``resource_tpl``
+        The identifier of the instance type to be used to intantiate the VM
+        image on the target cloud.
+    ``link``
+        List of compute or network resources to be attached to the VM. Using this
+        option enables one to attach additional disk images or public networks
+        to the VM.
 
 
 cloudbroker
@@ -309,6 +326,23 @@ cloudbroker
                 The ID of the CloudBroker Region (cloud region) to use.
             ``instance_id``
                 The ID of the CloudBroker Instance to use.
+
+
+docker
+^^^^^^
+
+    ``origin``
+        The URL of an image or leave it empty and default will be set to dockerhub.
+    ``image``
+        The name of the image, e.g ubuntu, debian, mysql ..
+    ``network_mode``
+        One of 'bridge', 'none', 'container:<name|id>', 'host' or an existing network.
+    ``tag``
+        Docker tag. (default = latest)
+    ``env``
+        Environment variables can be passed to containers.
+    ``command``
+        It is the same as the docker commands.
 
 Service composer-dependent attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -351,8 +385,16 @@ Until now, the following combinations have been tested and proved to be valid.
       -  chef+cloudinit
       -  dummy
    *  -  4.
+      -  occi
+      -  chef+cloudinit
+      -  dummy
+   *  -  5.
       -  cloudbroker
       -  cloudbroker
+      -  dummy
+   *  -  6.
+      -  docker
+      -  docker
       -  dummy
 
 

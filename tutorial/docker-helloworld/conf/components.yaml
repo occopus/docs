@@ -1,0 +1,27 @@
+cloudhandler: !CloudHandler &ch
+    protocol: null
+    cloud_cfgs:
+        docker:
+            protocol: docker
+            name: Docker
+            base_url: unix://var/run/docker.sock
+            dry_run: false
+
+uds: !UDS &uds
+    protocol: redis
+    altdbs:
+        node_def: 1
+        infra: 10
+servicecomposer: !ServiceComposer &sc
+    protocol: dummy
+
+infobroker: !InfoRouter
+    sub_providers:
+        - !DynamicStateProvider
+            cloud_handler: *ch
+            service_composer: *sc
+        - !CloudHandlerProvider
+            cloud_handler: *ch
+        - *uds
+        - !SynchronizationProvider
+        - *sc

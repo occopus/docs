@@ -15,6 +15,6 @@
         floating_ip: add_yes_if_you_need_floating_ip
         context_template: !text_import
                 url: file://hw.yaml
-        synch_strategy: 
+        service_health_check: 
             protocol: basic
             ping: True

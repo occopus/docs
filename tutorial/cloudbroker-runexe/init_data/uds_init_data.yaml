@@ -10,4 +10,4 @@
                 resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
                 region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
                 instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
-        synch_strategy: basic
+        service_health_check: basic

@@ -1,0 +1,18 @@
+'service_composer:dummy': {}
+'node_def:hw_node':
+    -
+        implementation_type: chef+cloudinit
+        backend_id: my_occi_cloud
+        service_composer_id: dummy
+        os_tpl: replace_with_id_of_your_image_on_your_target_cloud
+        resource_tpl: replace_with_id_of_the_resource_on_your_target_cloud
+        link:
+            -
+                replace_with_link_to_attach
+            -
+                replace_with_link_to_attach
+        context_template: !text_import
+                url: file://hw.yaml
+        service_health_check: 
+            protocol: basic
+            ping: True
