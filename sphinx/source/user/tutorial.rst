@@ -905,7 +905,7 @@ In this example, the following feature(s) will be demonstrated:
  - chef-validator key for occopus
  - accessing a cloud through ec2 interface
  - target cloud contains a base OS image with cloud-init support
- - the database-setup cookbook (included in the tutorial) and its prerequisite cookbooks (mysql, database) uploaded to your chef server
+ - the database-setup cookbook (included in the tutorial) and its prerequisite cookbooks (mysql 5.x, database) uploaded to your chef server
  - the wordpress cookbook (available via community store) and its prerequisite cookbooks uploaded to your chef server
 
 **Download**
