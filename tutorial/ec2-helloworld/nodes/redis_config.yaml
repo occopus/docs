@@ -6,4 +6,4 @@ kvs: !KeyValueStore
     altdbs:
         node_def: 1
 init_data: !yaml_import
-    url: file://uds_init_data.yaml
+    url: file://node_definitions.yaml

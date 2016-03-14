@@ -3,13 +3,20 @@ plugins: !python_import
     - occo.infobroker.dynamic_state_provider
     - occo.infobroker.uds
     - occo.infobroker.rediskvstore
-    - occo.cloudhandler
-    - occo.plugins.cloudhandler.boto
+    - occo.resourcehandler
+    - occo.plugins.resourcehandler.ec2
+    - occo.plugins.resourcehandler.nova
+    - occo.plugins.resourcehandler.cloudbroker
+    - occo.plugins.resourcehandler.occi
+    - occo.plugins.resourcehandler.dockerp
     - occo.plugins.infraprocessor.basic_infraprocessor
-    - occo.plugins.infraprocessor.node_resolution.chef_cloudinit
+    - occo.plugins.infraprocessor.node_resolution.basic
+    - occo.plugins.infraprocessor.node_resolution.cloudinit
+    - occo.plugins.infraprocessor.node_resolution.cloudbroker
     - occo.infraprocessor.synchronization.primitives
-    - occo.servicecomposer
-    - occo.plugins.servicecomposer.chef
+    - occo.configmanager
+    - occo.plugins.configmanager.dummy
+    - occo.plugins.configmanager.chef
 logging: !yaml_import
     url: file://logging.yaml
 components: !yaml_import

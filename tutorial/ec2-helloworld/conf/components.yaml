@@ -1,32 +1,28 @@
-cloudhandler: !CloudHandler &ch
+resourcehandler: !ResourceHandler &rh
     protocol: null
-    cloud_cfgs:
-        my_ec2_cloud:
-            protocol: boto
-            name: MYCLOUD
-            target:
-                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
-                regionname: replace_with_regionname_of_your_ec2_interface
-            auth_data: !yaml_import
-                url: file://auth_data.yaml
+
+configmanager: !ConfigManager &cm
+    protocol: null
 
 uds: !UDS &uds
     protocol: redis
     altdbs:
         node_def: 1
         infra: 10
-servicecomposer: !ServiceComposer &sc
-    protocol: dummy
 
 infobroker: !InfoRouter
     sub_providers:
         - !DynamicStateProvider
-            cloud_handler: *ch
-            service_composer: *sc
-        - !CloudHandlerProvider
-            cloud_handler: *ch
-        - *uds
+            resource_handler: *rh
+            config_manager: *cm
+        - !ResourceHandlerProvider
+            resource_handler: *rh
+        - !ConfigManagerProvider
+            config_manager: *cm
         - !SynchronizationProvider
-        - *sc
+        - *uds
+
+eventlog: !EventLog
+    protocol: logging
 
 dry_run: False
