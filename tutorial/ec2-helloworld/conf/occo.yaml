@@ -17,7 +17,87 @@ plugins: !python_import
     - occo.configmanager
     - occo.plugins.configmanager.dummy
     - occo.plugins.configmanager.chef
-logging: !yaml_import
-    url: file://logging.yaml
-components: !yaml_import
-    url: file://components.yaml
+components:
+    resourcehandler: !ResourceHandler &rh
+        protocol: null
+    configmanager: !ConfigManager &cm
+        protocol: null
+    uds: !UDS &uds
+        protocol: redis
+        altdbs:
+            node_def: 1
+            infra: 10
+    infobroker: !InfoRouter
+        sub_providers:
+            - !DynamicStateProvider
+                resource_handler: *rh
+                config_manager: *cm
+            - !ResourceHandlerProvider
+                resource_handler: *rh
+            - !ConfigManagerProvider
+                config_manager: *cm
+            - !SynchronizationProvider
+            - *uds
+    eventlog: !EventLog
+        protocol: logging
+    dry_run: False
+logging:
+    version: 1
+    root:
+        level: DEBUG
+        handlers: [console, file]
+    formatters:
+        simpleFormater:
+            format: "** %(asctime)s\t%(levelname)s\t%(processName)s\t%(message)s"
+    handlers:
+        console:
+            class: logging.StreamHandler
+            formatter: simpleFormater
+            level: DEBUG
+            stream: ext://sys.stdout
+        file:
+            class : logging.FileHandler
+            formatter: simpleFormater
+            mode: w
+            level: DEBUG
+            filename: rabbit.log
+        datafile:
+            class : logging.FileHandler
+            formatter: simpleFormater
+            mode: w
+            level: DEBUG
+            filename: rabbit-data.log
+        events:
+            class : logging.FileHandler
+            formatter: simpleFormater
+            mode: w
+            level: DEBUG
+            filename: rabbit-events.log
+
+    loggers:
+        pika:
+            propagate: false
+            level: ERROR
+            handlers: [console]
+        occo:
+            propagate: false
+            level: DEBUG
+            handlers: [console, file]
+        occo.data:
+            propagate: false
+            level: DEBUG
+            handlers: [datafile]
+        occo.infobroker:
+            propagate: false
+            level: INFO
+            handlers: [console, file]
+        occo.eventlog:
+            propagate: false
+            level: DEBUG
+            handlers: [events]
+        occo.util:
+            propagate: false
+            level: DEBUG
+            handlers: [events]
+
+
