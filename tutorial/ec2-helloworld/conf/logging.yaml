@@ -24,6 +24,12 @@ handlers:
         mode: w
         level: DEBUG
         filename: rabbit-data.log
+    events:
+        class : logging.FileHandler
+        formatter: simpleFormater
+        mode: w
+        level: DEBUG
+        filename: rabbit-events.log
 
 loggers:
     pika:
@@ -42,3 +48,12 @@ loggers:
         propagate: false
         level: INFO
         handlers: [console, file]
+    occo.eventlog:
+        propagate: false
+        level: DEBUG
+        handlers: [events]
+    occo.util:
+        propagate: false
+        level: DEBUG
+        handlers: [events]
+
