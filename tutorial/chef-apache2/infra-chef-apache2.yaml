@@ -1,6 +1,7 @@
-user_id: 1
-name: chef_apache2_infra
+name: ec2_chef_apache2_infra
+user_id: somebody@somewhere.com
+
 nodes:
-    - &node
-        name: chef_apache2
-        type: chef_apache2
+    - 
+        name: apache2
+        type: chef_apache2_node
