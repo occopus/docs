@@ -53,26 +53,26 @@ logging:
         console:
             class: logging.StreamHandler
             formatter: simpleFormater
-            level: DEBUG
+            level: INFO
             stream: ext://sys.stdout
         file:
             class : logging.FileHandler
             formatter: simpleFormater
             mode: w
             level: DEBUG
-            filename: rabbit.log
+            filename: occopus.log
         datafile:
             class : logging.FileHandler
             formatter: simpleFormater
             mode: w
             level: DEBUG
-            filename: rabbit-data.log
+            filename: occopus-data.log
         events:
             class : logging.FileHandler
             formatter: simpleFormater
             mode: w
             level: DEBUG
-            filename: rabbit-events.log
+            filename: occopus-events.log
 
     loggers:
         pika:
@@ -97,7 +97,7 @@ logging:
             handlers: [console, file]
         occo.util:
             propagate: false
-            level: DEBUG
+            level: INFO
             handlers: [console, file]
 
 
