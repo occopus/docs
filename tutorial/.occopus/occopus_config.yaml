@@ -87,17 +87,17 @@ logging:
             propagate: false
             level: DEBUG
             handlers: [datafile]
-        occo.infobroker:
-            propagate: false
-            level: INFO
-            handlers: [console, file]
         occo.eventlog:
             propagate: false
             level: DEBUG
             handlers: [events]
+        occo.infobroker:
+            propagate: false
+            level: INFO
+            handlers: [console, file]
         occo.util:
             propagate: false
             level: DEBUG
-            handlers: [events]
+            handlers: [console, file]
 
 
