@@ -29,8 +29,8 @@ sphinxcontrib_httpdomain
 -e ./ext
 -e ../../util
 -e ../../info-broker
--e ../../cloud-handler
--e ../../service-composer
+-e ../../resource-handler
+-e ../../config-manager
 -e ../../enactor
 -e ../../compiler
 -e ../../infra-processor
