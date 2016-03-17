@@ -1,0 +1,15 @@
+name: docker_swarm_infra
+user_id: somebody@somewhere.com
+
+nodes:
+    - &H
+        name: head
+        type: head_node
+    - &W
+        name: worker
+        type: worker_node
+        scaling:
+            min: 2
+
+dependencies:
+    - [*W, *H]
