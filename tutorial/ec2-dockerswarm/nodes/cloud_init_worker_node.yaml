@@ -30,7 +30,7 @@ write_files:
       # Make sure to use all our CPUs, because Consul can block a scheduler thread
       export GOMAXPROCS=`nproc`
       exec /usr/local/bin/consul agent \
-        -retry-join {{head.ip}} -data-dir=/tmp/consul -bind=$(hostname --ip-address) -client=$(hostname --ip-address)\
+        -retry-join {{getip(head)}} -data-dir=/tmp/consul -bind=$(hostname --ip-address) -client=$(hostname --ip-address)\
         >>/var/log/consul.log 2>&1
     end script
 

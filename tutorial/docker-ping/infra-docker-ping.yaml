@@ -1,17 +1,15 @@
-user_id: sandor.acs@sztaki.mta.hu
-name: docker_demo
+name: pinde_docker_infra
+user_id: somebody@somewhere.com
 
 nodes:
     - &R
         name: ping_receiver
-        type: ping_receiver_node
-        my_variables:
-            message: "Hello World! I am the sender node."
+        type: docker_ping_receiver_node
+        variables:
+            message: "Hello World! I am the receiver node."
     - &S
         name: ping_sender
-        type: ping_sender_node
-        my_variables:
+        type: docker_ping_sender_node
 
 dependencies:
-    -
-        connection: [ *S, *R ]
+    - [ *S, *R ]
