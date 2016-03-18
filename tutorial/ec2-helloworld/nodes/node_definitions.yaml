@@ -1,7 +1,6 @@
 'node_def:helloworld_node':
     -
         resource:
-            name: my_ec2_cloud
             type: ec2
             endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
             regionname: replace_with_regionname_of_your_ec2_interface
