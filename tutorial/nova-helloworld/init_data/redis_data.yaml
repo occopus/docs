@@ -1,9 +1,0 @@
-kvs: !KeyValueStore
-    protocol: redis
-    host: localhost
-    port: 6379
-    db: 0
-    altdbs:
-        node_def: 1
-init_data: !yaml_import
-    url: file://uds_init_data.yaml

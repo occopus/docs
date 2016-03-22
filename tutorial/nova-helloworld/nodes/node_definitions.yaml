@@ -1,0 +1,19 @@
+'node_def:helloworld_nova_node':
+    -
+        resource:
+            type: nova
+            endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+            tenant_name: replace_with_tenant_to_use
+            image_id: replace_with_id_of_your_image_on_your_target_cloud
+            flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+            key_name: replace_with_name_of_keypair_to_be_used
+            security_groups:
+                -
+                    replace_with_security_group_to_add
+                -
+                    replace_with_security_group_to_add
+            floating_ip: add_yes_if_you_need_floating_ip
+        contextualisation:
+            type: cloudinit
+            context_template: !text_import
+                url: file://cloud_init_helloworld.yaml
