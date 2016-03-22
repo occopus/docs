@@ -1,0 +1,14 @@
+'node_def:helloworld_occi_node':
+    -
+        resource:
+            type: occi
+            endpoint: https://carach5.ics.muni.cz:11443
+            os_tpl: os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131
+            resource_tpl: http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium
+            link:
+                -
+                    https://carach5.ics.muni.cz:11443/network/24
+        contextualisation:
+            type: cloudinit
+            context_template: !text_import
+                url: file://cloud_init_helloworld.yaml

@@ -8,10 +8,9 @@
             network_mode: overlaynet
             tag: latest
         contextualisation:
-            type: basic
-            attributes:
-                env: ["message={{variables.message}}"]
-                command: "sh -c /root/start.sh"
+            type: docker
+            env: ["message={{variables.message}}"]
+            command: "sh -c /root/start.sh"
         health_check:
             ping: False
 
@@ -25,9 +24,8 @@
             network_mode: overlaynet
             tag: latest
         contextualisation:
-            type: basic
-            attributes:
-                env: ["target_ip={{getip(ping_receiver)}}"]
-                command: "sh -c /root/start.sh"
+            type: docker
+            env: ["target_ip={{getip(ping_receiver)}}"]
+            command: "sh -c /root/start.sh"
         health_check:
             ping: False

@@ -8,9 +8,8 @@
             network_mode: bridge
             tag: latest
         contextualisation:
-            type: basic
-            attributes:
-                env: ["message={{variables.message}}"]
-                command: "sh -c /root/start.sh"
+            type: docker
+            env: ["message={{variables.message}}"]
+            command: "sh -c /root/start.sh"
         health_check:
             ping: False
