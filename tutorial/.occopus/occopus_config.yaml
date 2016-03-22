@@ -8,11 +8,12 @@ plugins: !python_import
     - occo.plugins.resourcehandler.nova
     - occo.plugins.resourcehandler.cloudbroker
     - occo.plugins.resourcehandler.occi
-    - occo.plugins.resourcehandler.dockerp
+    - occo.plugins.resourcehandler.docker
     - occo.plugins.infraprocessor.basic_infraprocessor
     - occo.plugins.infraprocessor.node_resolution.basic
     - occo.plugins.infraprocessor.node_resolution.cloudinit
     - occo.plugins.infraprocessor.node_resolution.cloudbroker
+    - occo.plugins.infraprocessor.node_resolution.docker
     - occo.infraprocessor.synchronization.primitives
     - occo.configmanager
     - occo.plugins.configmanager.dummy

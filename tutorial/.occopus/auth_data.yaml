@@ -1,22 +1,30 @@
 resource:
     -
         type: ec2
-        endpoint: ...
         auth_data:
-            accesskey: ...
-            secretkey: ...
+            accesskey: ak
+            secretkey: sk
     -
         type: nova
-        endpoint: ... 
         auth_data:
-            username: ...
-            password: ...
-#config_management:
-#    -
-#        type: chef
-#        endpoint: ...
-#        auth_data:
-#            client_name: ...
+            username: user
+            password: pwd
+    -
+        type: cloudbroker
+        auth_data:
+            email: a@b.c
+            password: pwd
+    -
+        type: docker
+        auth_data: nothing
+    -   
+        type: occi
+        auth_data: path_to_proxy
+config_management:
+    -
+        type: chef
+        auth_data:
+            client_name: name 
 #            client_key: !text_import
 #                url: file://client_key.pem
 
