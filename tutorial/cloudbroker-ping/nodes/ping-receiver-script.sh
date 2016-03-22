@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cat > /tmp/message.txt <<EOF
-{{my_variables.message}}
+{{variables.message}}
 EOF
