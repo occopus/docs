@@ -50,10 +50,12 @@ logging:
     formatters:
         simpleFormater:
             format: "** %(asctime)s\t%(levelname)s\t%(processName)s\t%(message)s"
+        shortFormater:
+            format: "** %(asctime)s\t%(message)s"
     handlers:
         console:
             class: logging.StreamHandler
-            formatter: simpleFormater
+            formatter: shortFormater
             level: INFO
             stream: ext://sys.stdout
         file:
