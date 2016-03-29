@@ -1,4 +1,4 @@
-name: ec2_chef_apache2_infra
+infra_name: ec2_chef_apache2_infra
 user_id: somebody@somewhere.com
 
 nodes:

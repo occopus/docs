@@ -1,4 +1,4 @@
-name: cloudbroker_runexe_infra
+infra_name: cloudbroker_runexe_infra
 user_id: somebody@somewhere.com
 
 nodes:
