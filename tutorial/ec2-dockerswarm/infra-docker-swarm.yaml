@@ -10,6 +10,8 @@ nodes:
         type: worker_node
         scaling:
             min: 2
+        variables:
+            target_node: head
 
 dependencies:
     - [*W, *H]
