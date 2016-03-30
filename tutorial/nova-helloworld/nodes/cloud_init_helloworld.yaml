@@ -3,4 +3,12 @@ write_files:
 - content: "{{variables.message}}\n"
   path: /tmp/helloworld.txt
   permissions: '0644'
+users:
+  - name: myuser
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock-passwd: true
+    ssh-import-id: myuser
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - <replace_with_your_ssh_public_key>
 
