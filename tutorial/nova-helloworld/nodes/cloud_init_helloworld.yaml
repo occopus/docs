@@ -10,5 +10,5 @@ users:
     ssh-import-id: myuser
     shell: /bin/bash
     ssh-authorized-keys:
-      - <replace_with_your_ssh_public_key>
+      - <replace_with_your_public_ssh_key>
 
