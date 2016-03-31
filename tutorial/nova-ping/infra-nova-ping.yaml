@@ -1,4 +1,4 @@
-name: nova_ping_infra
+infra_name: nova_ping_infra
 user_id: somebody@somewhere.com
 
 nodes:
@@ -11,7 +11,7 @@ nodes:
         name: ping_sender
         type: ping_sender_nova_node
         variables:
-            message: "Hello World! I am the sender node created by Occopus"
+            message: "Hello World! I am the sender node created by Occopus."
             targetnode: ping_receiver
 
 dependencies:
