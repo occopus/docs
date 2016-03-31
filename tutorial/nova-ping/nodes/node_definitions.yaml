@@ -1,4 +1,4 @@
-'node_def:ping_receiver_nova_node':
+'node_def:nova_ping_receiver_node':
     -
         resource:
             type: nova
@@ -16,7 +16,7 @@
             type: cloudinit
             context_template: !text_import
                 url: file://cloud_init_ping_receiver.yaml
-'node_def:ping_sender_nova_node':
+'node_def:nova_ping_sender_node':
     -
         resource:
             type: nova

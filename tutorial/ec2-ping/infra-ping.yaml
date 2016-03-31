@@ -4,12 +4,12 @@ user_id: somebody@somewhere.com
 nodes:
     - &R
         name: ping_receiver
-        type: ping_receiver_node
+        type: ec2_ping_receiver_node
         variables:
             message: "Hello World! I am the receiver node."
     - &S
         name: ping_sender
-        type: ping_sender_node
+        type: ec2_ping_sender_node
         variables:
             message: "Hello World! I am the sender node."
 

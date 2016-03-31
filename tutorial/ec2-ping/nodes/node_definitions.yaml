@@ -1,4 +1,4 @@
-'node_def:ping_receiver_node':
+'node_def:ec2_ping_receiver_node':
     -
         resource:
             name: my_ec2_cloud
@@ -18,7 +18,7 @@
             type: cloudinit
             context_template: !text_import
                 url: file://cloud_init_ping_receiver.yaml
-'node_def:ping_sender_node':
+'node_def:ec2_ping_sender_node':
     -
         resource:
             name: my_ec2_cloud

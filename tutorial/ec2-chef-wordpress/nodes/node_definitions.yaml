@@ -1,4 +1,4 @@
-'node_def:mysql_server_node':
+'node_def:ec2_chef_mysql_server_node':
     -
         resource:
             type: ec2
@@ -35,7 +35,7 @@
                    user: '{{ variables.mysql_dbuser_username }}',
                    pass: '{{ variables.mysql_dbuser_password }}'}
 
-'node_def:wordpress_node':
+'node_def:ec2_chef_wordpress_node':
     -
         resource:
             type: ec2

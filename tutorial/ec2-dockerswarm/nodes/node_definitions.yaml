@@ -1,4 +1,4 @@
-'node_def:head_node':
+'node_def:ec2_dockerswarm_head_node':
     -
         resource:
             type: ec2
@@ -21,7 +21,7 @@
             ports:
                 - 2375
 
-'node_def:worker_node':
+'node_def:ec2_dockerswarm_worker_node':
     -
         resource:
             type: ec2

@@ -1,4 +1,4 @@
-'node_def:helloworld_node':
+'node_def:ec2_helloworld_node':
     -
         resource:
             type: ec2

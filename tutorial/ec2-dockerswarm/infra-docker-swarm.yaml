@@ -1,13 +1,13 @@
-infra_name: docker_swarm_infra
+infra_name: ec2_docker_swarm_infra
 user_id: somebody@somewhere.com
 
 nodes:
     - &H
         name: head
-        type: head_node
+        type: ec2_dockerswarm_head_node
     - &W
         name: worker
-        type: worker_node
+        type: ec2_dockerswarm_worker_node
         scaling:
             min: 2
         variables:

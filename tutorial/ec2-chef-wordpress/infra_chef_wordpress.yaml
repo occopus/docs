@@ -4,10 +4,10 @@ user_id: somebody@somewhere.com
 nodes:
     - &DBS_Node
         name: mysql_server
-        type: mysql_server_node
+        type: ec2_chef_mysql_server_node
     - &WP_Node
         name: wordpress
-        type: wordpress_node
+        type: ec2_chef_wordpress_node
 
 dependencies:
     -

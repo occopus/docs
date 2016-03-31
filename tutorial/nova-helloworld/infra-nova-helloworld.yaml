@@ -4,6 +4,6 @@ user_id: somebody@somewhere.com
 nodes:
     -
         name: helloworld
-        type: helloworld_nova_node
+        type: nova_helloworld_node
         variables:
             message: "Hello World! I have been created by Occopus"
