@@ -25,7 +25,7 @@
             tag: latest
         contextualisation:
             type: docker
-            env: ["target_ip={{getip(ping_receiver)}}"]
+            env: ["target_ip={{getip(\"ping_receiver\")}}"]
             command: "sh -c /root/start.sh"
         health_check:
             ping: False

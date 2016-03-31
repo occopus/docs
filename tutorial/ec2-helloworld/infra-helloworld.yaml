@@ -4,7 +4,7 @@ user_id: somebody@somewhere.com
 nodes:
     - &A
         name: helloworld
-        type: helloworld_node
+        type: ec2_helloworld_node
         variables:
             message: "Hello World! I have been created by Occopus"
 

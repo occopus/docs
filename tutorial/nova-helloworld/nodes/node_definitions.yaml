@@ -1,4 +1,4 @@
-'node_def:helloworld_nova_node':
+'node_def:nova_helloworld_node':
     -
         resource:
             type: nova

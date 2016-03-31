@@ -1,27 +1,27 @@
-'node_def:ping_receiver_occi_node':
+'node_def:occi_ping_receiver_node':
     -
         resource:
             type: occi
-            endpoint: https://carach5.ics.muni.cz:11443
-            os_tpl: os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131
-            resource_tpl: http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium
+            endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
+            os_tpl: replace_with_occi_id_from_egi_appdb
+            resource_tpl: replace_with_template_id_from_egi_appdb
             link:
                 -
-                    https://carach5.ics.muni.cz:11443/network/24
+                    replace_with_public_network_identifier_or_remove
         contextualisation:
             type: cloudinit
             context_template: !text_import
                 url: file://cloud_init_ping_receiver.yaml
-'node_def:ping_sender_occi_node':
+'node_def:occi_ping_sender_node':
     -
         resource:
             type: occi
-            endpoint: https://carach5.ics.muni.cz:11443
-            os_tpl: os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131
-            resource_tpl: http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium
+            endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
+            os_tpl: replace_with_occi_id_from_egi_appdb
+            resource_tpl: replace_with_template_id_from_egi_appdb
             link:
                 -
-                    https://carach5.ics.muni.cz:11443/network/24
+                    replace_with_public_network_identifier_or_remove
         contextualisation:
             type: cloudinit
             context_template: !text_import

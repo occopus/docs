@@ -4,4 +4,4 @@ user_id: somebody@somewhere.com
 nodes:
     - 
         name: apache2
-        type: chef_apache2_node
+        type: ec2_chef_apache2_node

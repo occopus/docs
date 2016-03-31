@@ -1,4 +1,4 @@
-'node_def:docker_node':
+'node_def:docker_helloworld_node':
     -
         resource:
             type: docker
