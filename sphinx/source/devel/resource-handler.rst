@@ -15,28 +15,41 @@ later by a :ref:`Service Composer <servicecomposer>`, or anything in-between.
 Abstract Cloud Handler and generic functions
 --------------------------------------------
 
-.. automodule:: occo.cloudhandler
+.. automodule:: occo.resourcehandler
     :members:
 
 Specialized backend implementations
 -----------------------------------
 
-.. automodule:: occo.plugins.cloudhandler
+.. automodule:: occo.plugins.resourcehandler
 
-Dummy backend for testing
-~~~~~~~~~~~~~~~~~~~~~~~~~
+EC2 plugin
+~~~~~~~~~~
 
-.. automodule:: occo.plugins.cloudhandler.dummy
+.. automodule:: occo.plugins.resourcehandler.ec2
     :members:
 
-Boto EC2 plugin
-~~~~~~~~~~~~~~~
+NOVA plugin
+~~~~~~~~~~~
 
-.. automodule:: occo.plugins.cloudhandler.boto
+.. automodule:: occo.plugins.resourcehandler.nova
+    :members:
+
+OCCI plugin
+~~~~~~~~~~~
+
+.. automodule:: occo.plugins.resourcehandler.occi
     :members:
 
 CloudBroker plugin
 ~~~~~~~~~~~~~~~~~~
 
-.. automodule:: occo.plugins.cloudhandler.cloudbroker
+.. automodule:: occo.plugins.resourcehandler.cloudbroker
     :members:
+
+Docker plugin
+~~~~~~~~~~~~~
+
+.. automodule:: occo.plugins.resourcehandler.docker
+    :members:
+
