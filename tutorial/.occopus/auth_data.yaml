@@ -2,31 +2,32 @@ resource:
     -
         type: ec2
         auth_data:
-            accesskey: ak
-            secretkey: sk
+            accesskey: your_access_key
+            secretkey: your_secret_key
     -
         type: nova
         auth_data:
-            username: user
-            password: pwd
+            type: voms
+            proxy: path_to_your_voms_proxy_file
+    -   
+        type: occi
+        auth_data: 
+            proxy: path_to_your_voms_proxy_file
     -
         type: cloudbroker
         auth_data:
-            email: a@b.c
-            password: pwd
+            email: your@email.com
+            password: your_password
     -
         type: docker
-        auth_data: nothing
-    -   
-        type: occi
-        auth_data: path_to_proxy
+        auth_data: notneeded
 config_management:
     -
         type: chef
         auth_data:
-            client_name: name 
-#            client_key: !text_import
-#                url: file://client_key.pem
+            client_name: name_of_client_on_chef_server
+            client_key: !text_import
+                url: file://path_to_the_pem_file_of_cert_for_client
 
             
         
