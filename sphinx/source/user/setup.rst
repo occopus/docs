@@ -87,8 +87,8 @@ Please, download and save your configuration files:
 .. code:: yaml
 
    mkdir -p $HOME/.occopus
-   curl http://www.lpds.sztaki.hu/occo/configs/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
-   curl http://www.lpds.sztaki.hu/occo/configs/redis_config.yaml -o $HOME/.occopus/redis_config.yaml
+   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
+   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/redis_config.yaml -o $HOME/.occopus/redis_config.yaml
 
 Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects instantiated by the YAML parser.
 
@@ -116,7 +116,7 @@ You can download and save your initial authorisation file:
 .. code:: yaml
 
     mkdir -p $HOME/.occopus
-    curl http://www.lpds.sztaki.hu/occo/configs/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
+    curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
 
 Once you have your initial authorisation file, edit and insert your credentials to the appropriate section.
 
