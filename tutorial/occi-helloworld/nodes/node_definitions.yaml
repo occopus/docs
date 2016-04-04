@@ -8,6 +8,7 @@
             link:
                 -
                     replace_with_public_network_identifier_or_remove
+            public_key: replace_with_path_to_your_ssh_public_key
         contextualisation:
             type: cloudinit
             context_template: !text_import
