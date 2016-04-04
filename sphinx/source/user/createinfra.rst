@@ -96,7 +96,7 @@ To instantiate a node, its implementations are gathered first. Then, they are ei
         The type of the node.
 
     ``filter`` (``dict``)
-        Optional. Provides filtering among the available node definitions. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified, the one will be choosen among implementations.
+        Optional. Provides filtering among the available node definitions. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified, the one will be chosen among implementations.
 
     ``variables``
         Arbitrary mapping containing static node-level information:
@@ -140,9 +140,9 @@ EC2
   ``regionname``
     Regionname of for the ec2 cloud interface.
   ``image_id``
-    The identifier of the image behind the ec2 cloud to be instantiated to realise a virtual machine.
+    The identifier of the image behind the ec2 cloud to be instantiated to realize a virtual machine.
   ``instance_type``
-    The type of instance to be instantiated through EC2 when realising the virtual machine. This value refers to a flavour (e.g. m1.small) of the ec2 cloud. It determines the resources (CPU, memory, storage, networking) of the node.
+    The type of instance to be instantiated through EC2 when realizing the virtual machine. This value refers to a flavour (e.g. m1.small) of the ec2 cloud. It determines the resources (CPU, memory, storage, networking) of the node.
   ``key_name``
     Optional. The name of the keypair to assign to the allocated virtual machine.
   ``security_group_ids``
@@ -161,9 +161,9 @@ Nova
   ``tenant_name``
     A container used to group or isolate resources on the cloud behind the nova interface.
   ``image_id``
-    The identifier of the image behind the ec2 cloud to be instantiated to realise a virtual machine.
+    The identifier of the image behind the ec2 cloud to be instantiated to realize a virtual machine.
   ``flavor_name``
-    The type of flavor to be instantiated through nova when realising this virtual machine. This value refers to a flavour (e.g. m1.small) of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
+    The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour (e.g. m1.small) of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
   ``server_name``
     Optional. The hostname of the instantiated virtual machine.
   ``key_name``
@@ -185,7 +185,7 @@ OCCI
   ``os_tpl``
     The identifier of the VM image on the cloud.
   ``resource_tpl``
-    The identifier of the instance type to be used to intantiate the VM image on the target cloud.
+    The identifier of the instance type to be used to instantiate the VM image on the target cloud.
   ``public_key``
     Optional. The public ssh key to be deployed on the target virtual machine.
   ``link``
@@ -243,7 +243,7 @@ Cloudinit
   ``context_template``
     This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``
-    Optional. Any user-defined attributes. Used for specifying values of attributes in chef recepies.
+    Optional. Any user-defined attributes. Used for specifying values of attributes in chef recipes.
 
 Cloudbroker
 ^^^^^^^^^^^
@@ -279,9 +279,9 @@ Chef
   ``type: chef`` 
     Selects chef as config manager.
   ``endpoint``
-    The endpoint (url) of the chef server containing the recepies.
+    The endpoint (url) of the chef server containing the recipes.
   ``run_list``
-    The list of recepies to be executed by chef on the node after startup.
+    The list of recipes to be executed by chef on the node after startup.
 
 .. _userdefinitionhealthchecksection:
 
