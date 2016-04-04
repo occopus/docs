@@ -34,7 +34,7 @@ You can download the example as `tutorial.examples.ec2-helloworld <../../example
 
 **Steps**
 
-The following steps are suggested to be peformed:
+The following steps are suggested to be performed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
     .. code::
@@ -120,7 +120,7 @@ You can download the example as `tutorial.examples.occi-helloworld <../../exampl
 
 **Steps**
 
-The following steps are suggested to be peformed:
+The following steps are suggested to be performed:
 
 #. Edit ``conf/components.yaml``. Set the ``endpoint`` to the OCCI service URL of your target cloud, and set ``auth_data`` to the path of your X.509 VOMS proxy certificate accepted by the OCCI endpoint for authentication.
     .. code::
@@ -132,7 +132,7 @@ The following steps are suggested to be peformed:
                 endpoint: replace_with_endpoint_of_occi_interface_of_your_cloud
             auth_data: path_to_your_vomsified_x509_proxy
 
-#. Edit ``init_data/uds_init_data.yaml``. Set the ``os_tpl``, ``resource_tpl``, and ``link`` (as needed) for the node called ``hw_node``. The variable ``os_tpl`` specifies the VM image to be used, ``resource_tpl`` selects the intance type to be used, and the optional list specified in ``link`` specifies the network and storage resources to be attached to the VM. Select an image containing a base os installation with cloud-init support.
+#. Edit ``init_data/uds_init_data.yaml``. Set the ``os_tpl``, ``resource_tpl``, and ``link`` (as needed) for the node called ``hw_node``. The variable ``os_tpl`` specifies the VM image to be used, ``resource_tpl`` selects the instance type to be used, and the optional list specified in ``link`` specifies the network and storage resources to be attached to the VM. Select an image containing a base os installation with cloud-init support.
      .. code::
 
         ...

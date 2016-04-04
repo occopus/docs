@@ -37,7 +37,7 @@ Once the infrastructure is successfully built, Occopus exits. This command provi
     * ``infra_def:`` file containing an infrastructure definition
 
 **Return type:**
-    On sucessful finish it returns the identifier of the infrastructure. The identifier can be stored or listed by the occopus-maintain command. 
+    On successful finish it returns the identifier of the infrastructure. The identifier can be stored or listed by the occopus-maintain command. 
 
 occopus-destroy
 ~~~~~~~~~~~~~~~

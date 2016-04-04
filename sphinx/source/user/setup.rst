@@ -102,10 +102,10 @@ Occopus uses YAML as a configuration language, mainly for its dynamic properties
 
 .. _authentication:
 
-Authorisation
--------------
+Authentication
+--------------
 
-**Authorisation file**
+**Authentication file**
 
 In order to get access to a resource, Occopus requires your credentials to be defined. For this purpose you have to create a file, ``auth_data.yaml`` containing authentication information for each target resource in a structured way.
 
@@ -122,7 +122,7 @@ Once you have your initial authentication file, edit and insert your credentials
 
 For each different type of resources, you may specify different authentication information, which must fit to the format required by the resource plugin defined by the type keyword. Here are the formats for the different resource types.
 
-**Authorisation data formats**
+**Authentication data formats**
 
 For ``EC2`` resource:
 
