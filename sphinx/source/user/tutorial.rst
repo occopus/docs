@@ -5,7 +5,7 @@ Tutorial
 
 In this section, examples will be shown, how this tool can be used. Each
 subsection details a certain infrastructure by which the user can learn how the
-different features can be utilised, or how the different plugins or clouds can
+different features can be utilised, or how the different plugins or resources can
 be driven.
 
 Please, note that the following examples require a properly configured tool,
@@ -36,66 +36,62 @@ You can download the example as `tutorial.examples.ec2-helloworld <../../example
 
 The following steps are suggested to be performed:
 
-#. Edit ``conf/components.yaml``. Set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud.
-    .. code::
+#. Edit ``nodes/node_definitions.yaml``. In the *resource* section of the node called ``ec2_helloworld_node``, first set the ``endpoint`` and the ``regionname`` of your ec2 interface to your target cloud. Next, set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``). Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM. For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
-        my_ec2_cloud:
-            protocol: boto
-            name: MYCLOUD
-            target:
-                endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
-                regionname: replace_with_regionname_of_your_ec2_interface
+   .. code::
 
-#. Edit or create ``conf/auth_data.yaml``. Based on your credentials, set ``username`` to the value of your ec2 access-key and set ``password`` to the value of your ec2 secret-key. 
-     .. code::
+     'node_def:ec2_helloworld_node':
+         -
+             resource:
+                 type: ec2
+                 endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                 regionname: replace_with_regionname_of_your_ec2_interface
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+                 key_name: replace_with_key_name_on_your_target_cloud
+                 security_group_ids:
+                     -
+                         replace_with_security_group_id1_on_your_target_cloud
+                     -
+                         replace_with_security_group_id2_on_your_target_cloud
+                 subnet_id: replace_with_subnet_id_on_your_target_cloud
 
-        username: replace_with_your_ec2_auth_key
-        password: replace_with_your_ec2_secret_key
+#. Make sure your authentication information is set correclty in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Edit ``init_data/uds_init_data.yaml``. Set the image id (e.g. ``ami-12345678``) and instance_type (e.g. ``m1.small``) for the node called ``hw_node``. Select an image containing a base os installation with cloud-init support. Optionally (in case of Amazon AWS and OpenStack EC2), you should also set the keypair (e.g. ``my_ssh_keypair``), the security groups (you can define multiple security groups in the form of a list, e.g. ``sg-93d46bf7``) and the subnet identifier (e.g. ``subnet-644e1e13``) to be attached to the VM.
-     .. code::
+#. Import the node definition for ``ec2_helloworld_node`` node into the database. 
 
-        ... 
-        image_id: replace_with_id_of_your_image_on_your_target_cloud
-        instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
-        key_name: replace_with_key_name_on_your_target_cloud
-        security_group_ids:
-            -
-                replace_with_security_group_id1_on_your_target_cloud
-            -
-                replace_with_security_group_id2_on_your_target_cloud
-        subnet_id: replace_with_subnet_id_on_your_target_cloud
-        ...
+   .. code::
 
-#. Load the node definition for ``helloworld`` node into the database. 
-    .. code::
+      occopus-import nodes/node_definitions.yaml
 
-        occo-import-node init_data/redis_data.yaml
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
 
-#. Start deploying the infrastructure. Make sure the proper virtualenv is activated.
-    .. code::
+   .. code::
 
-       occo-infra-start --listips --cfg conf/occo.yaml infra-helloworld.yaml 
+      occopus-build infra-helloworld.yaml 
 
-#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. Do not forget to store the identifier of the infrastructure to perform further operations on your infra.
-    .. code::
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the created infrastructure is returned. You can store the identifier of the infrastructure to perform further operations on your infra or query the identifier using the **occopus-maintain -l** command.
 
-        List of ip addresses:
-        helloworld:
-            192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-        14032858-d628-40a2-b611-71381bd463fa
+   .. code::
+
+      List of nodes/ip addresses:
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
 
 #. Check the result on your virtual machine.
-    .. code::
+
+   .. code::
         
-        ssh user@192.168.xxx.xxx
-        # cat /tmp/helloworld.txt
-        Hello World! I have been created by OCCO
+      ssh user@192.168.xxx.xxx
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occo-infra-start``
-    .. code::
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
-        occo-infra-stop --cfg conf/occo.yaml -i 14032858-d628-40a2-b611-71381bd463fa
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
 OCCI-Helloworld
 ---------------
