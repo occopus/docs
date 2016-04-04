@@ -98,29 +98,29 @@ Occopus uses YAML as a configuration language, mainly for its dynamic properties
 
 .. note::
 
-   Please, proceed to the next chapter to continue with setting up authorisation information!
+   Please, proceed to the next chapter to continue with setting up authentication information!
 
-.. _authorisation:
+.. _authentication:
 
 Authorisation
 -------------
 
 **Authorisation file**
 
-In order to get access to a resource, Occopus requires your credentials to be defined. For this purpose you have to create a file, ``auth_data.yaml`` containing authorisation information for each target resource in a structured way.
+In order to get access to a resource, Occopus requires your credentials to be defined. For this purpose you have to create a file, ``auth_data.yaml`` containing authentication information for each target resource in a structured way.
 
 Once you have your ``auth_data.yaml``  file, you must specify it as command line argument for Occopus. A more convenient (recommended) way is to save this file at ``$HOME/.occopus/auth_data.yaml`` so that Occopus will automatically find and use it.
 
-You can download and save your initial authorisation file:
+You can download and save your initial authentication file:
 
 .. code:: yaml
 
     mkdir -p $HOME/.occopus
     curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
 
-Once you have your initial authorisation file, edit and insert your credentials to the appropriate section.
+Once you have your initial authentication file, edit and insert your credentials to the appropriate section.
 
-For each different type of resources, you may specify different authorisation information, which must fit to the format required by the resource plugin defined by the type keyword. Here are the formats for the different resource types.
+For each different type of resources, you may specify different authentication information, which must fit to the format required by the resource plugin defined by the type keyword. Here are the formats for the different resource types.
 
 **Authorisation data formats**
 
@@ -165,7 +165,7 @@ For ``cloudbroker`` resource:
             type: cloudbroker
             auth_data:
                 email: your@email.com
-                password: your_piiassword
+                password: your_password
 
 For ``docker`` resource:
 
@@ -226,7 +226,7 @@ For multiple resources on different endpoints:
 
 .. note::
 
-    The authorisation file has YAML format. Make sure you are using spaces instead of tabulators for indentation!
+    The authentication file has YAML format. Make sure you are using spaces instead of tabulators for indentation!
 
 
 

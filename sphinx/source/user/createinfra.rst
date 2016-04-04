@@ -138,7 +138,7 @@ EC2
   ``endpoint``
     The endpoint (url) of the ec2 cloud interface.
   ``regionname``
-    Regionname of for the ec2 cloud interface.
+    Region name of for the ec2 cloud interface.
   ``image_id``
     The identifier of the image behind the ec2 cloud to be instantiated to realize a virtual machine.
   ``instance_type``
@@ -150,7 +150,7 @@ EC2
   ``subnet_id``
     Optional. The ID of the subnet which should be assigned to the allocated virtual machine.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authorisation file <authorisation>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
 Nova
 ^^^^
@@ -173,7 +173,7 @@ Nova
   ``floating_ip``
     Optional. If defined (with any value), new floating IP address will be allocated and assigned for the instance.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authorisation file <authorisation>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
 
 OCCI
@@ -191,7 +191,7 @@ OCCI
   ``link``
     Optional. List of compute or network resources to be attached to the VM. Using this option enables one to attach additional disk images or public networks to the VM.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authorisation file <authorisation>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
 CloudBroker
 ^^^^^^^^^^^
@@ -210,7 +210,7 @@ CloudBroker
   ``instance_type_id``
     The ID of the CloudBroker Instance to use.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authorisation file <authorisation>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
       
 Docker
 ^^^^^^
@@ -227,7 +227,7 @@ Docker
   ``tag``
     Docker tag. (default = latest)
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authorisation file <authorisation>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
 .. _userdefinitioncontextualisationsection:
 

@@ -32,7 +32,7 @@ Once the infrastructure is successfully built, Occopus exits. This command provi
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
-    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authorisation file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--parallelize:`` (optional) parallelize processing instructions e.g. independent nodes are created parallel (default: sequential)
     * ``infra_def:`` file containing an infrastructure definition
 
@@ -56,7 +56,7 @@ This command destroys an infrastructure including all of its nodes built previou
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
-    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authorisation file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``-i INFRA_ID:`` identifier of the infrastructure to destroy
 
 occopus-maintain
@@ -80,7 +80,7 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
-    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authorisation file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``-l, --list:`` (optional) list the built pieces of infrastructure
     * ``-r, --report:`` (optional) reports about an infrastructure
     * ``-i INFRA_ID:`` (optional) identifier of the infrastructure to maintain
@@ -106,7 +106,7 @@ This command registers scaling requests for a given node in an infrastructure. W
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
-    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authorisation file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``-i INFRA_ID:`` identifier of the infrastructure which contains the node to scale
     * ``-n NODE, --node NODE:`` name of the node to scale
     * ``-c COUNT, --count COUNT:`` positive/negative number expressing the direction and magnitude of scaling (positive: scale up; negative: scale down)
@@ -152,7 +152,7 @@ This command launches occopus as a web service. The occopus rest service can cre
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
-    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authorisation file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--host HOST:`` (optional) sets the host for the service to be assigned to (default: 127.0.0.1)
     * ``--port PORT:`` (optional) sets the port for the service to be assigned to (default: 5000)
     * ``--parallelize:`` (optional) parallelize processing instructions (default: sequential)
