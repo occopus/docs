@@ -1,3 +1,4 @@
+*.swo
 # Do not store intermediate test data
 occo_test/drop_nodes.yaml
 
