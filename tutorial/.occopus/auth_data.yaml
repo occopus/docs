@@ -21,13 +21,6 @@ resource:
     -
         type: docker
         auth_data: notneeded
-config_management:
-    -
-        type: chef
-        auth_data:
-            client_name: name_of_client_on_chef_server
-            client_key: !text_import
-                url: file://path_to_the_pem_file_of_cert_for_client
 
             
         
