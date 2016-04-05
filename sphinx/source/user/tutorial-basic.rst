@@ -96,7 +96,7 @@ The following steps are suggested to be performed:
 
    .. code::
         
-      ssh user@192.168.xxx.xxx
+      ssh ...
       # cat /tmp/helloworld.txt
       Hello World! I have been created by Occopus
 
@@ -213,7 +213,7 @@ The following steps are suggested to be performed:
 
    .. code::
 
-      ssh user@192.168.xxx.xxx
+      ssh ...
       # cat /tmp/message.txt
       Hello World! I am the receiver node created by Occopus.
       # cat /tmp/ping-result.txt
@@ -315,7 +315,7 @@ The following steps are suggested to be performed:
 
    .. code::
         
-      ssh user@192.168.xxx.xxx
+      ssh ...
       # cat /tmp/helloworld.txt
       Hello World! I have been created by Occopus
 
@@ -424,7 +424,7 @@ The following steps are suggested to be performed:
 
    .. code::
 
-      ssh user@192.168.xxx.xxx
+      ssh ...
       # cat /tmp/message.txt
       Hello World! I am the receiver node created by Occopus.
       # cat /tmp/ping-result.txt
