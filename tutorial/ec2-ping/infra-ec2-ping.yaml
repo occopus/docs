@@ -6,12 +6,12 @@ nodes:
         name: ping_receiver
         type: ec2_ping_receiver_node
         variables:
-            message: "Hello World! I am the receiver node."
+            message: "Hello World! I am the receiver node created by Occopus."
     - &S
         name: ping_sender
         type: ec2_ping_sender_node
         variables:
-            message: "Hello World! I am the sender node."
+            message: "Hello World! I am the sender node created by Occopus."
 
 dependencies:
     -

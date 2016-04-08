@@ -215,7 +215,7 @@ The following steps are suggested to be performed:
 
       ssh ...
       # cat /tmp/message.txt
-      Hello World! I am the receiver node created by Occopus.
+      Hello World! I am the sender node created by Occopus.
       # cat /tmp/ping-result.txt
       PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
       64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
@@ -426,7 +426,7 @@ The following steps are suggested to be performed:
 
       ssh ...
       # cat /tmp/message.txt
-      Hello World! I am the receiver node created by Occopus.
+      Hello World! I am the sender node created by Occopus.
       # cat /tmp/ping-result.txt
       PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
       64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
