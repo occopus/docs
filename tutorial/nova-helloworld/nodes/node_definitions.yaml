@@ -5,8 +5,8 @@
             endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
             tenant_name: replace_with_tenant_to_use
             image_id: replace_with_id_of_your_image_on_your_target_cloud
-            server_name: myhelloworld
             flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+            server_name: myhelloworld
             key_name: replace_with_name_of_keypair_or_remove
             security_groups:
                 -

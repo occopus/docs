@@ -12,7 +12,7 @@ Please, note that the following examples require a properly configured Occopus, 
 
 EC2-Helloworld
 ~~~~~~~~~~~~~~
-This tutorial sets up an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
 
@@ -71,7 +71,7 @@ The following steps are suggested to be performed:
 
    .. important::
 
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition (file) changes!
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
    
    .. code::
 
@@ -108,7 +108,7 @@ The following steps are suggested to be performed:
 
 EC2-Ping
 ~~~~~~~~
-This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
@@ -132,7 +132,7 @@ You can download the example as `tutorial.examples.ec2-ping <../../examples/ec2-
 
 The following steps are suggested to be performed:
 
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``ec2_ping_receiver_node`` and for ``ec2_ping_sender_node`` set the followings in its ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``ec2_ping_receiver_node`` and for ``ec2_ping_sender_node`` set the followings in their ``resource`` section:
 
    - ``endpoint`` is an url of an EC2 interface of a cloud (e.g. `https://ec2.eu-west-1.amazonaws.com`).
    - ``regionname`` is the region name within an EC2 cloud (e.g. `eu-west-1`).
@@ -185,7 +185,7 @@ The following steps are suggested to be performed:
 
    .. important::
 
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition (file) changes!
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
    
    .. code::
 
@@ -234,9 +234,230 @@ The following steps are suggested to be performed:
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
+Nova-Helloworld
+~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+
+ - creating a node with basic contextualisation
+ - passing ip address of a node to another node
+ - using the nova resource handler
+
+**Prerequisites**
+
+ - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name)
+ - target cloud contains a base OS image with cloud-init support (image_id, flavor_name)
+
+**Download**
+
+You can download the example as `tutorial.examples.nova-helloworld <../../examples/nova-helloworld.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Edit ``nodes/node_definitions.yaml``. For ``nova_helloworld_node`` set the followings in its ``resource`` section:
+
+   - ``endpoint`` must point to the endpoint (url) of your target Nova cloud. 
+   - ``tenant_name`` is the tenant on your target Nova cloud.
+   - ``image_id`` is the image id on your Nova cloud. Select an image containing a base os installation with cloud-init support!
+   - ``flavor_name`` is the type of flavor to be instantiated on your Nova cloud.
+   - ``server_name`` optionally defines the hostname of VM.
+   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must exist on the target nova cloud before launching the VM. 
+   - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
+   - ``floating_ip`` optionally allocates new floating IP address to the VM.
+   
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
+   .. code::
+
+     'node_def:nova_helloworld_node':
+         -
+             resource:
+                 type: nova
+                 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+                 tenant_name: replace_with_tenant_to_use
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+                 server_name: myhelloworld
+                 key_name: replace_with_name_of_keypair_or_remove
+                 security_groups:
+                     -
+                         replace_with_security_group_to_add_or_remove_section
+                 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your username/password or in case of x509 voms authentication the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``nova_helloworld_node`` node into the database. 
+  
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-nova-helloworld.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+        
+      ssh ...
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+Nova-Ping
+~~~~~~~~~
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will
+ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+
+ - creating two nodes with dependencies (i.e. ordering of deployment)
+ - querying a node's ip address and passing the address to another
+ - using the nova resource handler
+
+**Prerequisites**
+
+ - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name)
+ - target cloud contains a base OS image with cloud-init support (image_id, flavor_name)
+
+**Download**
+
+You can download the example as `tutorial.examples.nova-ping <../../examples/nova-ping.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``nova_ping_receiver_node`` and for ``nova_ping_sender_node`` set the followings in their ``resource`` section:
+   
+   - ``endpoint`` must point to the endpoint (url) of your target Nova cloud. 
+   - ``tenant_name`` is the tenant on your target Nova cloud.
+   - ``image_id`` is the image id on your Nova cloud. Select an image containing a base os installation with cloud-init support!
+   - ``flavor_name`` is the type of flavor to be instantiated on your Nova cloud.
+   - ``server_name`` optionally defines the hostname of VM.
+   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must exist on the target nova cloud before launching the VM. 
+   - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
+   - ``floating_ip`` optionally allocates new floating IP address to the VM.
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
+   .. code::
+
+     'node_def:nova_ping_receiver_node':
+	 -
+	     resource:
+		 type: nova
+		 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+		 tenant_name: replace_with_tenant_to_use
+		 image_id: replace_with_id_of_your_image_on_your_target_cloud
+		 server_name: my-ping-receiver
+		 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+		 key_name: replace_with_name_of_keypair_or_remove
+		 security_groups:
+		     -
+			 replace_with_security_group_to_add_or_remove_section
+		 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+             ...
+     'node_def:nova_ping_sender_node':
+	 -
+	     resource:
+		 type: nova
+		 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+		 tenant_name: replace_with_tenant_to_use
+		 image_id: replace_with_id_of_your_image_on_your_target_cloud
+		 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+		 key_name: replace_with_name_of_keypair_or_remove
+		 security_groups:
+		     -
+			 replace_with_security_group_to_add_or_remove_section
+		 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your username/password or in case of x509 voms authentication the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``nova_ping_receiver_node`` and ``nova_ping_sender_node`` nodes into the database.
+   
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-nova-ping.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+   
+      List of ip addresses:
+      ping_receiver:
+          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping_sender:
+          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+
+   .. code::
+
+      ssh ...
+      # cat /tmp/message.txt
+      Hello World! I am the sender node created by Occopus.
+      # cat /tmp/ping-result.txt
+      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+      --- 192.168.xxx.xxx ping statistics ---
+      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+
 OCCI-Helloworld
 ~~~~~~~~~~~~~~~
-This tutorial sets up an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
 
@@ -290,7 +511,7 @@ The following steps are suggested to be performed:
   
    .. important::
 
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition (file) changes!
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
    
    .. code::
 
@@ -327,7 +548,7 @@ The following steps are suggested to be performed:
 
 OCCI-Ping
 ~~~~~~~~~
-This tutorial sets up an infrastructure containing two nodes. The ping-sender node will
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
@@ -352,7 +573,7 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
 
 The following steps are suggested to be performed:
 
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in its ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in their ``resource`` section:
    
    - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB. 
    - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
@@ -396,7 +617,7 @@ The following steps are suggested to be performed:
    
    .. important::
 
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition (file) changes!
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
    
    .. code::
 

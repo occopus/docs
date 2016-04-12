@@ -124,7 +124,7 @@ For each different type of resources, you may specify different authentication i
 
 **Authentication data formats**
 
-For ``EC2`` resource:
+For ``EC2`` resources:
 
 .. code:: yaml
 
@@ -135,18 +135,31 @@ For ``EC2`` resource:
                 accesskey: your_access_key
                 secretkey: your_secret_key
 
-For ``nova`` resource:
+For ``nova`` resources:
 
-.. code:: yaml
+  In case of username/password authentication:
+
+  .. code:: yaml
+    
+    resource:
+        -
+            type: nova
+            auth_data:
+                username: your_username
+                password: your_password
+
+  In case of VOMS proxy authentication:
+
+  .. code:: yaml
     
     resource:
         -
             type: nova
             auth_data:
                 type: voms
-                proxy: path_to_your_voms_proxy_file
+                proxy: path_to_your_x509_voms_proxy_file
 
-For ``occi`` resource:
+For ``occi`` resources:
 
 .. code:: yaml
 
@@ -156,7 +169,7 @@ For ``occi`` resource:
             auth_data:
                 proxy: path_to_your_voms_proxy_file
 
-For ``cloudbroker`` resource:
+For ``cloudbroker`` resources:
 
 .. code:: yaml
 
@@ -167,7 +180,7 @@ For ``cloudbroker`` resource:
                 email: your@email.com
                 password: your_password
 
-For ``docker`` resource:
+For ``docker`` resources:
 
 .. code:: yaml
 
@@ -177,7 +190,7 @@ For ``docker`` resource:
             auth_data: unused
 
 
-For ``chef`` config manager:
+For ``chef`` config managers:
 
 .. code:: yaml
 
@@ -206,7 +219,7 @@ For multiple resource types:
                 type: voms
                 proxy: path_to_your_voms_proxy_file
 
-For multiple resources on different endpoints:
+For multiple resources with different endpoints:
 
 .. code:: yaml
 
