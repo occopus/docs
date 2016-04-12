@@ -19,7 +19,6 @@ This tutorial builds an infrastructure containing a single node. The node will r
 In this example, the following feature(s) will be demonstrated:
 
  - creating a node with basic contextualisation
- - passing ip address of a node to another node
  - using the ec2 resource handler
 
 **Prerequisites**
@@ -42,7 +41,7 @@ The following steps are suggested to be performed:
    - ``image_id`` is the image id (e.g. `ami-12345678`) on your EC2 cloud. Select an image containing a base os installation with cloud-init support!
    - ``instance_type`` is the instance type (e.g. `m1.small`) of your VM to be instantiated.
    - ``key_name``  optionally specifies the keypair (e.g. `my_ssh_keypair`) to be deployed on your VM. 
-   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of you VM.
+   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
    - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM. 
 
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
@@ -139,7 +138,7 @@ The following steps are suggested to be performed:
    - ``image_id`` is the image id (e.g. `ami-12345678`) on your EC2 cloud. Select an image containing a base os installation with cloud-init support!
    - ``instance_type`` is the instance type (e.g. `m1.small`) of your VM to be instantiated.
    - ``key_name``  optionally specifies the keypair (e.g. `my_ssh_keypair`) to be deployed on your VM.
-   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of you VM.
+   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
    - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM.
 
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
@@ -243,7 +242,6 @@ This tutorial builds an infrastructure containing a single node. The node will r
 In this example, the following feature(s) will be demonstrated:
 
  - creating a node with basic contextualisation
- - passing ip address of a node to another node
  - using the nova resource handler
 
 **Prerequisites**
@@ -464,7 +462,6 @@ This tutorial builds an infrastructure containing a single node. The node will r
 In this example, the following feature(s) will be demonstrated:
 
  - creating a node with basic contextualisation
- - passing ip address of a node to another node
  - using the occi resource handler
 
 **Prerequisites**
