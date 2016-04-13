@@ -32,8 +32,6 @@ You can download the example as `tutorial.examples.ec2-helloworld <../../example
 
 **Steps**
 
-The following steps are suggested to be performed:
-
 #. Edit ``nodes/node_definitions.yaml``. For ``ec2_helloworld_node`` set the followings in its ``resource`` section:
 
    - ``endpoint`` is an url of an EC2 interface of a cloud (e.g. `https://ec2.eu-west-1.amazonaws.com`). 
@@ -99,7 +97,7 @@ The following steps are suggested to be performed:
       # cat /tmp/helloworld.txt
       Hello World! I have been created by Occopus
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -107,12 +105,9 @@ The following steps are suggested to be performed:
 
 EC2-Ping
 ~~~~~~~~
-This tutorial builds an infrastructure containing two nodes. The ping-sender node will
-ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating two nodes with dependencies (i.e. ordering of deployment)
  - querying a node's ip address and passing the address to another
@@ -128,8 +123,6 @@ In this example, the following feature(s) will be demonstrated:
 You can download the example as `tutorial.examples.ec2-ping <../../examples/ec2-ping.tgz>`_ .
 
 **Steps**
-
-The following steps are suggested to be performed:
 
 #. Edit ``nodes/node_definitions.yaml``. Both, for ``ec2_ping_receiver_node`` and for ``ec2_ping_sender_node`` set the followings in their ``resource`` section:
 
@@ -227,7 +220,7 @@ The following steps are suggested to be performed:
       5 packets transmitted, 5 received, 0% packet loss, time 4003ms
       rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -238,8 +231,6 @@ Nova-Helloworld
 This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating a node with basic contextualisation
  - using the nova resource handler
@@ -254,8 +245,6 @@ In this example, the following feature(s) will be demonstrated:
 You can download the example as `tutorial.examples.nova-helloworld <../../examples/nova-helloworld.tgz>`_ .
 
 **Steps**
-
-The following steps are suggested to be performed:
 
 #. Edit ``nodes/node_definitions.yaml``. For ``nova_helloworld_node`` set the followings in its ``resource`` section:
 
@@ -322,7 +311,7 @@ The following steps are suggested to be performed:
       # cat /tmp/helloworld.txt
       Hello World! I have been created by Occopus
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -334,8 +323,6 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating two nodes with dependencies (i.e. ordering of deployment)
  - querying a node's ip address and passing the address to another
@@ -351,8 +338,6 @@ In this example, the following feature(s) will be demonstrated:
 You can download the example as `tutorial.examples.nova-ping <../../examples/nova-ping.tgz>`_ .
 
 **Steps**
-
-The following steps are suggested to be performed:
 
 #. Edit ``nodes/node_definitions.yaml``. Both, for ``nova_ping_receiver_node`` and for ``nova_ping_sender_node`` set the followings in their ``resource`` section:
    
@@ -447,7 +432,7 @@ The following steps are suggested to be performed:
       5 packets transmitted, 5 received, 0% packet loss, time 4003ms
       rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -458,8 +443,6 @@ OCCI-Helloworld
 This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating a node with basic contextualisation
  - using the occi resource handler
@@ -475,8 +458,6 @@ In this example, the following feature(s) will be demonstrated:
 You can download the example as `tutorial.examples.occi-helloworld <../../examples/occi-helloworld.tgz>`_ .
 
 **Steps**
-
-The following steps are suggested to be performed:
 
 #. Edit ``nodes/node_definitions.yaml``. For ``occi_helloworld_node`` set the followings in its ``resource`` section:
 
@@ -537,7 +518,7 @@ The following steps are suggested to be performed:
       # cat /tmp/helloworld.txt
       Hello World! I have been created by Occopus
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -549,8 +530,6 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating two nodes with dependencies (i.e. ordering of deployment)
  - querying a node's ip address and passing the address to another
@@ -567,8 +546,6 @@ In this example, the following feature(s) will be demonstrated:
 You can download the example as `tutorial.examples.occi-ping <../../examples/occi-ping.tgz>`_ .
 
 **Steps**
-
-The following steps are suggested to be performed:
 
 #. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in their ``resource`` section:
    
@@ -657,7 +634,7 @@ The following steps are suggested to be performed:
       5 packets transmitted, 5 received, 0% packet loss, time 4003ms
       rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
@@ -676,7 +653,7 @@ This tutorial builds an infrastructure containing a single node implemented by a
 
  - accessing a Docker host or a Swarm cluster (endpoint)
  - having a docker image to be instantiated or using the one predefined in this example (origin, image)
- - command to be executed on the image and the required environment variables or using the one predefined in this example (command, env)
+ - command to be executed on the image and the required environment variables or using the one predefined in this example (command, environment variables)
 
  .. important::
 
@@ -688,11 +665,9 @@ You can download the example as `tutorial.examples.docker-helloworld <../../exam
 
 **Steps**
 
-The following steps are suggested to be performed:
-
 #. Edit ``nodes/node_definitions.yaml``. For ``docker_helloworld_node`` set the followings in its ``resource`` section:
 
-   - ``endpoint`` is the tcp endpoint of your docker cluster including ip address and port (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
+   - ``endpoint`` is the endpoint of your docker cluster (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
 
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
@@ -746,7 +721,118 @@ The following steps are suggested to be performed:
         # docker exec -it 13bb8c94b5f4 cat /root/message.txt
         Hello World! I have been created by Occopus.
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+Docker-Ping
+~~~~~~~~~~~
+This tutorial builds an infrastructure containing a two nodes implemented by Docker containers. The ping-sender node will ping the ping-receiver node to demonstrate the connection between the two nodes. The sender node will store the outcome of ping in ``/root/ping-result.txt`` file.
+
+**Features**
+
+ - creating two nodes with dependencies (i.e ordering or deployment)
+ - querying a node's ip address and passing the address to another
+ - using the docker resource handler
+
+**Prerequisites**
+
+ - accessing a Docker host or a Swarm cluster (endpoint)
+ - having a docker image to be instantiated or using the one predefined in this example (origin, image)
+ - command to be executed on the image and the required environment variables or using the one predefined in this example (command, env)
+
+ .. important::
+
+    Encrypted connection is not supported yet!
+
+**Download**
+
+You can download the example as `tutorial.examples.docker-ping <../../examples/docker-ping.tgz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``docker_ping_receiver_node`` and for ``docker_ping_sender_node`` set the followings in their ``resource`` section:
+  
+   - ``endpoint`` is the endpoint of your docker cluster (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
+   .. code::
+
+     'node_def:docker_ping_receiver_node':
+       -
+	     resource:
+		 type: docker
+		 endpoint: replace_with_your_docker_endpoint
+		 origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
+		 image: busybox_helloworld
+		 network_mode: overlaynet
+		 tag: latest
+             ...
+     'node_def:docker_ping_sender_node':
+	 -
+	     resource:
+		 type: docker
+		 endpoint: replace_with_your_docker_endpoint
+		 origin: https://s3.lpds.sztaki.hu/docker/busybox_ping.tar
+		 image: busybox_ping
+		 network_mode: overlaynet
+		 tag: latest
+
+#. Make sure your authentication information is set correctly in your authentication file. The docker plugin in Occopus does not apply authentication, however a dummy authentication block is needed. Instructions for setting the authentication properly is described at the :ref:`authentication page <authentication>`. There you can download a default authentication file containing the docker section already.
+
+#. Load the node definition for ``docker_ping_receiver_node`` and ``docker_ping_sender_node`` nodes into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-docker-ping.yaml 
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      ping_receiver:
+        10.0.0.2 (552fe5b2-23a6-4c12-a4e2-077521027832)
+      ping_sender:
+        10.0.0.3 (eabc8d2f-401b-40cf-9386-4739ecd99fbd)    
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+
+        # ssh ...
+        # docker ps
+        CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+        4e83c45e8378        busybox_ping:latest         "sh -c /root/start.sh"   16 seconds ago      Up 15 seconds                           romantic_brown
+        10b27bc4d978        busybox_helloworld:latest   "sh -c /root/start.sh"   17 seconds ago      Up 16 seconds                           jovial_mayer
+
+        # docker exec -it 4e83c45e8378 cat /root/ping-result.txt
+        PING 172.17.0.2 (172.17.0.2): 56 data bytes
+        64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.195 ms
+        64 bytes from 172.17.0.2: seq=1 ttl=64 time=0.105 ms
+        64 bytes from 172.17.0.2: seq=2 ttl=64 time=0.124 ms
+        64 bytes from 172.17.0.2: seq=3 ttl=64 time=0.095 ms
+        64 bytes from 172.17.0.2: seq=4 ttl=64 time=0.085 ms
+
+        --- 172.17.0.2 ping statistics ---
+        5 packets transmitted, 5 packets received, 0% packet loss
+        round-trip min/avg/max = 0.085/0.120/0.195 ms
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
