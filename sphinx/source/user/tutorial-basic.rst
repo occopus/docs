@@ -663,3 +663,92 @@ The following steps are suggested to be performed:
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
+Docker-Helloworld
+~~~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing a single node implemented by a Docker container. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/root/message.txt`` file.
+
+**Features**
+
+ - creating a node with basic contextualisation
+ - using the docker resource handler
+
+**Prerequisites**
+
+ - accessing a Docker host or a Swarm cluster (endpoint)
+ - having a docker image to be instantiated or using the one predefined in this example (origin, image)
+ - command to be executed on the image and the required environment variables or using the one predefined in this example (command, env)
+
+ .. important::
+
+    Encrypted connection is not supported yet!
+
+**Download**
+
+You can download the example as `tutorial.examples.docker-helloworld <../../examples/docker-helloworld.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Edit ``nodes/node_definitions.yaml``. For ``docker_helloworld_node`` set the followings in its ``resource`` section:
+
+   - ``endpoint`` is the tcp endpoint of your docker cluster including ip address and port (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
+   .. code::
+
+     'node_def:docker_helloworld_node':
+	 -
+	     resource:
+		 type: docker
+		 endpoint: replace_with_your_docker_endpoint
+		 origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
+		 image: busybox_helloworld
+		 network_mode: bridge
+		 tag: latest
+
+#. Make sure your authentication information is set correctly in your authentication file. The docker plugin in Occopus does not apply authentication, however a dummy authentication block is needed. The instructions for setting the authentication properly is described at the :ref:`authentication page <authentication>`. There you can download a default authentication file containing the docker section already.
+
+#. Load the node definition for ``docker_helloworld_node`` node into the database. 
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-docker-helloworld.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+        
+        # docker ps
+        CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+        13bb8c94b5f4        busybox_helloworld:latest   "sh -c /root/start.sh"   3 seconds ago       Up 2 seconds                            admiring_joliot
+
+        # docker exec -it 13bb8c94b5f4 cat /root/message.txt
+        Hello World! I have been created by Occopus.
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
