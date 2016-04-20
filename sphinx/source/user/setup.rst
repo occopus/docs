@@ -198,10 +198,11 @@ For ``chef`` config managers:
         -
             type: chef
             auth_data:
-                client_name: name_of_client_on_chef_server
+                client_name: name_of_user_on_chef_server
                 client_key: !text_import
-                    url: file://path_to_the_pem_file_of_cert_for_client
+                    url: file://path_to_the_pem_file_of_cert_for_user
 
+The values for ``client_name`` and ``client_key`` attributes must be the name of the **user** that can login to the Chef server and the public key of that Chef user. This user and its key will be used by Occopus to register the infrastructure before deployment of nodes starts. As the example shows above, the key can be imported from a separate file, so the path to the **pem** file is enough to be specified in the last line.
 
 For multiple resource types:
 

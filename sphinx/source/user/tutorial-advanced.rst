@@ -170,7 +170,11 @@ You can download the example as `tutorial.examples.ec2-chef-wordpress <../../exa
         mysql_dbuser_username: replace_with_database_username
         mysql_dbuser_password: replace_with_database_user_password
 
-#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the resource you would like to use, as well as the chef authentication data in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use, as well as the authentication data for the ``config_management`` section. Setting authentication information for both is described :ref:`here <authentication>`.
+
+   .. important::
+
+      Do not forget to set your Chef credentials!
 
 #. Load the node definitions into the database.
 
