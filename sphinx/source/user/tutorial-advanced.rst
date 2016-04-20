@@ -9,6 +9,177 @@ In this section more advanced solutions will be shown. The examples will introdu
 
 Please, note that the following examples require a properly configured Occopus, therefore we suggest to continue this section if you already followed the instructions written in the :ref:`Installation <installation>` section.
 
+Chef-Wordpress
+~~~~~~~~~~~~~~
+This tutorial uses Chef as a configuration management tool to deploy a two-node
+infrastructure containing a MySQL server node and a Wordpress node. The
+Wordpress node will connect to the MySQL database.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+
+ - using Chef as a configuration management tool to deploy services
+ - passing variables to Chef through Occopus
+ - assembling the run-lists of the chef-clients on the nodes
+ - Checking MySQL database availability on a node
+ - Checking url availability on a node
+
+**Prerequisites**
+
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - target cloud contains a base OS image with cloud-init support (image id, instance type)
+ - accessing a Chef server
+ - Wordpress community recipe (available at Chef Supermarket) and its dependencies uploaded to target Chef Server
+ - Database-setup recipe (provided in download) uploaded to target Chef server
+
+**Download**
+
+You can download the example as `tutorial.examples.chef-wordpress <../../examples/ec2-chef-wordpress>`_ .
+
+**Important**
+In this tutorial, we will use ec2 cloud resources (based on our ec2 tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes - you can even use different types of resources for each node.
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. For each node, configure the resource section as seen in the basic tutorials. For example, if you are using an ec2 cloud, you have to set the following:
+
+   - ``endpoint`` is an url of an EC2 interface of a cloud (e.g. `https://ec2.eu-west-1.amazonaws.com`).
+   - ``regionname`` is the region name within an EC2 cloud (e.g. `eu-west-1`).
+   - ``image_id`` is the image id (e.g. `ami-12345678`) on your EC2 cloud. Select an image containing a base os installation with cloud-init support!
+   - ``instance_type`` is the instance type (e.g. `m1.small`) of your VM to be instantiated.
+   - ``key_name``  optionally specifies the keypair (e.g. `my_ssh_keypair`) to be deployed on your VM.
+   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
+   - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM.
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code::
+
+     'node_def:ec2_chef_mysql_node':
+         -
+             resource:
+                 type: ec2
+                 endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                 regionname: replace_with_regionname_of_your_ec2_interface
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+                 key_name: replace_with_key_name_on_your_target_cloud
+                 security_group_ids:
+                     -
+                         replace_with_security_group_id1_on_your_target_cloud
+                     -
+                         replace_with_security_group_id2_on_your_target_cloud
+                 subnet_id: replace_with_subnet_id_on_your_target_cloud
+             ...
+     'node_def:ec2_chef_wordpress_node':
+         -
+             resource:
+                 type: ec2
+                 endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                 regionname: replace_with_regionname_of_your_ec2_interface
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+                 key_name: replace_with_key_name_on_your_target_cloud
+                 security_group_ids:
+                     -
+                         replace_with_security_group_id1_on_your_target_cloud
+                     -
+                         replace_with_security_group_id2_on_your_target_cloud
+                 subnet_id: replace_with_subnet_id_on_your_target_cloud
+             ...
+  
+#. Also in ``nodes/node_definitions.yaml``, edit the config_management section for both nodes. Set the endpoint to the url of your Chef Server.
+
+   .. code::
+
+     'node_def:ec2_chef_mysql_node':
+         -
+             resource:
+                ...
+             ...
+             config_management:
+                type: chef
+                endpoint: replace_with_url_of_chef_server
+                run_list:
+                    - recipe[database-setup::db]
+             ...
+     'node_def:ec2_chef_wordpress_node':
+         -
+             resource:
+                ...
+             ...
+             config_management:
+                type: chef
+                endpoint: replace_with_url_of_chef_server
+                run_list:
+                    - recipe[wordpress]
+             ...
+
+#. In the ``nodes/cloud_init_wordpress.yaml`` contextualization file, set your Chef Server url, your validation client name and validation client key.
+
+   .. code::
+
+     ...
+     chef:
+        istall_type: omnibus
+        omnibus_url: "https://www.opscode.com/chef/install.sh"
+        force_install: false
+        server_url: "replace_with_your_chef_server_url"
+        environment: {{infra_id}}
+        node_name: {{node_id}}
+        validation_name: replace_with_chef_validation_client_name
+        validation_key: |
+            replace_with_chef_validation_client_key
+     ...
+
+
+#. Edit ``infra_chef_wordpress.yaml``. Set your desired root password, database name, username, and user password for your MySQL database in the variables section.
+
+   .. code::
+
+     ...
+     variables:
+        mysql_root_password: replace_with_database_root_password
+        mysql_database_name: replace_with_database_name
+        mysql_dbuser_username: replace_with_database_username
+        mysql_dbuser_password: replace_with_database_user_password
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the resource you would like to use, as well as the chef authentication data in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definitions into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-ec2-chef-wordpress.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      mysql-server:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      wordpress:
+          192.168.xxx.xxx (894fe127-28c9-4c8f-8c5f-2f120c69b9c3)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
 OCCI-DockerSwarm
 ~~~~~~~~~~~~~~~~
 This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a head node and predefined number of worker nodes. The worker nodes receive the ip of the head node and attach to the head node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port 2375).
