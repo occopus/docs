@@ -16,7 +16,7 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_wordpress.yaml
+                url: file://cloud_init_chef.yaml
             attributes:
                 mysql:
                     server_root_password: '{{ variables.mysql_root_password }}'
@@ -53,7 +53,7 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_wordpress.yaml
+                url: file://cloud_init_chef.yaml
             attributes:
                 wordpress:
                     db:
