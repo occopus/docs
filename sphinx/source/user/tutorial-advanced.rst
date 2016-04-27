@@ -3,19 +3,15 @@
 Advanced
 ========
 
-This section will be filled up with examples during April 2016. Revisit this page for new examples!
-
 In this section more advanced solutions will be shown. The examples will introduce complex infrastructures or will introduce more complex features of the Occopus tool.
 
 Please, note that the following examples require a properly configured Occopus, therefore we suggest to continue this section if you already followed the instructions written in the :ref:`Installation <installation>` section.
 
 Chef-Apache2
 ~~~~~~~~~~~~
-This tutorial uses Chef as a configuration management tool to deploy a two-node infrastructure containing a MySQL server node and a Wordpress node. The Wordpress node will connect to the MySQL database.
+This tutorial uses Chef as a configuration management tool to deploy a one-node infrastructure containing an Apache2 web server.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - using Chef as a configuration management tool to deploy services
  - assembling the run-lists of the chef-clients on the nodes
@@ -115,7 +111,7 @@ You can download the example as `tutorial.examples.ec2-chef-apache2 <../../examp
         server_url: "replace_with_your_chef_server_url"
         environment: {{infra_id}}
         node_name: {{node_id}}
-        validation_name: replace_with_chef_validation_client_name
+        validation_name: "replace_with_chef_validation_client_name"
         validation_key: |
             replace_with_chef_validation_client_key
      ...
@@ -148,7 +144,7 @@ You can download the example as `tutorial.examples.ec2-chef-apache2 <../../examp
 
    .. code::
 
-      occopus-build infra-chef-apache.yaml
+      occopus-build infra-chef-apache2.yaml
 
 #. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
@@ -170,8 +166,6 @@ Chef-Wordpress
 This tutorial uses Chef as a configuration management tool to deploy a two-node infrastructure containing a MySQL server node and a Wordpress node. The Wordpress node will connect to the MySQL database.
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - using Chef as a configuration management tool to deploy services
  - passing variables to Chef through Occopus
@@ -302,7 +296,7 @@ You can download the example as `tutorial.examples.ec2-chef-wordpress <../../exa
         server_url: "replace_with_your_chef_server_url"
         environment: {{infra_id}}
         node_name: {{node_id}}
-        validation_name: replace_with_chef_validation_client_name
+        validation_name: "replace_with_chef_validation_client_name"
         validation_key: |
             replace_with_chef_validation_client_key
      ...
@@ -370,8 +364,6 @@ OCCI-DockerSwarm
 This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a head node and predefined number of worker nodes. The worker nodes receive the ip of the head node and attach to the head node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port 2375).
 
 **Features**
-
-In this example, the following feature(s) will be demonstrated:
 
  - creating two types of nodes through contextualisation
  - passing ip address of a node to another node

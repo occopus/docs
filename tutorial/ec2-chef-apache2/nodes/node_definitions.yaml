@@ -16,7 +16,7 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_apache2.yaml
+                url: file://cloud_init_chef.yaml
         config_management:
             type: chef
             endpoint: replace_with_url_of_chef_server
