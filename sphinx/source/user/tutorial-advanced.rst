@@ -9,8 +9,8 @@ In this section more advanced solutions will be shown. The examples will introdu
 
 Please, note that the following examples require a properly configured Occopus, therefore we suggest to continue this section if you already followed the instructions written in the :ref:`Installation <installation>` section.
 
-Chef-Wordpress
-~~~~~~~~~~~~~~
+Chef-Apache2
+~~~~~~~~~~~~
 This tutorial uses Chef as a configuration management tool to deploy a two-node infrastructure containing a MySQL server node and a Wordpress node. The Wordpress node will connect to the MySQL database.
 
 **Features**
