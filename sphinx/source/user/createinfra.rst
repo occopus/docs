@@ -229,6 +229,17 @@ Docker
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
+CloudSigma
+~~~~~~~~~~
+  ``type: cloudsigma``
+    Select the cloudsigma resource handler.
+  ``endpoint``
+    The endpoint (URL) of the CloudSigma interface.
+  ``libdrive_id``
+    The UUID of the library drive image to use.
+  ``description``
+    The description of the virtual machine to be started in CloudSigma (e.g. CPU, memory, network, public key).
+
 .. _userdefinitioncontextualisationsection:
 
 Contextualisation
@@ -239,7 +250,7 @@ In this section, the attributes (keywords) are listed and explained which can be
 Cloudinit
 ^^^^^^^^^
   ``type: cloudinit`` 
-    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi.
+    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma.
   ``context_template``
     This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``

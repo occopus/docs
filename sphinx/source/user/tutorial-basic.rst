@@ -1019,3 +1019,239 @@ You can download the example as `tutorial.examples.cloudbroker-ping <../../examp
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
+CloudSigma-Helloworld
+~~~~~~~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+
+**Features**
+
+In this example, the following feature(s) will be demonstrated:
+
+ - creating a node with basic contextualisation
+ - using the cloudsigma resource handler
+
+**Prerequisites**
+
+ - accessing a cloud through CloudSigma interface (email, password, endpoint)
+ - target cloud contains a base OS image with cloud-init support (library drive identifier)
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudsigma-helloworld <../../examples/cloudsigma-helloworld.tgz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. For ``cloudsigma_helloworld_node`` set the followings in its ``resource`` section:
+
+   - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`). 
+   - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
+   - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
+   - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
+   - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
+   .. code::
+
+     'node_def:cloudsigma_helloworld_node':
+         -
+            resource:
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy:
+                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
+                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudsigma_helloworld_node`` node into the database. 
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudsigma-helloworld.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+        
+      ssh ...
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+CloudSigma-Ping
+~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+ - creating two nodes with dependencies (i.e. ordering of deployment)
+ - querying a node's ip address and passing the address to another
+ - using the cloudsigma resource handler
+
+**Prerequisites**
+
+ - accessing a cloud through CloudSigma interface (email, password, endpoint)
+ - target cloud contains a base OS image with cloud-init support (library drive identifier)
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudsigma-ping <../../examples/cloudsigma-ping.tgz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``cloudsigma_ping_receiver_node`` and for ``cloudsigma_ping_sender_node`` set the followings in their ``resource`` section:
+
+   - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`). 
+   - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
+   - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
+   - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
+   - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+   
+   .. code::
+
+     'node_def:cloudsigma_ping_receiver_node':
+         -
+            resource:
+                name: my_cloudsigma_cloud
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy:
+                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
+                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
+             ...
+     'node_def:cloudsigma_ping_sender_node':
+         -
+            resource:
+                name: my_cloudsigma_cloud
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy:
+                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
+                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
+             ...
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudsigma_ping_receiver_node`` and ``cloudsigma_ping_sender_node`` nodes into the database. 
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudsigma-ping.yaml 
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+   
+      List of ip addresses:
+      ping_receiver:
+          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping_sender:
+          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+
+   .. code::
+
+      ssh ...
+      # cat /tmp/message.txt
+      Hello World! I am the sender node created by Occopus.
+      # cat /tmp/ping-result.txt
+      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+      --- 192.168.xxx.xxx ping statistics ---
+      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f

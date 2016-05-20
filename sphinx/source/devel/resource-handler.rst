@@ -53,3 +53,8 @@ Docker plugin
 .. automodule:: occo.plugins.resourcehandler.docker
     :members:
 
+CloudSigma plugin
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: occo.plugins.resourcehandler.cloudsigma
+    :members:
