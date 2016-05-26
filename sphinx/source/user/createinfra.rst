@@ -230,9 +230,9 @@ Docker
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
 CloudSigma
-~~~~~~~~~~
+^^^^^^^^^^
   ``type: cloudsigma``
-    Select the cloudsigma resource handler.
+    Selects the cloudsigma resource handler.
   ``endpoint``
     The endpoint (URL) of the CloudSigma interface.
   ``libdrive_id``
