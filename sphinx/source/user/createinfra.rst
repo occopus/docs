@@ -78,25 +78,38 @@ The following example describes a two nodes infrastructure where B depends on A,
 Node Description
 ----------------
 
-Abstract description of a node, which identifies a type of node a user may
-include in an infrastructure. It is an abstract, *resource-independent*
-definition of a class of nodes and can be stored in a repository.
+Abstract description of a node, which identifies a type of node a user may include in an infrastructure. It is an abstract, *resource-independent* definition of a class of nodes and can be stored in a repository.
 
-This data structure does *not* contain information on how it can be
-instantiated. It rather contains *what* needs to be instantiated, and under what *conditions*. It refers to one or more *implementations* that can be used
-to instantiate the node. These implementations are described with :ref:`node
-definition <usernodedefinition>` data structures.
+This data structure does *not* contain information on how it can be instantiated. It rather contains *what* needs to be instantiated, and under what *conditions*. It refers to one or more *implementations* that can be used to instantiate the node. These implementations are described with :ref:`node definition <usernodedefinition>` data structures.
 
-To instantiate a node, its implementations are gathered first. Then, they are either filtered or one is selected by some brokering algorithm (currently: randomly).
+To instantiate a node, its implementations are gathered first. Then, they are filtered and one is selected by Occopus randomly.
 
     ``name``
-        Uniquely identifies the node inside the infrastructure.
+        Name of node which uniquely identifies the node inside the infrastructure.
 
     ``type``
-        The type of the node.
+        The type of the node i.e. the node definition to be used when intantiating the node. If node definition exists for 'XXX' then use "type: XXX" to instantiate the implementation of node 'XXX'.
 
     ``filter`` (``dict``)
-        Optional. Provides filtering among the available node definitions. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified, the one will be chosen among implementations.
+
+        .. code:: yaml
+  
+           filter:
+              type: ec2
+              regionname: ROOT
+              instance_type: m1.small
+
+        Optional. Provides filtering among the available implementations of a node definition specified for 'type'. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified or filtering results more than one implementations, one will be chosen by Occopus.
+
+    ``scaling`` (``dict``)
+
+        .. code:: yaml
+  
+           scaling:
+              min: 1
+              max: 3
+
+        Optional. Keywords for scaling are ''min'' and ''max''. They specify how many instances of the node can have minimum (''min'') and maximum (''max'') in the infrastructure. At startup ''min'' number of instances of the node will be created. Default and minimal value for ''min'' is 1. Default value for ''max'' equals to ''min''. Both values are hardlimits, no modification of these limits are possible during infrastructure maintenance.
 
     ``variables``
         Arbitrary mapping containing static node-level information:
@@ -105,7 +118,7 @@ To instantiate a node, its implementations are gathered first. Then, they are ei
         #. Overridden/specified in the node's description in the
            infrastructure description.
 
-        The final list of variables is assembled by the Compiler
+        The final list of variables is assembled by Occopus.
 
 .. _usernodedefinition:
 
