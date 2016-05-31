@@ -1045,6 +1045,7 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
    - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
    - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
    - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``vnc_password`` set the password for your VNC session.
    - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
    - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
@@ -1061,14 +1062,13 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
                 description:
                     cpu: 2048
                     mem: 1073741824
+                    vnc_password: secret
                     pubkeys:
                         -
                             replace_with_id_of_your_pubkey_on_your_target_cloud
                     nics:
                         -
-                            firewall_policy:
-                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
-                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
                             ip_v4_conf:
                                 conf: dhcp
                                 ip: null
@@ -1143,6 +1143,7 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
    - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
    - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
    - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``vnc_password`` set the password for your VNC session.
    - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
    - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
@@ -1160,14 +1161,13 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
                 description:
                     cpu: 2048
                     mem: 1073741824
+                    vnc_password: secret
                     pubkeys:
                         -
                             replace_with_id_of_your_pubkey_on_your_target_cloud
                     nics:
                         -
-                            firewall_policy:
-                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
-                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
                             ip_v4_conf:
                                 conf: dhcp
                                 ip: null
@@ -1184,14 +1184,13 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
                 description:
                     cpu: 2048
                     mem: 1073741824
+                    vnc_password: secret
                     pubkeys:
                         -
                             replace_with_id_of_your_pubkey_on_your_target_cloud
                     nics:
                         -
-                            firewall_policy:
-                                uuid: replace_with_id_of_your_network_policy_on_your_target_cloud
-                                resource_uri: /api/2.0/fwpolicies/replace_with_id_of_your_network_policy_on_your_target_cloud/
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
                             ip_v4_conf:
                                 conf: dhcp
                                 ip: null
