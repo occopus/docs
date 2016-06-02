@@ -48,3 +48,7 @@ Docker
 Occopus has a resource plugin which enables to utilise 
 pure `Docker <http://www.docker.com>`_ or `Swarm <http://www.docker.com/docker-swarm>`_ resources. With this plugin it is possible to deploy containers and to combine them into an infrastructure.
  
+CloudSigma
+----------
+
+The CloudSigma resource plugin of Occopus enables the usage of `CloudSigma <https://www.cloudsigma.com/>`_ resources.

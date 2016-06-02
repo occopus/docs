@@ -640,6 +640,187 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
+CloudBroker-RunExe
+~~~~~~~~~~~~~~~~~~
+This tutorial sets up an infrastructure containing one node on the CloudBroker Platform. The deployed node uses a VM image which executes a script uploaded as ``execute.bin``.
+
+**Features**
+
+ - creating a node performing script execution 
+ - uploading the content of two files, one as the executable, and one as the input for the executable
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, username and password)
+ - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-runexe <../../examples/cloudbroker-runexe.tgz>`_ .
+
+**Steps**
+
+#. Optionally, edit ``nodes/node_definitions.yaml``. The actual settings in this file are working properly, so you may even leave the parameters unchanged and skip this step!
+
+   You can modify the following attributes in the ``resource`` section:
+
+   - ``endpoint`` is the url of the CloudBroker interface (e.g. `https://cloudsme-prototype.cloudbroker.com`).
+   - ``software_id``, ``executable_id``, ``resource_id``, ``region_id`` and ``instance_type_id`` attributes are all IDs pointing to a predefined setting for software, executable, resource, region, and instance type. For further explanation see the CloudBroker User Guide.
+ 
+   You can modify the following attributes in the ``contextualisation`` section:
+
+   - ``files`` section contains a list of files to be uploaded.
+
+   .. note::
+
+      The current configuration of the IDs matches a software on a CloudBroker resource which is capable of running user-uploaded executables.
+
+   .. code::
+
+      ...
+      resource:
+	  type: cloudbroker
+	  endpoint: https://cloudsme-prototype.cloudbroker.com
+	  software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
+	  executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
+	  resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
+	  region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
+	  instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+      contextualisation:
+	  type: cloudbroker
+	  files:
+	      -
+		  file_name: execute.bin
+		  path: samplejob.sh
+	      -
+		  file_name: input
+		  path: sampleinput.dat
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudbroker_runexe_node`` node into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudbroker-runexe.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      runexe:
+        192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+CloudBroker-Ping
+~~~~~~~~~~~~~~~~
+This tutorial sets up an infrastructure containing two nodes on the CloudBroker Platform. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+ - creating two nodes with dependencies (i.e. ordering of deployment)
+ - querying a node's ip address and passing the address to another
+ - using the cloudbroker resource handler
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, username and password)
+ - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-ping <../../examples/cloudbroker-ping.tgz>`_ .
+
+**Steps**
+
+#. Optionally, edit ``nodes/node_definitions.yaml``. The actual settings in this file are working properly, so you may even leave the parameters unchanged and skip this step!
+
+   You can modify the following attributes in the ``resource`` section:
+
+   - ``endpoint`` is the url of the CloudBroker interface (e.g. `https://cloudsme-prototype.cloudbroker.com`).
+   - ``software_id``, ``executable_id``, ``resource_id``, ``region_id`` and ``instance_type_id`` attributes are all IDs pointing to a predefined setting for software, executable, resource, region, and instance type. For further explanation see the CloudBroker User Guide.
+ 
+   You can modify the following attributes in the ``contextualisation`` section:
+
+   - ``template_files`` section contains a list of files to be uploaded after internal variables are resolved.
+
+   .. note::
+
+      The current configuration of the IDs matches a software on a CloudBroker resource which is capable of running user-uploaded executables.
+
+   .. code::
+
+      ...
+      resource:
+	  type: cloudbroker
+	  endpoint: https://cloudsme-prototype.cloudbroker.com
+	  software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
+	  executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
+	  resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
+	  region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
+	  instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+      contextualisation:
+	  type: cloudbroker
+	  template_files:
+	      -
+		  file_name: execute.bin
+		  content_template: !text_import
+		      url: file://ping-receiver-script.sh
+      ...
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudbroker_ping_receiver_node`` and ``cloudbroker_ping_sender_node`` node into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudbroker-ping.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      ping_receiver:
+        192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping_sender:
+        192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+
 Docker-Helloworld
 ~~~~~~~~~~~~~~~~~
 This tutorial builds an infrastructure containing a single node implemented by a Docker container. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/root/message.txt`` file.
@@ -838,70 +1019,70 @@ You can download the example as `tutorial.examples.docker-ping <../../examples/d
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-CloudBroker-RunExe
-~~~~~~~~~~~~~~~~~~
-This tutorial sets up an infrastructure containing one node on the CloudBroker Platform. The deployed node uses a VM image which executes a script uploaded as ``execute.bin``.
+CloudSigma-Helloworld
+~~~~~~~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
 
- - creating a node performing script execution 
- - uploading the content of two files, one as the executable, and one as the input for the executable
+ - creating a node with basic contextualisation
+ - using the cloudsigma resource handler
 
 **Prerequisites**
 
- - accessing a CloudBroker Platform instance (URL, username and password)
- - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
+ - accessing a cloud through CloudSigma interface (email, password, endpoint)
+ - target cloud contains a base OS image with cloud-init support (library drive identifier)
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-runexe <../../examples/cloudbroker-runexe.tgz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-helloworld <../../examples/cloudsigma-helloworld.tgz>`_ .
 
 **Steps**
 
-#. Optionally, edit ``nodes/node_definitions.yaml``. The actual settings in this file are working properly, so you may even leave the parameters unchanged and skip this step!
+#. Edit ``nodes/node_definitions.yaml``. For ``cloudsigma_helloworld_node`` set the followings in its ``resource`` section:
 
-   You can modify the following attributes in the ``resource`` section:
+   - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`). 
+   - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
+   - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
+   - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``vnc_password`` set the password for your VNC session.
+   - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
+   - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
-   - ``endpoint`` is the url of the CloudBroker interface (e.g. `https://cloudsme-prototype.cloudbroker.com`).
-   - ``software_id``, ``executable_id``, ``resource_id``, ``region_id`` and ``instance_type_id`` attributes are all IDs pointing to a predefined setting for software, executable, resource, region, and instance type. For further explanation see the CloudBroker User Guide.
- 
-   You can modify the following attributes in the ``contextualisation`` section:
-
-   - ``files`` section contains a list of files to be uploaded.
-
-   .. note::
-
-      The current configuration of the IDs matches a software on a CloudBroker resource which is capable of running user-uploaded executables.
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
-      ...
-      resource:
-	  type: cloudbroker
-	  endpoint: https://cloudsme-prototype.cloudbroker.com
-	  software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
-	  executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
-	  resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
-	  region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
-	  instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
-      contextualisation:
-	  type: cloudbroker
-	  files:
-	      -
-		  file_name: execute.bin
-		  path: samplejob.sh
-	      -
-		  file_name: input
-		  path: sampleinput.dat
+     'node_def:cloudsigma_helloworld_node':
+         -
+            resource:
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    vnc_password: secret
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
 
-#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``cloudbroker_runexe_node`` node into the database.
+#. Load the node definition for ``cloudsigma_helloworld_node`` node into the database. 
 
    .. important::
 
       Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
+   
    .. code::
 
       occopus-import nodes/node_definitions.yaml
@@ -910,16 +1091,24 @@ You can download the example as `tutorial.examples.cloudbroker-runexe <../../exa
 
    .. code::
 
-      occopus-build infra-cloudbroker-runexe.yaml
+      occopus-build infra-cloudsigma-helloworld.yaml 
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
    .. code::
 
       List of nodes/ip addresses:
-      runexe:
-        192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+        
+      ssh ...
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
@@ -927,71 +1116,96 @@ You can download the example as `tutorial.examples.cloudbroker-runexe <../../exa
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-CloudBroker-Ping
-~~~~~~~~~~~~~~~~
-This tutorial sets up an infrastructure containing two nodes on the CloudBroker Platform. The ping-sender node will
-ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+CloudSigma-Ping
+~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing two nodes. The ping-sender node will ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
 
  - creating two nodes with dependencies (i.e. ordering of deployment)
  - querying a node's ip address and passing the address to another
- - using the cloudbroker resource handler
+ - using the cloudsigma resource handler
 
 **Prerequisites**
 
- - accessing a CloudBroker Platform instance (URL, username and password)
- - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
+ - accessing a cloud through CloudSigma interface (email, password, endpoint)
+ - target cloud contains a base OS image with cloud-init support (library drive identifier)
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-ping <../../examples/cloudbroker-ping.tgz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-ping <../../examples/cloudsigma-ping.tgz>`_ .
 
 **Steps**
 
-#. Optionally, edit ``nodes/node_definitions.yaml``. The actual settings in this file are working properly, so you may even leave the parameters unchanged and skip this step!
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``cloudsigma_ping_receiver_node`` and for ``cloudsigma_ping_sender_node`` set the followings in their ``resource`` section:
 
-   You can modify the following attributes in the ``resource`` section:
+   - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`). 
+   - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
+   - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
+   - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
+   - ``vnc_password`` set the password for your VNC session.
+   - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
+   - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
-   - ``endpoint`` is the url of the CloudBroker interface (e.g. `https://cloudsme-prototype.cloudbroker.com`).
-   - ``software_id``, ``executable_id``, ``resource_id``, ``region_id`` and ``instance_type_id`` attributes are all IDs pointing to a predefined setting for software, executable, resource, region, and instance type. For further explanation see the CloudBroker User Guide.
- 
-   You can modify the following attributes in the ``contextualisation`` section:
-
-   - ``template_files`` section contains a list of files to be uploaded after internal variables are resolved.
-
-   .. note::
-
-      The current configuration of the IDs matches a software on a CloudBroker resource which is capable of running user-uploaded executables.
-
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+   
    .. code::
 
-      ...
-      resource:
-	  type: cloudbroker
-	  endpoint: https://cloudsme-prototype.cloudbroker.com
-	  software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
-	  executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
-	  resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
-	  region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
-	  instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
-      contextualisation:
-	  type: cloudbroker
-	  template_files:
-	      -
-		  file_name: execute.bin
-		  content_template: !text_import
-		      url: file://ping-receiver-script.sh
-      ...
+     'node_def:cloudsigma_ping_receiver_node':
+         -
+            resource:
+                name: my_cloudsigma_cloud
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    vnc_password: secret
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
+             ...
+     'node_def:cloudsigma_ping_sender_node':
+         -
+            resource:
+                name: my_cloudsigma_cloud
+                type: cloudsigma
+                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+                description:
+                    cpu: 2048
+                    mem: 1073741824
+                    vnc_password: secret
+                    pubkeys:
+                        -
+                            replace_with_id_of_your_pubkey_on_your_target_cloud
+                    nics:
+                        -
+                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
+                            ip_v4_conf:
+                                conf: dhcp
+                                ip: null
+                            runtime:
+                                interface_type: public
+             ...
 
-#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``cloudbroker_ping_receiver_node`` and ``cloudbroker_ping_sender_node`` node into the database.
+#. Load the node definition for ``cloudsigma_ping_receiver_node`` and ``cloudsigma_ping_sender_node`` nodes into the database. 
 
    .. important::
 
       Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
+   
    .. code::
 
       occopus-import nodes/node_definitions.yaml
@@ -1000,22 +1214,41 @@ You can download the example as `tutorial.examples.cloudbroker-ping <../../examp
 
    .. code::
 
-      occopus-build infra-cloudbroker-ping.yaml
+      occopus-build infra-cloudsigma-ping.yaml 
 
-#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+   
+      List of ip addresses:
+      ping_receiver:
+          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping_sender:
+          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
 
    .. code::
 
-      List of nodes/ip addresses:
-      ping_receiver:
-        192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
-        192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
-      30f566d1-9945-42be-b603-795d604b362f
+      ssh ...
+      # cat /tmp/message.txt
+      Hello World! I am the sender node created by Occopus.
+      # cat /tmp/ping-result.txt
+      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+      --- 192.168.xxx.xxx ping statistics ---
+      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
    .. code::
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
-

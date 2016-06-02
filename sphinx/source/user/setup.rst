@@ -189,6 +189,17 @@ For ``docker`` resources:
             type: docker
             auth_data: unused
 
+For ``cloudsigma`` resources:
+
+.. code:: yaml
+
+    resource:
+        -
+            type: cloudsigma
+            auth_data:
+                email: your@email.com
+                password: your_password
+
 
 For ``chef`` config managers:
 
