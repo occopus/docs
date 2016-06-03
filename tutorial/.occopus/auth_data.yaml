@@ -1,0 +1,27 @@
+resource:
+    -
+        type: ec2
+        auth_data:
+            accesskey: your_access_key
+            secretkey: your_secret_key
+    -
+        type: nova
+        auth_data:
+            type: voms
+            proxy: path_to_your_voms_proxy_file
+    -   
+        type: occi
+        auth_data: 
+            proxy: path_to_your_voms_proxy_file
+    -
+        type: cloudbroker
+        auth_data:
+            email: your@email.com
+            password: your_password
+    -
+        type: docker
+        auth_data: notneeded
+
+            
+        
+

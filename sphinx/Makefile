@@ -61,6 +61,9 @@ html:
 	rm -rf $(BUILDDIR)/html/examples
 	mkdir -p $(BUILDDIR)/html/examples
 	$(foreach dir, $(notdir $(wildcard ../tutorial/*)), tar zcvf $(BUILDDIR)/html/examples/$(dir).tgz --directory $(BUILDDIR)/../../tutorial $(dir);)
+	rm -rf $(BUILDDIR)/html/configs
+	mkdir -p $(BUILDDIR)/html/configs
+	cp ../tutorial/.occopus/* $(BUILDDIR)/html/configs
 	echo
 	echo "Build finished. The HTML pages are in $(BUILDDIR)."
 

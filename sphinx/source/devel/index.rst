@@ -12,8 +12,8 @@ Developers' guide
    compiler
    enactor
    infrastructure-processor
-   cloud-handler
-   servicecomposer
+   resource-handler
+   configmanager
    util
    amqp
 

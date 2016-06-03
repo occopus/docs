@@ -35,7 +35,7 @@ Preparing node definitions for instantiation
 Supporting Chef and cloud-init
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: occo.plugins.infraprocessor.node_resolution.chef_cloudinit
+.. automodule:: occo.plugins.infraprocessor.node_resolution.cloudinit
     :members:
     :undoc-members:
 
@@ -43,6 +43,13 @@ Supporting CloudBroker
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: occo.plugins.infraprocessor.node_resolution.cloudbroker
+    :members:
+    :undoc-members:
+
+Supporting Docker
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: occo.plugins.infraprocessor.node_resolution.docker
     :members:
     :undoc-members:
 

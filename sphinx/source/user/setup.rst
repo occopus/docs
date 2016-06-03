@@ -9,236 +9,242 @@ Installation
 
 Please, perform the following steps to deploy Occopus and its dependencies in your environment:
 
-    #. Install a few system-wide packages
+#. Install a few system-wide packages
 
-        Python version ``2.7``
+   Python version ``2.7``
 
-         * ``sudo apt-get install python``
+   .. code:: yaml
+         
+    sudo apt-get install python
 
-        Virtualenv version ``12.0.7`` or later. Make *sure* that it is at least version 12. 
+   Virtualenv version ``12.0.7`` or later. Make *sure* that it is at least version 12. 
 
-         * ``sudo apt-get install python-virtualenv``
+   .. code:: yaml
 
-        Redis server for Occopus to store persistent data
+    sudo apt-get install python-virtualenv
 
-         * ``sudo apt-get install redis-server``
+   Redis server for Occopus to store persistent data
 
-        SSL development libraries for the Chef connection to work
+   .. code:: yaml
 
-         * ``sudo apt-get install libssl-dev``
+    sudo apt-get install redis-server
 
-        Mysql client for PyMySQL to work
+   SSL development libraries for the Chef connection to work
 
-         * ``sudo apt-get install mysql-client``
+   .. code:: yaml
 
-    #. Prepare the environment (you may skip this part to have a system-wide installation, not recommended)
+    sudo apt-get install libssl-dev
 
-         * ``virtualenv occo``            # to create virtualenv called 'occo'
-         * ``source occo/bin/activate``   # to activate virtualenv
-         * ``pip install --upgrade pip``  # to make sure the latest pip version
+   Mysql client for PyMySQL to work
 
-    #. Deploy all Occopus packages
+   .. code:: yaml
 
-         * ``pip install --find-links http://pip.lpds.sztaki.hu/packages --no-index --trusted-host pip.lpds.sztaki.hu OCCO-API``
-        
-    Now, all Occopus packages are deployed under your virtualenv ``occo``. 
+    sudo apt-get install mysql-client
+
+#. Prepare the environment (you may skip this part to have a system-wide installation, not recommended)
+
+   .. code:: yaml
+
+    virtualenv occopus          # to create virtualenv called 'occopus'
+    source occopus/bin/activate # to activate virtualenv
+    pip install --upgrade pip   # to make sure the latest pip version
+
+#. Deploy all Occopus packages
+
+   .. code:: yaml
+
+    pip install --find-links http://pip.lpds.sztaki.hu/packages --no-index --trusted-host pip.lpds.sztaki.hu OCCO-API
+
+   Now, all Occopus packages are deployed under your virtualenv ``occopus``. 
+
+#. Optionally, copy your certs under Occopus if you plan to use VOMS authentication against OCCI or Nova resources
+
+   .. code:: yaml
+
+    cat /etc/grid-security/certificates/*.pem >> $(python -m requests.certs)
 
 .. note::
 
    Do not forget to activate your virtualenv before usage!
 
+.. note::
+
+   Please, proceed to the next chapter to continue with configuration!
+
 Configuration
 -------------
 
-This section is suggested to be read after some of the basic :ref:`examples of the tutorial section <tutorial>` have been successfully executed. The main purpose of this section is to provide an explanation of the configuration the examples contain.
+Occopus requires 2 basic configuration files:
 
-Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects already instantiated (or executed, sometimes!) by the YAML parser.
+#. ``occopus_config.yaml`` : contains static parameters and objects to be instantiated when Occopus starts
 
-The configuration must contain the following items.
+#. ``redis_config.yaml`` : contains parameters for accessing the redis key-value store
 
-``plugins``
+These files must be specified for Occopus through command line parameters. Alternatively, we recommend to store these files in ``$HOME/.occopus`` directory, so that Occopus will automatically find and use it.
 
-    List of python modules Occopus is going to use during its operation. For a basic list, see the configuration in :ref:`one of the tutorial examples <tutorial>` or use this:
+Please, download and save your configuration files:
 
-    .. code::
+.. code:: yaml
 
-        occo.yaml:
-            plugins: !python_import
-                - occo.infobroker
-                - occo.infobroker.dynamic_state_provider
-                - occo.infobroker.uds
-                - occo.infobroker.rediskvstore
-                - occo.cloudhandler
-                - occo.plugins.cloudhandler.boto
-                - occo.plugins.cloudhandler.nova
-                - occo.plugins.cloudhandler.cloudbroker
-                - occo.plugins.infraprocessor.basic_infraprocessor
-                - occo.plugins.infraprocessor.node_resolution.chef_cloudinit
-                - occo.plugins.infraprocessor.node_resolution.cloudbroker
-                - occo.infraprocessor.synchronization.primitives
-                - occo.servicecomposer
-                - occo.plugins.servicecomposer.chef
+   mkdir -p $HOME/.occopus
+   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
+   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/redis_config.yaml -o $HOME/.occopus/redis_config.yaml
 
-    .. note::
+Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects instantiated by the YAML parser.
 
-        This part of the configuration contains all currently supported backends,
-        service composers and node resolvers. Some may be useless for certain use
-        cases.
+.. note::
 
-``logging``
+   Please, do not modify the configuration files unless you know what you are doing!
 
-    Contains configuration for the ``Logging facility of Python``. Settings in this part of the configuration has effect on the way, location and format of the information the logger component in the various Occopus components emits. 
+.. note::
 
-    For detaild explanation of the various attributes please read the `Manual for Logging facility for Python <https://docs.python.org/2/library/logging.html#module-logging>`_. Settings in this part of the configuration has effect on the location, format, etc. of the internal messages the loggeris in the various Occopus components emit during its operation.
+   Please, proceed to the next chapter to continue with setting up authentication information!
 
-    A sample configuration file can be found in :ref:`any of the tutorial examples <tutorial>`. Alternatively, use this basic configuration:
+.. _authentication:
 
-    .. code::
+Authentication
+--------------
 
-        occo.yaml:
-            logging: !yaml_import
-                url: file://logging.yaml
+**Authentication file**
+
+In order to get access to a resource, Occopus requires your credentials to be defined. For this purpose you have to create a file, ``auth_data.yaml`` containing authentication information for each target resource in a structured way.
+
+Once you have your ``auth_data.yaml``  file, you must specify it as command line argument for Occopus. A more convenient (recommended) way is to save this file at ``$HOME/.occopus/auth_data.yaml`` so that Occopus will automatically find and use it.
+
+You can download and save your initial authentication file:
+
+.. code:: yaml
+
+    mkdir -p $HOME/.occopus
+    curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
+
+Once you have your initial authentication file, edit and insert your credentials to the appropriate section.
+
+For each different type of resources, you may specify different authentication information, which must fit to the format required by the resource plugin defined by the type keyword. Here are the formats for the different resource types.
+
+**Authentication data formats**
+
+For ``EC2`` resources:
+
+.. code:: yaml
+
+    resource:
+        -
+            type: ec2
+            auth_data:
+                accesskey: your_access_key
+                secretkey: your_secret_key
+
+For ``nova`` resources:
+
+  In case of username/password authentication:
+
+  .. code:: yaml
     
-        logging.yaml:
-            version: 1
-            root:
-                level: DEBUG
-                handlers: [console, file]
-            formatters:
-                simpleFormater:
-                    format: "** %(asctime)s\t%(levelname)s\t%(processName)s\t%(message)s"
+    resource:
+        -
+            type: nova
+            auth_data:
+                username: your_username
+                password: your_password
+
+  In case of VOMS proxy authentication:
+
+  .. code:: yaml
     
-            handlers:
-                console:
-                    class: logging.StreamHandler
-                    formatter: simpleFormater
-                    level: DEBUG
-                    stream: ext://sys.stdout
-                file:
-                    class : logging.FileHandler
-                    formatter: simpleFormater
-                    mode: w
-                    level: DEBUG
-                    filename: rabbit.log
-                datafile:
-                    class : logging.FileHandler
-                    formatter: simpleFormater
-                    mode: w
-                    level: DEBUG
-                    filename: rabbit-data.log
-    
-            loggers:
-                pika:
-                    propagate: false
-                    level: ERROR
-                    handlers: [console]
-                occo:
-                    propagate: false
-                    level: DEBUG
-                    handlers: [console, file]
-                occo.data:
-                    propagate: false
-                    level: DEBUG
-                    handlers: [datafile]
-                occo.infobroker.kvstore:
-                    propagate: false
-                    level: INFO
-                    handlers: [console, file]
-            
-``components``
+    resource:
+        -
+            type: nova
+            auth_data:
+                type: voms
+                proxy: path_to_your_x509_voms_proxy_file
 
-    The components of the Occopus architecture that’s need to be built.
+For ``occi`` resources:
 
-    ``cloudhandler``
-        
-    The ``CloudHandler`` instance (singleton) is a component responsible for interacting with the cloud interface (e.g. EC2, Nova, etc.) of the target cloud. One or multiple instances can be defined i.e. Occopus can deploy infrastructures containing resources from more than one cloud. A multi-vm configuration can be realised the following way:
+.. code:: yaml
 
-    .. code::
+    resource:
+        -
+            type: occi
+            auth_data:
+                proxy: path_to_your_voms_proxy_file
 
-        occo.yaml:
-            components: !yaml_import
-                url: file://components.yaml
+For ``cloudbroker`` resources:
 
-        components.yaml
-            cloudhandler: !CloudHandler &ch
-            protocol: null
-            cloud_cfgs:
-                my_cloud_with_ec2:
-                    protocol: boto
-                    name: MYEC2CLOUD
-                    target:
-                        endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
-                        regionname: replace_with_regionname_of_your_ec2_interface
-                    auth_data: !yaml_import
-                        url: file://auth_data_ec2.yaml # put your credentials here
-                my_cloud_with_nova:
-                    protocol: nova
-                    name: MYNOVACLOUD
-                    target:
-                        endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-                        tenant_name: replace_with_tenant_to_use
-                    auth_data: !yaml_import
-                        url: file://auth_data_ec2.yaml # put your credentials here
-    
-    ``servicecomposer``
+.. code:: yaml
 
-    The ``ServiceComposer`` instance is a component responsible for interacting with a facility that is able to build up and configure complex services and software components on the target resource. If you do not need any service configuration manager, create a *dummy* instance. You can do it with the following way:
+    resource:
+        -
+            type: cloudbroker
+            auth_data:
+                email: your@email.com
+                password: your_password
 
-    .. code::
+For ``docker`` resources:
 
-        components.yaml:
-            servicecomposer: !ServiceComposer &sc
-                protocol: dummy
+.. code:: yaml
 
-    If you would like to use chef, instantiate the chef service composer the following way:
+    resource:
+        -
+            type: docker
+            auth_data: unused
 
-    .. code::
 
-        components.yaml:
-            servicecomposer: !ServiceComposer &sc
-                protocol: chef
-                url: replace_with_endpoint_of_you_chef_server
-                client: replace_with_the_username_to_your_chef_server
-                key: !text_import
-                    url: file://occo-test.pem #contains athentication key to chef server
+For ``chef`` config managers:
 
-    ``uds``
+.. code:: yaml
 
-    The ``UDS`` (Universal Data Storage) instance is a component responsible for storing persistent data for Occopus to operate properly. The default configuration which works with `redis databases <http://redis.io>`_ are as follows:
+    config_management:
+        -
+            type: chef
+            auth_data:
+                client_name: name_of_user_on_chef_server
+                client_key: !text_import
+                    url: file://path_to_the_pem_file_of_cert_for_user
 
-    .. code::
+The values for ``client_name`` and ``client_key`` attributes must be the name of the **user** that can login to the Chef server and the public key of that Chef user. This user and its key will be used by Occopus to register the infrastructure before deployment of nodes starts. As the example shows above, the key can be imported from a separate file, so the path to the **pem** file is enough to be specified in the last line.
 
-        components.yaml:
-            uds: !UDS &uds
-                protocol: redis
-                altdbs:
-                    node_def: 1
-                    infra: 10
+For multiple resource types:
 
-    .. note::
+.. code:: yaml
 
-        Please, do not change the above configuration unless you are aware of what you are doing.
-     
-    ``infobroker``
+    resource:
+        -
+            type: ec2
+            auth_data:
+                accesskey: your_access_key
+                secretkey: your_secret_key
+        -
+            type: nova
+            auth_data:
+                type: voms
+                proxy: path_to_your_voms_proxy_file
 
-    The ``Information Broker`` is a component providing a simple interface for serving data by any components in the Occopus architecture. The modules serving as information provider can then be congregated into a hierarchy to realise a distributed architecture of information provider components. In Occopus, all the components are information provider in this architecture, therefore the default configuration is as follows:
+For multiple resources with different endpoints:
 
-    .. code::
-        
-        components.yaml:
-            infobroker: !InfoRouter
-            sub_providers:
-                - !DynamicStateProvider
-                    cloud_handler: *ch
-                    service_composer: *sc
-                - !CloudHandlerProvider
-                    cloud_handler: *ch
-                - *uds
-                - !SynchronizationProvider
-                - *sc
+.. code:: yaml
 
-    .. note::
+    resource:
+        -
+            type: ec2
+            endpoint: my_ec2_endpoint_A
+            auth_data:
+                accesskey: your_access_key_for_A
+                secretkey: your_secret_key_for_A
+        -
+            type: ec2
+            endpoint: my_ec2_endpoint_B
+            auth_data:
+                accesskey: your_access_key_for_B
+                secretkey: your_secret_key_for_B
 
-        Please, do not change the above configuration unless you are aware of what you are doing.
-    
-To have a full configuration, please copy the configuration parts detailed above together or download :ref:`any of the tutorial examples <tutorial>` where the configuration is slightly optimised for the infrastructure, too. 
+.. note::
+
+    The authentication file has YAML format. Make sure you are using spaces instead of tabulators for indentation!
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+kvs: !KeyValueStore
+    protocol: redis
+    host: localhost
+    port: 6379
+    db: 0
+    altdbs:
+        node_def: 1
