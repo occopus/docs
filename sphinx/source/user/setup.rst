@@ -11,11 +11,11 @@ Please, perform the following steps to deploy Occopus and its dependencies in yo
 
 #. Install a few system-wide packages
 
-   Python version ``2.7``
+   Python version ``2.7`` and two devel libs for dependencies
 
    .. code:: yaml
          
-    sudo apt-get install python
+    sudo apt-get install python python-dev libffi-dev
 
    Virtualenv version ``12.0.7`` or later. Make *sure* that it is at least version 12. 
 
@@ -188,6 +188,17 @@ For ``docker`` resources:
         -
             type: docker
             auth_data: unused
+
+For ``cloudsigma`` resources:
+
+.. code:: yaml
+
+    resource:
+        -
+            type: cloudsigma
+            auth_data:
+                email: your@email.com
+                password: your_password
 
 
 For ``chef`` config managers:

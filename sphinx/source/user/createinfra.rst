@@ -3,8 +3,6 @@
 Composing an infrastructure
 ===========================
 
-.. _cloudinit site: https://cloudinit.readthedocs.org/en/latest
-
 In order to deploy an infrastructure, Occopus requires 
  #. description of the infrastructure
  #. definition of the individual nodes
@@ -78,25 +76,38 @@ The following example describes a two nodes infrastructure where B depends on A,
 Node Description
 ----------------
 
-Abstract description of a node, which identifies a type of node a user may
-include in an infrastructure. It is an abstract, *resource-independent*
-definition of a class of nodes and can be stored in a repository.
+Abstract description of a node, which identifies a type of node a user may include in an infrastructure. It is an abstract, *resource-independent* definition of a class of nodes and can be stored in a repository.
 
-This data structure does *not* contain information on how it can be
-instantiated. It rather contains *what* needs to be instantiated, and under what *conditions*. It refers to one or more *implementations* that can be used
-to instantiate the node. These implementations are described with :ref:`node
-definition <usernodedefinition>` data structures.
+This data structure does *not* contain information on how it can be instantiated. It rather contains *what* needs to be instantiated, and under what *conditions*. It refers to one or more *implementations* that can be used to instantiate the node. These implementations are described with :ref:`node definition <usernodedefinition>` data structures.
 
-To instantiate a node, its implementations are gathered first. Then, they are either filtered or one is selected by some brokering algorithm (currently: randomly).
+To instantiate a node, its implementations are gathered first. Then, they are filtered and one is selected by Occopus randomly.
 
     ``name``
-        Uniquely identifies the node inside the infrastructure.
+        Name of node which uniquely identifies the node inside the infrastructure.
 
     ``type``
-        The type of the node.
+        The type of the node i.e. the node definition to be used when intantiating the node. If node definition exists for 'XXX' then use "type: XXX" to instantiate the implementation of node 'XXX'.
 
     ``filter`` (``dict``)
-        Optional. Provides filtering among the available node definitions. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified, the one will be chosen among implementations.
+
+        .. code:: yaml
+  
+           filter:
+              type: ec2
+              regionname: ROOT
+              instance_type: m1.small
+
+        Optional. Provides filtering among the available implementations of a node definition specified for 'type'. The dictionary must define key-value pairs where keywords are originated from resource section of the node definitions. If unspecified or filtering results more than one implementations, one will be chosen by Occopus.
+
+    ``scaling`` (``dict``)
+
+        .. code:: yaml
+  
+           scaling:
+              min: 1
+              max: 3
+
+        Optional. Keywords for scaling are ''min'' and ''max''. They specify how many instances of the node can have minimum (''min'') and maximum (''max'') in the infrastructure. At startup ''min'' number of instances of the node will be created. Default and minimal value for ''min'' is 1. Default value for ''max'' equals to ''min''. Both values are hardlimits, no modification of these limits are possible during infrastructure maintenance.
 
     ``variables``
         Arbitrary mapping containing static node-level information:
@@ -105,7 +116,7 @@ To instantiate a node, its implementations are gathered first. Then, they are ei
         #. Overridden/specified in the node's description in the
            infrastructure description.
 
-        The final list of variables is assembled by the Compiler
+        The final list of variables is assembled by Occopus.
 
 .. _usernodedefinition:
 
@@ -229,6 +240,47 @@ Docker
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
+CloudSigma
+^^^^^^^^^^
+  ``type: cloudsigma``
+    Selects the cloudsigma resource handler.
+  ``endpoint``
+    The endpoint (URL) of the CloudSigma interface, e.g. https://zrh.cloudsigma.com/api/2.0
+  ``libdrive_id``
+    The UUID of the library drive image to use. After login to CloudSigma UI at https://zrh.cloudsigma.com/ui, select the menu ``Storage/Library``, select a library on page at https://zrh.cloudsigma.com/ui/#/library and use the uuid from the url of the selected item e.g. 40aa6ce2-5198-4e6b-b569-1e5e9fbaf488 for ``Ubuntu 15.10 (Wily)`` found at page https://zrh.cloudsigma.com/ui/#/library/40aa6ce2-5198-4e6b-b569-1e5e9fbaf488 .
+  ``description``
+    Description of the virtual machine to be started in CloudSigma (e.g. CPU, memory, network, public key). This is a section containing further keywords. The available keywords in this section is defined in the `schema definition of CloudSigma VMs <https://cloudsigma-docs.readthedocs.io/en/2.14/servers.html#schema>`_ under the top-level keyword ``fields``.
+
+    Obligatory keywords to be defined under `description` are as follows:
+
+    ``cpu``
+      Server's CPU Clock speed measured in MHz, e.g.: 2048
+    ``mem``
+      Server's Random Access Memory measured in bytes, e.g.: 1073741824 (for 1 GByte)
+    ``vnc_password``
+      VNC Password to connect to server, e.g. "secret"
+    
+    Example for a typical description section, using 2GHz CPU, 1GB RAM with public ip address.
+
+    .. code:: yaml
+
+       description:
+         cpu: 2048
+         mem: 1073741824
+         vnc_password: the_password
+         name: the_hostname
+         pubkeys:
+           -
+             the_uuid_of_an_uploaded_keypair
+         nics:
+           -
+             firewall_policy: the_uuid_of_a_predefined_firewall_policy
+             ip_v4_conf:
+               conf: dhcp
+               ip: null
+             runtime:
+               interface_type: public
+
 .. _userdefinitioncontextualisationsection:
 
 Contextualisation
@@ -239,9 +291,9 @@ In this section, the attributes (keywords) are listed and explained which can be
 Cloudinit
 ^^^^^^^^^
   ``type: cloudinit`` 
-    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi.
+    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma.
   ``context_template``
-    This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <cloudinit site>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
+    This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <https://cloudinit.readthedocs.org/en/latest>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``
     Optional. Any user-defined attributes. Used for specifying values of attributes in chef recipes.
 
