@@ -189,6 +189,8 @@ Nova
     Optional. List of security groups to be associated to the instance.
   ``floating_ip``
     Optional. If defined (with any value), new floating IP address will be allocated and assigned for the instance.
+  ``floating_ip_pool``
+    Optional. If defined, also implies floating_ip, and specifies the name of the floating IP pool that should be used to allocate a new floating IP for the VM.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
 
