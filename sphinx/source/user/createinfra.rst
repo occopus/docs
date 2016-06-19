@@ -170,11 +170,11 @@ Nova
   ``endpoint``
     The endpoint (url) of the nova cloud interface.
   ``tenant_name``
-    Optional. A container used to group or isolate resources on the cloud behind the nova interface.
+    Optional. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, project_id and user_domain_name must be set.
   ``project_id``
     Optional. Specifies the ID of the project to connect to.
   ``user_domain_name``
-    Optional. Specifies the name of the user domain.
+    Optional. Specifies the name of the user domain. The default value of this attribute is Default.
   ``network_id``
     Optional. Specifies the ID of the network to attach to the virtual machine.
   ``image_id``
