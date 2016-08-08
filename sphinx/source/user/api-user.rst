@@ -90,7 +90,7 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
 occopus-scale
 ~~~~~~~~~~~~~
 
-This command registers scaling requests for a given node in an infrastructure. With scaling the instance count of a node can be increased or decreased by a given number. Scaling requests are handled and realized by the occopus-manage command.
+This command registers scaling requests for a given node in an infrastructure. With scaling the instance count of a node can be increased or decreased by a given number. Scaling requests are handled and realized by the occopus-maintain command.
 
 **Usage:** 
 
