@@ -35,8 +35,8 @@ Once the infrastructure is successfully built, Occopus exits. This command provi
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--parallelize:`` (optional) parallelize processing instructions e.g. independent nodes are created parallel (default: sequential)
-    * ``infra_def:`` file containing an infrastructure definition
-    * ``-i INFRA_ID:`` 'identifier of an infrastructure - if provided, occopus will reconfigure the infrastructure'
+    * ``-i INFRA_ID:`` (optional) identifier of a previously built, existing infrastructure - if provided, occopus will reconfigure the existing infrastructure instead of building a new one. Use with caution! Occopus may build/destroy nodes based on the difference between the existing and the new infrastructure defined by ``infra_def``!
+    * ``infra_def:`` file containing an infrastructure definition to be built
 
 **Return type:**
     On successful finish it returns the identifier of the infrastructure. The identifier can be stored or listed by the occopus-maintain command. 
