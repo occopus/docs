@@ -27,6 +27,7 @@ Once the infrastructure is successfully built, Occopus exits. This command provi
                [--cfg CFG_PATH] 
                [--auth_data_path AUTH_DATA_PASS] 
                [--parallelize]
+               [-i INFRA_ID]
                infra_def
 
 **Parameters:**
@@ -34,7 +35,8 @@ Once the infrastructure is successfully built, Occopus exits. This command provi
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--parallelize:`` (optional) parallelize processing instructions e.g. independent nodes are created parallel (default: sequential)
-    * ``infra_def:`` file containing an infrastructure definition
+    * ``-i INFRA_ID:`` (optional) identifier of a previously built, existing infrastructure - if provided, occopus will reconfigure the existing infrastructure instead of building a new one. Use with caution! Occopus may build/destroy nodes based on the difference between the existing and the new infrastructure defined by ``infra_def``!
+    * ``infra_def:`` file containing an infrastructure definition to be built
 
 **Return type:**
     On successful finish it returns the identifier of the infrastructure. The identifier can be stored or listed by the occopus-maintain command. 
@@ -90,7 +92,7 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
 occopus-scale
 ~~~~~~~~~~~~~
 
-This command registers scaling requests for a given node in an infrastructure. With scaling the instance count of a node can be increased or decreased by a given number. Scaling requests are handled and realized by the occopus-manage command.
+This command registers scaling requests for a given node in an infrastructure. With scaling the instance count of a node can be increased or decreased by a given number. Scaling requests are handled and realized by the occopus-maintain command.
 
 **Usage:** 
 

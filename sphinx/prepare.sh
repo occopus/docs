@@ -5,7 +5,7 @@
 
 set -ex
 
-PDIR=env/doc
+PDIR=env/documentation
 
 rm -rf "$PDIR"
 

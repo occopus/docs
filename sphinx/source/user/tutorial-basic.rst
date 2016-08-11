@@ -237,8 +237,12 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Prerequisites**
 
- - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name)
+ - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name or project_id and user_domain_name)
+ - id of network to be associated to the virtual machine (network_id)
+ - security groups to be associated to the virtual machine (security_groups)
+ - name of keypair on the target cloud to be associated with the vm (key_name)
  - target cloud contains a base OS image with cloud-init support (image_id, flavor_name)
+ - optionally, name of floating ip pool from which ip should be taken for the vm (floating_ip_pool)
 
 **Download**
 
@@ -249,13 +253,15 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
 #. Edit ``nodes/node_definitions.yaml``. For ``nova_helloworld_node`` set the followings in its ``resource`` section:
 
    - ``endpoint`` must point to the endpoint (url) of your target Nova cloud. 
-   - ``tenant_name`` is the tenant on your target Nova cloud.
+   - ``project_id`` is the id of project you would like to use on your target Nova cloud.
+   - ``user_domain_name`` is the user domain name you would like to use on your target Nova cloud. 
    - ``image_id`` is the image id on your Nova cloud. Select an image containing a base os installation with cloud-init support!
-   - ``flavor_name`` is the type of flavor to be instantiated on your Nova cloud.
-   - ``server_name`` optionally defines the hostname of VM.
-   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must exist on the target nova cloud before launching the VM. 
+   - ``flavor_name`` is the name of flavor to be instantiated on your Nova cloud.
+   - ``server_name`` optionally defines the hostname of VM (e.g.:"helloworld").
+   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must be defined on the target nova cloud before launching the VM. 
    - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
-   - ``floating_ip`` optionally allocates new floating IP address to the VM.
+   - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
+   - ``floating_ip`` optionally specifies the name of pool from which the floating ip must be selected.
    
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
@@ -266,8 +272,10 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
              resource:
                  type: nova
                  endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-                 tenant_name: replace_with_tenant_to_use
+                 project_id: replace_with_projectid_to_use
+                 user_domain_name: Default
                  image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 network_id: replace_with_id_of_network_on_your_target_cloud
                  flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
                  server_name: myhelloworld
                  key_name: replace_with_name_of_keypair_or_remove
@@ -275,6 +283,7 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
                      -
                          replace_with_security_group_to_add_or_remove_section
                  floating_ip: add_yes_if_you_need_floating_ip_or_remove
+                 floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your username/password or in case of x509 voms authentication the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -300,7 +309,7 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
 
       List of nodes/ip addresses:
       helloworld:
-          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+          aaa.bbb.ccc.ddd (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       14032858-d628-40a2-b611-71381bd463fa
 
 #. Check the result on your virtual machine.
@@ -330,8 +339,12 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Prerequisites**
 
- - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name)
+ - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name or project_id and user_domain_name)
+ - id of network to be associated to the virtual machine (network_id)
+ - security groups to be associated to the virtual machine (security_groups)
+ - name of keypair on the target cloud to be associated with the vm (key_name)
  - target cloud contains a base OS image with cloud-init support (image_id, flavor_name)
+ - optionally, name of floating ip pool from which ip should be taken for the vm (floating_ip_pool)
 
 **Download**
 
@@ -342,13 +355,15 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
 #. Edit ``nodes/node_definitions.yaml``. Both, for ``nova_ping_receiver_node`` and for ``nova_ping_sender_node`` set the followings in their ``resource`` section:
    
    - ``endpoint`` must point to the endpoint (url) of your target Nova cloud. 
-   - ``tenant_name`` is the tenant on your target Nova cloud.
+   - ``project_id`` is the id of project you would like to use on your target Nova cloud.
+   - ``user_domain_name`` is the user domain name you would like to use on your target Nova cloud. 
    - ``image_id`` is the image id on your Nova cloud. Select an image containing a base os installation with cloud-init support!
-   - ``flavor_name`` is the type of flavor to be instantiated on your Nova cloud.
-   - ``server_name`` optionally defines the hostname of VM.
-   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must exist on the target nova cloud before launching the VM. 
+   - ``flavor_name`` is the name of flavor to be instantiated on your Nova cloud.
+   - ``server_name`` optionally defines the hostname of VM (e.g.:"helloworld").
+   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must be defined on the target nova cloud before launching the VM. 
    - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
-   - ``floating_ip`` optionally allocates new floating IP address to the VM.
+   - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
+   - ``floating_ip`` optionally specifies the name of pool from which the floating ip must be selected.
 
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
@@ -357,31 +372,38 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
      'node_def:nova_ping_receiver_node':
 	 -
 	     resource:
-		 type: nova
-		 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-		 tenant_name: replace_with_tenant_to_use
-		 image_id: replace_with_id_of_your_image_on_your_target_cloud
-		 server_name: my-ping-receiver
-		 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
-		 key_name: replace_with_name_of_keypair_or_remove
-		 security_groups:
-		     -
-			 replace_with_security_group_to_add_or_remove_section
-		 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+                 type: nova
+                 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+                 project_id: replace_with_projectid_to_use
+                 user_domain_name: Default
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 network_id: replace_with_id_of_network_on_your_target_cloud
+                 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+                 server_name: mypingreceiver
+                 key_name: replace_with_name_of_keypair_or_remove
+                 security_groups:
+                     -
+                         replace_with_security_group_to_add_or_remove_section
+                 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+                 floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
              ...
      'node_def:nova_ping_sender_node':
 	 -
 	     resource:
-		 type: nova
-		 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-		 tenant_name: replace_with_tenant_to_use
-		 image_id: replace_with_id_of_your_image_on_your_target_cloud
-		 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
-		 key_name: replace_with_name_of_keypair_or_remove
-		 security_groups:
-		     -
-			 replace_with_security_group_to_add_or_remove_section
-		 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+                 type: nova
+                 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+                 project_id: replace_with_projectid_to_use
+                 user_domain_name: Default
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 network_id: replace_with_id_of_network_on_your_target_cloud
+                 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+                 server_name: mypingsender
+                 key_name: replace_with_name_of_keypair_or_remove
+                 security_groups:
+                     -
+                         replace_with_security_group_to_add_or_remove_section
+                 floating_ip: add_yes_if_you_need_floating_ip_or_remove
+                 floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your username/password or in case of x509 voms authentication the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
