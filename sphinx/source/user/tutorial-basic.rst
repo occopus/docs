@@ -339,8 +339,12 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Prerequisites**
 
- - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name)
+ - accessing an OpenStack cloud through its Nova interface (username/pasword or X.509 VOMS proxy, endpoint, tenant_name or project_id and user_domain_name)
+ - id of network to be associated to the virtual machine (network_id)
+ - security groups to be associated to the virtual machine (security_groups)
+ - name of keypair on the target cloud to be associated with the vm (key_name)
  - target cloud contains a base OS image with cloud-init support (image_id, flavor_name)
+ - optionally, name of floating ip pool from which ip should be taken for the vm (floating_ip_pool)
 
 **Download**
 
