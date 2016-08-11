@@ -170,17 +170,17 @@ Nova
   ``endpoint``
     The endpoint (url) of the nova cloud interface.
   ``tenant_name``
-    Optional. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, project_id and user_domain_name must be set.
+    Optional. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, **project_id** and **user_domain_name** must be set.
   ``project_id``
     Optional. Specifies the ID of the project to connect to.
   ``user_domain_name``
-    Optional. Specifies the name of the user domain. The default value of this attribute is Default.
+    Optional. Specifies the name of the user domain. The default value of this attribute is "Default".
   ``network_id``
     Optional. Specifies the ID of the network to attach to the virtual machine.
   ``image_id``
     The identifier of the image behind the ec2 cloud to be instantiated to realize a virtual machine.
   ``flavor_name``
-    The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour (e.g. m1.small) of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
+    The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
   ``server_name``
     Optional. The hostname of the instantiated virtual machine.
   ``key_name``
@@ -190,9 +190,9 @@ Nova
   ``floating_ip``
     Optional. If defined (with any value), new floating IP address will be allocated and assigned for the instance.
   ``floating_ip_pool``
-    Optional. If defined, also implies floating_ip, and specifies the name of the floating IP pool that should be used to allocate a new floating IP for the VM.
+    Optional. If defined, also implies **floating_ip**, and specifies the name of the floating IP pool that should be used to allocate a new floating IP for the VM.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` as well.
 
 
 OCCI
