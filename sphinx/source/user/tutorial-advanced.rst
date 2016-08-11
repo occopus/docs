@@ -374,7 +374,7 @@ This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Co
 **Prerequisites**
 
  - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
- - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
+ - target cloud contains an Ubuntu 14.04 image with cloud-init support (os_tpl, resource_tpl)
  - properly installed occi command-line client utility (occi command)
 
 **Download**
@@ -388,7 +388,7 @@ The following steps are suggested to be performed:
 #. Edit ``nodes/node_definitions.yaml``. For ``occi_dockerswarm_head_node`` and ``occi_dockerswarm_worker_node`` nodes set the followings in their ``resource`` section:
 
    - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
-   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
+   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing an Ubuntu 14.04 operating system with cloud-init support! Please, note that the cloud-init script in this example depends on Ubuntu 14.04!
    - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
    - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
    - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
