@@ -396,6 +396,60 @@ Timeout
 
   Optional. Specifies a period in seconds after which continuous failure results in the node considered as failed. The current protocol in Occopus is to restart failed nodes. Default is 600.
 
+.. _userdefinition_multinode:
+
+Multiple node implementations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When creating node definitions, you can create multiple implementations for the
+same node. These implementations can differ in any parameter listed in the
+sections before, including but not
+limited to: resource backend, image id, instance type, contextualization,
+configuration management, health-check services used, etc.
+To create multiple implementations, just list them using hyphens. Make sure to
+watch for the indentation of the blocks.
+
+The following example shows a node definition with multiple different
+implementations.
+
+.. code:: yaml
+
+    'node_def:example_node':
+        -
+            resource:
+                name: my_opennebula_ec2
+                type: ec2
+                endpoint: my_opennebula_endpoint
+                ...
+            ...
+            config_management:
+                type: chef
+                ...
+        -
+            resource:
+                name: my_aws_ec2
+                type: ec2
+                endpoint: my_aws_endpoint
+                ...
+            ...
+        -
+            resource:
+                name: my_nova
+                type: nova
+                endpoint: my_nova_endpoint
+                ...
+            ...
+            config_management:
+                type: chef
+                ...
+            ...
+
+If there are multiple implementations for a node definition, you can filter them
+in the :ref:`Node description <usernodedescription>`, in the
+:ref:`Infrastructure description <infradescription>` file. Occopus will
+automatically select an available implementation to launch from those fulfilling the
+filtering parameters.
+
 Examples
 ~~~~~~~~
 
