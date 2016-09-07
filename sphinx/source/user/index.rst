@@ -7,6 +7,7 @@ Users' guide
 
    introduction
    concept
+   features
    clouds
    setup
    createinfra

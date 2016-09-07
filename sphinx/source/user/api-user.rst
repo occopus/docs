@@ -8,6 +8,8 @@ Command line tools
 
 Occopus can be used via CLI commands to build, maintain, scale and destroy infrastructures. The commands and their usages are described below.
 
+.. _api-user_buildcommand:
+
 occopus-build
 ~~~~~~~~~~~~~
 
@@ -89,6 +91,8 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
     * ``-c, --cyclic:`` (optional) performs continuous maintenance
     * ``-t INTERVAL:`` (optional) specifies the time in seconds between maintenance sessions (default: 10)
 
+.. _api-user_scalecommand:
+    
 occopus-scale
 ~~~~~~~~~~~~~
 
