@@ -13,14 +13,29 @@ major cloud providers.
 Hybrid cloud support
 --------------------
 
-Use Occopus to deploy the nodes of your infrastucture into different clouds,
-making it more flexible, versatile and error-proof.
+Occopus can be used to deploy the nodes of your infrastucture into different clouds,
+making it more flexible, versatile and error-proof. To use different
+clouds/backends, simply set the desired type in the resource section of the node
+definition.
+:ref:`Jump to the resource section of node definition
+<userdefinitionresourcesection>`
+
 
 Multiple configuration tool support
 -----------------------------------
 
 Use Chef, Cloud-init, pre-defined images, or any combination of these in the
-same infrastructure
+same infrastructure.
+
+Occopus has access to various configuration and contextualization methods:
+* You can use pre-defined images in the resource section of the node definition (:ref:`Jump to the resource section <userdefinitionresourcesection>`)
+* Use cloud-init as a contextualisation tool (:ref:`Jump to contextualisation
+  section <userdefinitioncontextualisationsection>`)
+* Occopus has support for configuration management tools. Currently, only Chef
+  is supported.
+    * To see how to use Chef in the node definition :ref:`jump to the
+      configuration management section <userdefinitionconfigmanagementsection>`
+    * To see demo infrastructures using chef :ref:`jump to our chef demos <tutorial-advanced>`
 
 Different usage possibilities
 -----------------------------
@@ -48,8 +63,10 @@ Dynamic reconfiguration
 -----------------------
 
 Make changes to your infrastructures on the fly with a single command. 
+Modify the infrastructure description file the way you want - add and remove
+nodes, set new paramateres (e.g. scaling) and variables for your nodes and your
+infrastructure and modify the dependency graph as you wish.
 After updating the infrastructure description in the datastore using :ref:`occopus-build command <api-user_buildcommand>`, Occopus will automatically reconfigure the nodes of running infrastructures to match the new definitions.
-:ref:`See the extended documentation of how to reconfigure an infrastructure <>`
 
 Health-checking
 ---------------
@@ -67,7 +84,7 @@ nodes, and rebuild them.
 Manual scaling
 --------------
 
-Scale your nodes up or down anytime by a single command
+Scale your nodes up or down anytime by a single command.
 :ref:`Jump to the scale command <api-user_scalecommand>`
 
 Multiple node implementations
@@ -77,8 +94,8 @@ Define multiple implementations to a node-type and use different backends, image
 tools and variables in them. You can filter the available implementations in the
 infrastructure description, and occopus will select an implementations from
 those which fulfill the filtering parameters
-:ref:`Jump to Multiple implementations section <>`
-:ref:`Jump to node type filtering section <>`
+:ref:`Jump to Multiple implementations section <userdefinition_multinode>`
+:ref:`Jump to node type filtering section <usernodedescription>`
 
 Authenticator-selection
 -----------------------
