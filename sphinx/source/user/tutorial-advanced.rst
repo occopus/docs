@@ -522,7 +522,7 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
    .. code::
 
-     'node_def:ec2_chef_apache2_node':
+     'node_def:da':
          -
              resource:
                  type: ec2
@@ -546,7 +546,6 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
    
    .. code::
  
-      Example:
       
       - &DA_cluster # Node Running your application
   	   name: da
@@ -599,7 +598,6 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
    
    .. code::
  
-      Example:
       
     over_loaded() {
       curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaleup/$2
