@@ -1,0 +1,49 @@
+'node_def:db':
+  - resource:
+      type: ec2
+      endpoint: http://
+      regionname: ROOT
+      image_id: ami-00001082
+      instance_type: m1.small
+    contextualisation:
+      type: cloudinit 
+      context_template: !text_import
+        url: file://db_cloud_init.yaml
+
+'node_def:prometheus':
+  - resource:
+      type: ec2
+      endpoint: http://
+      regionname: ROOT
+      image_id: ami-00001082
+      instance_type: m1.small
+    contextualisation:
+      type: cloudinit 
+      context_template: !text_import
+        url: file://prometheus_cloud_init.yaml
+
+
+'node_def:da':
+  - resource:
+      type: ec2
+      endpoint: http://
+      regionname: ROOT
+      image_id: ami-00001082
+      instance_type: m1.medium
+    contextualisation:
+      type: cloudinit 
+      context_template: !text_import
+        url: file://da_cloud_init.yaml
+
+
+'node_def:lb':
+  - resource:
+      type: ec2
+      endpoint: http://
+      regionname: ROOT
+      image_id: ami-00001082
+      instance_type: m1.medium
+    contextualisation:
+      type: cloudinit 
+      context_template: !text_import
+        url: file://lb_cloud_init.yaml 
