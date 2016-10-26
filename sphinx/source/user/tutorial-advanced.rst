@@ -479,3 +479,173 @@ The following steps are suggested to be performed:
 
       occopus-destroy -i 77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
+
+
+Autoscaling-Prometheus
+~~~~~~~~~~~~~~~~~~~~~~
+This tutorial aims to complement the autoscaling capabilities of Occopus. With these solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always with the optimum level of resources.
+
+**Features**
+
+ - using Prometheus to monitor nodes and create user-defined scaling events
+ - using load balancers to share system load between data nodes
+ - using Consul as a DNS service discovery agent
+ - using data nodes running the user application
+
+**Prerequisites**
+
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
+ - start Occopus in Rest-API mode (# occopus-rest-service -h [Occopus ip address])
+
+**Download**
+
+You can download the example as `tutorial.examples.autoscaling-prometheus <../../examples/autoscaling-prometheus.tgz>`_ .
+
+.. note::
+
+   In this tutorial, we will use ec2 cloud resources (based on our ec2 tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes - you can even use different types of resources for each node.
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. Configure the ``resource`` section as seen in the basic tutorials. For example, if you are using an ``ec2`` cloud, you have to set the following:
+
+   - ``endpoint`` is an url of an EC2 interface of a cloud (e.g. `https://ec2.eu-west-1.amazonaws.com`).
+   - ``regionname`` is the region name within an EC2 cloud (e.g. `eu-west-1`).
+   - ``image_id`` is the image id (e.g. `ami-12345678`) on your EC2 cloud. Select an image containing a base os installation with cloud-init support!
+   - ``instance_type`` is the instance type (e.g. `m1.small`) of your VM to be instantiated.
+   - ``key_name``  optionally specifies the keypair (e.g. `my_ssh_keypair`) to be deployed on your VM.
+   - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
+   - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM.
+
+   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code::
+
+     'node_def:ec2_chef_apache2_node':
+         -
+             resource:
+                 type: ec2
+                 endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+                 regionname: replace_with_regionname_of_your_ec2_interface
+                 image_id: replace_with_id_of_your_image_on_your_target_cloud
+                 instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+                 key_name: replace_with_key_name_on_your_target_cloud
+                 security_group_ids:
+                     -
+                         replace_with_security_group_id1_on_your_target_cloud
+                     -
+                         replace_with_security_group_id2_on_your_target_cloud
+                 subnet_id: replace_with_subnet_id_on_your_target_cloud
+             ...
+  
+
+#. Edit the ``infra_da.yaml`` infrastructure descriptor file. Set the following attributes:
+
+   - ``scaling`` is the interval in which the number of nodes can change (min,max). Change both for da and lb nodes.
+   
+   .. code::
+ 
+      Example:
+      
+      - &DA_cluster # Node Running your application
+  	   name: da
+	   type: da
+  	   scaling:
+ 	     min: 1
+ 	     max: 10
+
+   .. important::
+
+      Keep in mind that Occopus has to start at least one node from each node type to work properly!
+
+#. Edit the ``nodes/da_cloud_init.yaml`` node descriptor file. Add your application code! In this example we implemented a Grid Data Avenue webapplication. 
+
+#. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "Prometheus rules" section in case if you want to implement new scaling rules:
+   
+	- ``{infra_id}`` is a built in Occopus variable and every alert have to implement it in their Labels!
+	- ``node`` should be set to da or lb depending on which type of node the alerts should work.
+
+   .. code::
+ 
+      Example:
+      
+       lb_cpu_utilization = 100 - (avg (rate(node_cpu{group="lb_cluster",mode="idle"}[60s])) * 100)
+       da_cpu_utilization = 100 - (avg (rate(node_cpu{group="da_cluster",mode="idle"}[60s])) * 100)
+ 
+ 	ALERT da_overloaded
+      IF da_cpu_utilization > 50 OR lb_ram_utilization < 10 OR lb_hdd_utilization < 10
+      FOR 1m
+      LABELS {alert="overloaded", cluster="da_cluster", node="da", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "DA cluster overloaded",
+      description = "DA cluster average CPU/RAM/HDD utilization is overloaded"}
+    ALERT da_underloaded
+      IF da_cpu_utilization < 20
+      FOR 2m
+      LABELS {alert="underloaded", cluster="da_cluster", node="da", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "DA cluster underloaded",
+      description = "DA cluster average CPU/RAM/HDD utilization is underloaded"}
+ 		
+
+   .. important::
+
+      Autoscaling events (scale up, scale down) are based on Prometheus rules which acts as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu, ram, hdd utilization in your da-lb cluster with some threshold values. Please always use infra_id in you alerts as you can see below since Occopus will resolve this variable to you actual infrastructure id. If you are planning to write new alerts later, you can copy the same infrastructure id to them. Also make sure that the "node" property is set in the Labels too.
+      For more information about Prometheus rules and alerts please visit: https://prometheus.io/docs/alerting/rules/
+
+#. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "executor config" section. Set the following attributes:
+
+   - ``[your occopus installation IP address]`` is the ip address of you Occopus installation
+   - ``[port]`` is the port on which Occopus listens for Rest calls.
+   
+   .. code::
+ 
+      Example:
+      
+    over_loaded() {
+      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaleup/$2
+    }
+    
+    under_loaded() {
+      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaledown/$2
+    }
+
+   .. note::
+
+     For further explanation of the keywords, please read the `cloud-init documentation <http://cloudinit.readthedocs.org/en/latest/topics/examples.html#install-and-run-chef-recipes>`_!
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use, as well as the authentication data for the ``config_management`` section. Setting authentication information for both is described :ref:`here <authentication>`.
+
+   
+
+#. Load the node definitions into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure in Rest api mode. 
+
+   .. code::
+
+      curl -X POST http://[Occopus IP]:[port]/infrastructures/ --data-binary @infra_da.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      apache2:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa 
