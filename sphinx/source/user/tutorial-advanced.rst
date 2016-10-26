@@ -483,7 +483,7 @@ The following steps are suggested to be performed:
 
 Autoscaling-Prometheus
 ~~~~~~~~~~~~~~~~~~~~~~
-This tutorial aims to complement the autoscaling capabilities of Occopus. With these solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always with the optimum level of resources.
+This tutorial aims to complement the autoscaling capabilities of Occopus. With these solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always with the optimum level of resources. In this infrastructure nodes are discovered by consul which is a DNS service discovery software and monitored by Prometheus, a monitoring software which support alert definitions which later will help you write custom scaling events. Incoming traffic from the user is go through the load balancers to the appropriate data node where your application should be run.
 
 **Features**
 
@@ -567,8 +567,6 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 	- ``node`` should be set to da or lb depending on which type of node the alerts should work.
 
    .. code::
- 
-      Example:
       
        lb_cpu_utilization = 100 - (avg (rate(node_cpu{group="lb_cluster",mode="idle"}[60s])) * 100)
        da_cpu_utilization = 100 - (avg (rate(node_cpu{group="da_cluster",mode="idle"}[60s])) * 100)
@@ -629,23 +627,23 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       occopus-import nodes/node_definitions.yaml
 
+#. Start Occopus in Rest api mode:
+
+   .. code::
+
+      occopus-rest-service --host [ip address]
+
 #. Start deploying the infrastructure in Rest api mode. 
 
    .. code::
 
       curl -X POST http://[Occopus IP]:[port]/infrastructures/ --data-binary @infra_da.yaml
 
-#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+#. Finally, you may destroy the infrastructure using the infrastructure id.
 
    .. code::
 
-      List of nodes/ip addresses:
-      apache2:
-          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-      14032858-d628-40a2-b611-71381bd463fa
+      curl -X DELETE http://[occopus ip address]:[port]/infrastructures/[infra id]
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
-   .. code::
-
-      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa 
