@@ -483,14 +483,14 @@ The following steps are suggested to be performed:
 
 Autoscaling-Prometheus
 ~~~~~~~~~~~~~~~~~~~~~~
-This tutorial aims to complement the autoscaling capabilities of Occopus. With these solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always with the optimum level of resources. In this infrastructure nodes are discovered by consul which is a DNS service discovery software and monitored by Prometheus, a monitoring software which support alert definitions which later will help you write custom scaling events. Incoming traffic from the user is go through the load balancers to the appropriate data node where your application should be run.
+This tutorial aims to complement the autoscaling capabilities of Occopus. With this solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always in the optimum level of resources. In this infrastructure nodes are discovered by Consul which is a DNS service discovery software and monitored by Prometheus, a monitoring software. Prometheus support alert definitions which later will help you write custom scaling events. Incoming traffic from the user is go through the load balancers to the appropriate data node where your application should run.
 
 **Features**
 
  - using Prometheus to monitor nodes and create user-defined scaling events
  - using load balancers to share system load between data nodes
  - using Consul as a DNS service discovery agent
- - using data nodes running the user application
+ - using data nodes running the application
 
 **Prerequisites**
 
@@ -588,7 +588,7 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
    .. important::
 
-      Autoscaling events (scale up, scale down) are based on Prometheus rules which acts as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu, ram, hdd utilization in your da-lb cluster with some threshold values. Please always use infra_id in you alerts as you can see below since Occopus will resolve this variable to you actual infrastructure id. If you are planning to write new alerts later, you can copy the same infrastructure id to them. Also make sure that the "node" property is set in the Labels too.
+      Autoscaling events (scale up, scale down) are based on Prometheus rules which acts as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu, ram, hdd utilization in your da-lb cluster with some threshold values. Please always use infra_id in you alerts as you can see below since Occopus will resolve this variable to you actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels too.
       For more information about Prometheus rules and alerts please visit: https://prometheus.io/docs/alerting/rules/
 
 #. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "executor config" section. Set the following attributes:
@@ -637,6 +637,15 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       curl -X POST http://[Occopus IP]:[port]/infrastructures/ --data-binary @infra_da.yaml
 
+#. You can test the infrastructure and see how it works if you put some load on the system by start sending a large data file to one of the data nodes. You can check the status of your alerts at_  [PrometheusIP]:9090/alerts.
+
+   .. code::
+
+      curl -k -o /dev/null -H "X-Key: 1a7e159a-ffd8-49c8-8b40-549870c70e73" -H "X-URI: s3://s3.lpds.sztaki.hu/s3bucket/1GB.dat" -H "X-Username: ahajnal" -H "X-Password: 2cafa126809f4faad1a569620aa7d1a26659259b" http://[YourDataNodeIPaddress]:8080/blacktop3/rest/file
+   
+   .. important::
+
+      Start many instances of the sending command to stress test the data node. After some minutes you will se a firing "overloaded" alert indicating the system started creating a new node.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id.
 
