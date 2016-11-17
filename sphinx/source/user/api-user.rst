@@ -3,10 +3,14 @@
 Usage
 =====
 
+.. _api-user_cli:
+
 Command line tools
 ------------------
 
 Occopus can be used via CLI commands to build, maintain, scale and destroy infrastructures. The commands and their usages are described below.
+
+.. _api-user_buildcommand:
 
 occopus-build
 ~~~~~~~~~~~~~
@@ -89,6 +93,8 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
     * ``-c, --cyclic:`` (optional) performs continuous maintenance
     * ``-t INTERVAL:`` (optional) specifies the time in seconds between maintenance sessions (default: 10)
 
+.. _api-user_scalecommand:
+    
 occopus-scale
 ~~~~~~~~~~~~~
 
@@ -159,12 +165,16 @@ This command launches occopus as a web service. The occopus rest service can cre
     * ``--port PORT:`` (optional) sets the port for the service to be assigned to (default: 5000)
     * ``--parallelize:`` (optional) parallelize processing instructions (default: sequential)
 
+.. _api-user_rest:
+
 REST API
 --------
 
 .. autoflask:: occo.api.rest:app
    :endpoints: 
    :include-empty-docstring:
+
+.. _api-user_lib:
 
 Python API
 ----------
