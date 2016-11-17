@@ -5,21 +5,26 @@ Features
 
 **Wide range of supported resources**
 
-| Occopus can be used with a wide variety of different technologies including most
-  major cloud providers.
+| Occopus supports a wide variety of interfaces for allocating cloud 
+  or container resources. Some of the most widespread supported interfaces are
+  ec2, nova, docker and occi. The list of supported interfaces is growing
+  due to the modular and extensible feature of Occopus.
 | :ref:`List of supported technologies <clouds>`
 
 **Hybrid cloud support**
 
-| Occopus can be used to deploy the nodes of your infrastucture into different clouds,
-  making it more flexible, versatile and error-proof. To use different
-  clouds/backends, simply set the desired type in the resource section of the node
-  definition.
+| Occopus can deploy your infrastucture by allocating each node on a different cloud. 
+  Multiple type of clouds can be used within the same infrastructure, therefore we call
+  it hybrid cloud support. It is also possible to let Occopus dynamically choose 
+  between a given list of clouds at deployment time. To use multiple resources, nodes 
+  must have multiple implementations and optionally implementations can be filtered in the 
+  infrastructure description.
 | :ref:`Resource section of node definition <userdefinitionresourcesection>`
+| :ref:`Infrastructure descriptions <infradescription>`
 
-**Multiple configuration tool support**
+**Multiple configuration management support**
 
-Use Chef, Cloud-init, pre-defined images, or any combination of these in the
+Occopus can utilise Chef, Cloud-init, pre-defined images, or any combination of these in the
 same infrastructure. Occopus has access to various configuration and contextualization methods:
 
 * You can use pre-defined images in the resource section of the node definition 
@@ -30,7 +35,7 @@ same infrastructure. Occopus has access to various configuration and contextuali
   
   * :ref:`Contextualisation section of node definition <userdefinitioncontextualisationsection>`
 
-* Occopus has support for configuration management tools. Currently, Chef is supported.
+* Occopus supports configuration management tools. Currently, Chef is supported.
 
   * :ref:`Using Chef in node definition <userdefinitionconfigmanagementsection>`
 
@@ -38,9 +43,14 @@ same infrastructure. Occopus has access to various configuration and contextuali
 
 **Different usage possibilities**
 
-| Use Occopus via a CLI, as a REST service, or import it as a library into your
-  own application. 
-| :ref:`See the detailed description in the concept section <concept>`
+| Occopus functionalities can be utilised in different ways. First, it provides command-line tools
+  exposing different functionalities to build, query, update or destroy infrastructures. Second, 
+  REST API can be used after Occopus web service has been launched. Finally, orchestration 
+  functionalities can be utilised in your application through the API of the Occopus python library. 
+| :ref:`Overview of usage possibilities <concept>`
+| :ref:`Command-line interface <api-user_cli>`
+| :ref:`REST interface <api-user_rest>`
+| :ref:`Python API <api-user_lib>`
 
 **Simple YAML format**
 
@@ -72,7 +82,7 @@ After updating the infrastructure description in the datastore using
   checking the connectivity of a mysql database (mysql access).
 | :ref:`Health checking primitives <userdefinitionhealthchecksection>`
 
-**Auto healing***
+**Auto healing**
 
 Occopus monitors the states of the nodes by applying the primitives configured 
 by health-checking for each node. Once, a node does not fails on health-checking,

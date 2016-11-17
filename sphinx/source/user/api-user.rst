@@ -3,6 +3,8 @@
 Usage
 =====
 
+.. _api-user_cli:
+
 Command line tools
 ------------------
 
@@ -163,12 +165,16 @@ This command launches occopus as a web service. The occopus rest service can cre
     * ``--port PORT:`` (optional) sets the port for the service to be assigned to (default: 5000)
     * ``--parallelize:`` (optional) parallelize processing instructions (default: sequential)
 
+.. _api-user_rest:
+
 REST API
 --------
 
 .. autoflask:: occo.api.rest:app
    :endpoints: 
    :include-empty-docstring:
+
+.. _api-user_lib:
 
 Python API
 ----------
