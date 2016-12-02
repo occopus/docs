@@ -483,7 +483,7 @@ The following steps are suggested to be performed:
 
 Autoscaling-Prometheus
 ~~~~~~~~~~~~~~~~~~~~~~
-This tutorial aims to complement the autoscaling capabilities of Occopus. With this solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always in the optimum level of resources. In this infrastructure nodes are discovered by Consul which is a DNS service discovery software and monitored by Prometheus, a monitoring software. Prometheus support alert definitions which later will help you write custom scaling events. Incoming traffic from the user is go through the load balancers to the appropriate data node where your application should run.
+This tutorial aims to complement the autoscaling capabilities of Occopus. With this solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always in the optimum level of resources. In this infrastructure nodes are discovered by Consul which is a DNS service discovery software and monitored by Prometheus, a monitoring software. Prometheus supports alert definitions which later will help you write custom scaling events. Incoming traffic from the user is go through the load balancers to the appropriate data node where your application should run.
 
 **Features**
 
@@ -558,11 +558,13 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       Keep in mind that Occopus has to start at least one node from each node type to work properly!
 
-#. Edit the ``nodes/da_cloud_init.yaml`` node descriptor file. Add your application code! In this example we implemented a Grid Data Avenue webapplication. 
+#. Edit the ``nodes/da_cloud_init.yaml`` node descriptor file. Add your application code! In this example we implemented a Grid Data Avenue webapplication.
+
+This autoscaling project scales the infrastructure over you application while you can run any application on it. You have to put your application code into the da_cloud_init.yaml file and start it automatically when the node boots up. This way every data node will run your application and load balancers will share the load between them.
 
 #. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "Prometheus rules" section in case if you want to implement new scaling rules:
    
-	- ``{infra_id}`` is a built in Occopus variable and every alert have to implement it in their Labels!
+	- ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
 	- ``node`` should be set to da or lb depending on which type of node the alerts should work.
 
    .. code::
@@ -571,7 +573,7 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
        da_cpu_utilization = 100 - (avg (rate(node_cpu{group="da_cluster",mode="idle"}[60s])) * 100)
  
  	ALERT da_overloaded
-      IF da_cpu_utilization > 50 OR lb_ram_utilization < 10 OR lb_hdd_utilization < 10
+      IF da_cpu_utilization > 50 
       FOR 1m
       LABELS {alert="overloaded", cluster="da_cluster", node="da", infra_id="{{infra_id}}"}
       ANNOTATIONS {
@@ -588,23 +590,23 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
    .. important::
 
-      Autoscaling events (scale up, scale down) are based on Prometheus rules which acts as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu, ram, hdd utilization in your da-lb cluster with some threshold values. Please always use infra_id in you alerts as you can see below since Occopus will resolve this variable to you actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels too.
-      For more information about Prometheus rules and alerts please visit: https://prometheus.io/docs/alerting/rules/
+      Autoscaling events (scale up, scale down) are based on Prometheus rules which acts as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your da-lb cluster with some threshold values. Please always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too.
+      For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
+
 
 #. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "executor config" section. Set the following attributes:
 
    - ``[your occopus installation IP address]`` is the ip address of you Occopus installation
-   - ``[port]`` is the port on which Occopus listens for Rest calls.
    
    .. code::
  
       
     over_loaded() {
-      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaleup/$2
+      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaleup/$2
     }
     
     under_loaded() {
-      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaledown/$2
+      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaledown/$2
     }
 
    .. note::
@@ -612,7 +614,6 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
      For further explanation of the keywords, please read the `cloud-init documentation <http://cloudinit.readthedocs.org/en/latest/topics/examples.html#install-and-run-chef-recipes>`_!
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use, as well as the authentication data for the ``config_management`` section. Setting authentication information for both is described :ref:`here <authentication>`.
-
    
 
 #. Load the node definitions into the database.
@@ -629,28 +630,28 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
    .. code::
 
-      occopus-rest-service --host [ip address]
+      occopus-rest-service --host [ip address of the virtual machine]
 
 #. Start deploying the infrastructure in Rest api mode. 
 
    .. code::
 
-      curl -X POST http://[Occopus IP]:[port]/infrastructures/ --data-binary @infra_da.yaml
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_da.yaml
 
-#. You can test the infrastructure and see how it works if you put some load on the system by start sending a large data file to one of the data nodes. You can check the status of your alerts at_  [PrometheusIP]:9090/alerts.
+#. You can test the infrastructure and see how it works if you create more nodes ( da for example) manually by scaling occopus on REST service. After few minutes you can observe that the newly connected nodes will be scaled down and deleted because the underloaded alert is firing. You can check the status of your alerts at_  [PrometheusIP]:9090/alerts.
 
    .. code::
 
-      curl -k -o /dev/null -H "X-Key: 1a7e159a-ffd8-49c8-8b40-549870c70e73" -H "X-URI: s3://s3.lpds.sztaki.hu/s3bucket/1GB.dat" -H "X-Username: ahajnal" -H "X-Password: 2cafa126809f4faad1a569620aa7d1a26659259b" http://[YourDataNodeIPaddress]:8080/blacktop3/rest/file
+      curl -X POST http://[occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
    
    .. important::
 
-      Start many instances of the sending command to stress test the data node. After some minutes you will se a firing "overloaded" alert indicating the system started creating a new node.
+      Depending on the cloud you are using for you virtual machines it can take a few minutes to start a new node and connect it to your infrastructure. The connedted nodes are present on prometheus's Targets page.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id.
 
    .. code::
 
-      curl -X DELETE http://[occopus ip address]:[port]/infrastructures/[infra id]
+      curl -X DELETE http://[occopus ip address]:5000/infrastructures/[infra id]
 
 

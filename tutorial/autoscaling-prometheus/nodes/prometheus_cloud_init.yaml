@@ -48,33 +48,33 @@ write_files:
 
 
     ALERT lb_overloaded
-      IF lb_cpu_utilization > 50 OR lb_ram_utilization < 10 OR lb_hdd_utilization < 10
+      IF lb_cpu_utilization > 80
       FOR 1m
       LABELS {alert="overloaded", cluster="lb_cluster", node="lb", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "LB cluster overloaded",
-      description = "LB cluster average CPU/RAM/HDD utilization is overloaded"}
+      description = "LB cluster average CPU utilization is overloaded"}
     ALERT lb_underloaded
       IF lb_cpu_utilization < 20
       FOR 2m
       LABELS {alert="underloaded", cluster="lb_cluster", node="lb", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "LB cluster underloaded",
-      description = "LB cluster average CPU/RAM/HDD utilization is underloaded"}
+      description = "LB cluster average CPU utilization is underloaded"}
     ALERT da_overloaded
-      IF da_cpu_utilization > 50 OR lb_ram_utilization < 10 OR lb_hdd_utilization < 10
+      IF da_cpu_utilization > 80
       FOR 1m
       LABELS {alert="overloaded", cluster="da_cluster", node="da", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "DA cluster overloaded",
-      description = "DA cluster average CPU/RAM/HDD utilization is overloaded"}
+      description = "DA cluster average CPU utilization is overloaded"}
     ALERT da_underloaded
       IF da_cpu_utilization < 20
       FOR 2m
       LABELS {alert="underloaded", cluster="da_cluster", node="da", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "DA cluster underloaded",
-      description = "DA cluster average CPU/RAM/HDD utilization is underloaded"}
+      description = "DA cluster average CPU utilization is underloaded"}
 
 
 
@@ -87,11 +87,11 @@ write_files:
     setgid prometheus
     script
       cd /opt/prometheus
-      ./prometheus -config.file /opt/prometheus/monitor_prometheus.yml > /opt/prometheus/prometheus.log -alertmanager.url=http://localhost:9093
+      ./prometheus -config.file /opt/prometheus/monitor_prometheus.yml -alertmanager.url=http://localhost:9093 >/opt/prometheus/prometheus.log 2>&1
     end script
 
 # alertmanager service
-- path: /etc/init/alertmanager.conf
+- path: /etc/init/prometheus_alertmanager.conf
   content: |
     start on startup
     setuid prometheus
@@ -99,7 +99,7 @@ write_files:
     setgid prometheus
     script
       cd /opt/prometheus
-      ./alertmanager -config.file=/opt/prometheus/alertmanager.conf
+      ./alertmanager -config.file=/opt/prometheus/alertmanager.conf >/opt/prometheus/prometheus_alertmanager.log 2>&1
     end script
 
 # prometheus executor service
@@ -111,7 +111,7 @@ write_files:
     setgid prometheus
     script
       cd /opt/prometheus/prometheus_executor
-      ./executor -l 127.0.0.1:9095 ./executor_conf.sh
+      ./executor -l 127.0.0.1:9095 ./executor_conf.sh >/opt/prometheus/prometheus_executor.log 2>&1
     end script
 
 # alertmanager
@@ -149,11 +149,11 @@ write_files:
     fi
     
     over_loaded() {
-      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaleup/$2
+      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaleup/$2
     }
     
     under_loaded() {
-      curl -X POST http://[your occopus installation IP address]:[port]/infrastructures/$1/scaledown/$2
+      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaledown/$2
     }
     
     main() {
@@ -178,6 +178,11 @@ runcmd:
 - mkdir /opt/prometheus/
 - mkdir /opt/prometheus/prometheus_executor
 - wget "https://github.com/prometheus/prometheus/releases/download/0.20.0/prometheus-0.20.0.linux-amd64.tar.gz" -O prometheus.tar.gz
+- tar -xvzf prometheus.tar.gz -C /opt/prometheus/
+- rm /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus.yml
+- cp -R /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus /opt/prometheus/
+- chown -R prometheus:prometheus /opt/prometheus/ 
+- sudo service prometheus start
 - wget "https://github.com/rabotond/szakdolgozat/raw/master/alertmanager" -O alertmanager
 - wget "https://github.com/rabotond/szakdolgozat/raw/master/executor" -O executor
 - chmod 777 alertmanager
@@ -185,10 +190,8 @@ runcmd:
 - chmod 777 /opt/prometheus/prometheus_executor/executor_conf.sh
 - mv alertmanager /opt/prometheus
 - mv executor /opt/prometheus/prometheus_executor
-- tar -xvzf prometheus.tar.gz -C /opt/prometheus/
-- rm /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus.yml
-- cp -R /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus /opt/prometheus/
-- chown -R prometheus:prometheus /opt/prometheus/ 
-- sudo service prometheus start
-- sudo service alertmanager start
+- sudo service prometheus stop
+- sudo service prometheus_alertmanager start
 - sudo service prometheus_executor start
+- sudo rm -rf /opt/prometheus/data/*
+- sudo service prometheus start
