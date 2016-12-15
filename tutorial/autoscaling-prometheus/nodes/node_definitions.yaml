@@ -11,7 +11,7 @@
               replace_with_security_group_id1_on_your_target_cloud
           -
               replace_with_security_group_id2_on_your_target_cloud
-       subnet_id: replace_with_subnet_id_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
       context_template: !text_import
@@ -30,7 +30,7 @@
               replace_with_security_group_id1_on_your_target_cloud
           -
               replace_with_security_group_id2_on_your_target_cloud
-       subnet_id: replace_with_subnet_id_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
       context_template: !text_import
@@ -50,7 +50,7 @@
               replace_with_security_group_id1_on_your_target_cloud
           -
               replace_with_security_group_id2_on_your_target_cloud
-       subnet_id: replace_with_subnet_id_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
       context_template: !text_import
@@ -70,7 +70,7 @@
               replace_with_security_group_id1_on_your_target_cloud
           -
               replace_with_security_group_id2_on_your_target_cloud
-       subnet_id: replace_with_subnet_id_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
       context_template: !text_import
