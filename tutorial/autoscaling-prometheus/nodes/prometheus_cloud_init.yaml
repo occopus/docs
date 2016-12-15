@@ -175,14 +175,12 @@ write_files:
     main "$@"
 #- rm -rf /opt/prometheus/prometheus-0.20.0.linux-amd64
 runcmd:
-- mkdir /opt/prometheus/
-- mkdir /opt/prometheus/prometheus_executor
+- mkdir -p /opt/prometheus/
+- mkdir -p /opt/prometheus/prometheus_executor
 - wget "https://github.com/prometheus/prometheus/releases/download/0.20.0/prometheus-0.20.0.linux-amd64.tar.gz" -O prometheus.tar.gz
 - tar -xvzf prometheus.tar.gz -C /opt/prometheus/
 - rm /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus.yml
 - cp -R /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus /opt/prometheus/
-- chown -R prometheus:prometheus /opt/prometheus/ 
-- sudo service prometheus start
 - wget "https://github.com/rabotond/szakdolgozat/raw/master/alertmanager" -O alertmanager
 - wget "https://github.com/rabotond/szakdolgozat/raw/master/executor" -O executor
 - chmod 777 alertmanager
@@ -190,8 +188,11 @@ runcmd:
 - chmod 777 /opt/prometheus/prometheus_executor/executor_conf.sh
 - mv alertmanager /opt/prometheus
 - mv executor /opt/prometheus/prometheus_executor
-- sudo service prometheus stop
-- sudo service prometheus_alertmanager start
-- sudo service prometheus_executor start
-- sudo rm -rf /opt/prometheus/data/*
+- chown -R prometheus:prometheus /opt/prometheus/
+- sudo rm -rvf /opt/prometheus/data/*
+- echo "Starting prometheus services..."
 - sudo service prometheus start
+- sudo service prometheus_executor start
+- sleep 2
+- sudo service prometheus_alertmanager start
+
