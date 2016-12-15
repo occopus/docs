@@ -181,14 +181,14 @@ runcmd:
 - tar -xvzf prometheus.tar.gz -C /opt/prometheus/
 - rm /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus.yml
 - cp -R /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus /opt/prometheus/
-- wget "https://github.com/rabotond/szakdolgozat/raw/master/alertmanager" -O alertmanager
-- wget "https://github.com/rabotond/szakdolgozat/raw/master/executor" -O executor
+- chown -R prometheus:prometheus /opt/prometheus/
+- wget "https://github.com/occopus/docs/raw/devel/tutorial/autoscaling-prometheus/deploy/prometheus/alertmanager" -O alertmanager
+- wget "https://github.com/occopus/docs/raw/devel/tutorial/autoscaling-prometheus/deploy/prometheus/executor" -O executor
 - chmod 777 alertmanager
 - chmod 777 executor
 - chmod 777 /opt/prometheus/prometheus_executor/executor_conf.sh
 - mv alertmanager /opt/prometheus
 - mv executor /opt/prometheus/prometheus_executor
-- chown -R prometheus:prometheus /opt/prometheus/
 - sudo rm -rvf /opt/prometheus/data/*
 - echo "Starting prometheus services..."
 - sudo service prometheus start
