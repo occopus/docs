@@ -19,7 +19,6 @@
                 url: file://cloud_init_puppet.yaml
         config_management:
             type: puppet_solo
-            endpoint:
             manifests:
                 - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/ec2-puppet-solo-wordpress/recipes/mysql-init.pp
             modules:
@@ -55,7 +54,6 @@
                 url: file://cloud_init_puppet.yaml
         config_management:
             type: puppet_solo
-            endpoint:
             manifests:
                 - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/ec2-puppet-solo-wordpress/recipes/wordpress-init.pp
             modules:
