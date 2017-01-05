@@ -1,0 +1,17 @@
+infra_name: ec2_puppet_solo_wordpress_infra
+user_id: somebody@somewhere.com
+
+nodes:
+    -
+        name: puppet_solo_mysql
+        type: ec2_puppet_solo_mysql_node
+    -
+        name: puppet_solo_wp
+        type: ec2_puppet_solo_wp_node
+
+variables:
+    mysql_root_password: myrootpwd
+    mysql_database_name: mydbname
+    mysql_dbuser_username: mydbuser
+    mysql_dbuser_password: mydbuser
+
