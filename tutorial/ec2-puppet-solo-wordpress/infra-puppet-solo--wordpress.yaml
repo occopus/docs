@@ -10,8 +10,7 @@ nodes:
         type: ec2_puppet_solo_wp_node
 
 variables:
-    mysql_root_password: myrootpwd
-    mysql_database_name: mydbname
-    mysql_dbuser_username: mydbuser
-    mysql_dbuser_password: mydbuser
-
+    mysql_root_password: replace_with_database_root_password
+    mysql_database_name: replace_with_database_name
+    mysql_dbuser_username: replace_with_database_username
+    mysql_dbuser_password: replace_with_database_user_password
