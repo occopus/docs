@@ -133,12 +133,12 @@ This command imports i.e. loads the node definitions from file to the database b
 .. code:: yaml
 
  occopus-import [-h] 
-                [--redisconf REDISCONF] 
+                [--cfg CFG_PATH] 
                 datafile
 
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
-    * ``--redisconf REDISCONF:`` (optional) loads database access configuration from REDISCONF file (default:None) if undefined, file named *redis_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``datafile:`` file containing node definition(s)
 
 occopus-rest-service
