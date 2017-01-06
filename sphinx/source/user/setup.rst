@@ -180,15 +180,6 @@ For ``cloudbroker`` resources:
                 email: your@email.com
                 password: your_password
 
-For ``docker`` resources:
-
-.. code:: yaml
-
-    resource:
-        -
-            type: docker
-            auth_data: unused
-
 For ``cloudsigma`` resources:
 
 .. code:: yaml
