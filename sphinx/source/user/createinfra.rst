@@ -131,7 +131,7 @@ A node definition consists of 4 different sections:
 
 #. ``contextualisation`` Optional. Contains contextualisation information for the node to be instantiated. Possible attributes are defined in the :ref:`Contextualisation section <userdefinitioncontextualisationsection>`.
 
-#. ``config_management`` Optional. Describes the configuration manager to be used and its required parameters. Currently, only chef is supported. Possible attributes are defined in the :ref:`Config management section <userdefinitionconfigmanagementsection>`.
+#. ``config_management`` Optional. Describes the configuration manager to be used and its required parameters. Currently, chef and puppet are supported. Possible attributes are defined in the :ref:`Config management section <userdefinitionconfigmanagementsection>`.
 
 #. ``health_check`` Optional. Can be specified if health of the node can be monitored. Default is ping to check network access. Possible attributes are defined in the :ref:`Health check section <userdefinitionhealthchecksection>`.
 
@@ -343,6 +343,17 @@ Chef
   ``run_list``
     The list of recipes to be executed by chef on the node after startup.
 
+Puppet-solo
+^^^^^^^^^^^
+  ``type: puppet_solo`` 
+    Selects puppet (server-free version) as config manager.
+  ``manifests``
+    The location (url) of the puppet manifest files to be deployed.
+  ``modules``
+    The list module names to be of deployed by puppet.
+  ``attributes``
+    List of attribute-value pairs defining the values of the attributes.
+
 .. _userdefinitionhealthchecksection:
 
 Health-check
@@ -440,7 +451,7 @@ implementations.
                 ...
             ...
             config_management:
-                type: chef
+                type: puppet_solo
                 ...
             ...
 
