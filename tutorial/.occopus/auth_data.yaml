@@ -19,9 +19,6 @@ resource:
             email: your@email.com
             password: your_password
     -
-        type: docker
-        auth_data: notneeded
-    -
         type: cloudsigma
         auth_data:
             email: your@email.com
