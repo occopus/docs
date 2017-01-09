@@ -307,4 +307,6 @@ if os.environ.get('API_DOC', '0')[0] in ['t', 'T', '1', 'y', 'Y']:
     api_doc = True
 
 todo_include_todos = not api_doc
+todo_include_todos = False
+
 

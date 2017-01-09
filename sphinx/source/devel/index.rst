@@ -6,6 +6,7 @@ Developers' guide
 
    packages
    api
+..
    datastructures
    infobroker
    uds
@@ -21,8 +22,10 @@ Developers' guide
 
     .. todolist::
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-* :ref:`occoglossary`
-* :ref:`ibkeyindex`
+
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
+.. * :ref:`occoglossary`
+.. * :ref:`ibkeyindex`
+
