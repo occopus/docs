@@ -19,6 +19,7 @@ plugins: !python_import
     - occo.configmanager
     - occo.plugins.configmanager.dummy
     - occo.plugins.configmanager.chef
+    - occo.plugins.configmanager.puppet_solo
 components:
     resourcehandler: !ResourceHandler &rh
         protocol: null

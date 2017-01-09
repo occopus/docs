@@ -7,7 +7,7 @@ Setup
 Installation
 ------------
 
-Please, perform the following steps to deploy Occopus and its dependencies in your environment:
+The steps required to deploy Occopus and its dependencies are described below. Alternatively, you can watch a `video on installing Occopus v1.2 <http://smith.s3.lpds.sztaki.hu/Occopus/occopus_v1.2_installation.mp4>`_ .
 
 #. Install a few system-wide packages
 
@@ -74,27 +74,22 @@ Please, perform the following steps to deploy Occopus and its dependencies in yo
 Configuration
 -------------
 
-Occopus requires 2 basic configuration files:
+Occopus requires one configuration file containing static parameters and objects to be instantiated when Occopus starts. The file is ``occopus_config.yaml``.
 
-#. ``occopus_config.yaml`` : contains static parameters and objects to be instantiated when Occopus starts
+This file must be specified for Occopus through command line parameters. Alternatively, we recommend to store this file in ``$HOME/.occopus`` directory, so that Occopus will automatically find and use it.
 
-#. ``redis_config.yaml`` : contains parameters for accessing the redis key-value store
-
-These files must be specified for Occopus through command line parameters. Alternatively, we recommend to store these files in ``$HOME/.occopus`` directory, so that Occopus will automatically find and use it.
-
-Please, download and save your configuration files:
+Please, download and save your configuration file:
 
 .. code:: yaml
 
    mkdir -p $HOME/.occopus
    curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
-   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorial/.occopus/redis_config.yaml -o $HOME/.occopus/redis_config.yaml
 
 Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects instantiated by the YAML parser.
 
 .. note::
 
-   Please, do not modify the configuration files unless you know what you are doing!
+   Please, do not modify the configuration file unless you know what you are doing!
 
 .. note::
 
@@ -179,15 +174,6 @@ For ``cloudbroker`` resources:
             auth_data:
                 email: your@email.com
                 password: your_password
-
-For ``docker`` resources:
-
-.. code:: yaml
-
-    resource:
-        -
-            type: docker
-            auth_data: unused
 
 For ``cloudsigma`` resources:
 

@@ -60,7 +60,7 @@ html:
 	cp source/index.html $(BUILDDIR)/html
 	rm -rf $(BUILDDIR)/html/examples
 	mkdir -p $(BUILDDIR)/html/examples
-	$(foreach dir, $(notdir $(wildcard ../tutorial/*)), tar zcvf $(BUILDDIR)/html/examples/$(dir).tgz --directory $(BUILDDIR)/../../tutorial $(dir);)
+	$(foreach dir, $(notdir $(wildcard ../tutorial/*)), tar zcvf $(BUILDDIR)/html/examples/$(dir).tgz --exclude=deploy --directory $(BUILDDIR)/../../tutorial $(dir);)
 	rm -rf $(BUILDDIR)/html/configs
 	mkdir -p $(BUILDDIR)/html/configs
 	cp ../tutorial/.occopus/* $(BUILDDIR)/html/configs
