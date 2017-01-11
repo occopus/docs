@@ -665,9 +665,9 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
              ...
   
 
-#. Edit the ``infra_da.yaml`` infrastructure descriptor file. Set the following attributes:
+#. Optionally, edit the ``infra_da.yaml`` infrastructure descriptor file. Set the following attributes:
 
-   - ``scaling`` is the interval in which the number of nodes can change (min,max). Change both for da and lb nodes.
+   - ``scaling`` is the interval in which the number of nodes can change (min,max). You can change da and lb nodes or leave them as they are.
    
    .. code::
  
@@ -683,11 +683,15 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       Keep in mind that Occopus has to start at least one node from each node type to work properly!
 
-#. Edit the ``nodes/da_cloud_init.yaml`` node descriptor file. Add your application code! In this example we implemented a Grid Data Avenue webapplication.
+#. Optionally, you can edit the ``nodes/da_cloud_init.yaml`` node descriptor file. If you wish, you can replace the actually implemented Grid Data Avenue webapplication with your own one. Be careful, when modifying this example! 
 
-   This autoscaling project scales the infrastructure over your application while you can run any application on it. You have to put your application code into the da_cloud_init.yaml file and start it automatically when the node boots up. This way every data node will run your application and load balancers will share the load between them.
+   This autoscaling project scales the infrastructure over your application while you can run any application on it. You have to put your application code into the da_cloud_init.yaml file and make sure it starts automatically when the node boots up. This way every data node will run your application and load balancers will share the load between them. This solution fits to web applications serving high number of incoming http requests.
 
-#. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "Prometheus rules" section in case if you want to implement new scaling rules:
+   .. note::
+
+     For detailed explanation on cloud-init and its usage, please read `the cloud-init documentation <http://cloudinit.readthedocs.org/en/latest/topics/examples.html>`_!
+
+#. Optionally, edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
    
 	- ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
 	- ``node`` should be set to da or lb depending on which type of node the alerts should work.
@@ -715,28 +719,23 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
    .. important::
 
-      Autoscaling events (scale up, scale down) are based on Prometheus rules which act as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your da-lb cluster with some threshold values. Please, always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too.
-      For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
+      Autoscaling events (scale up, scale down) are based on Prometheus rules which act as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your da-lb cluster with some threshold values. Please, always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too. For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
 
 
-#. Edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "executor config" section. Set the following attributes:
+#. Edit the "executor config" section of the ``nodes/prometheus_cloud_init.yaml`` file. Set the following attributes:
 
-   - ``[your occopus installation IP address]`` is the ip address of you Occopus installation
+   - ``[your occopus service IP address]`` is the ip address of you Occopus installation
    
    .. code::
  
       
     over_loaded() {
-      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaleup/$2
+      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaleup/$2
     }
     
     under_loaded() {
-      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaledown/$2
+      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaledown/$2
     }
-
-   .. note::
-
-     For further explanation of the keywords, please read the `cloud-init documentation <http://cloudinit.readthedocs.org/en/latest/topics/examples.html#install-and-run-chef-recipes>`_!
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -750,24 +749,48 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       occopus-import nodes/node_definitions.yaml
 
-#. Start Occopus in Rest api mode:
+#. Start Occopus in REST service mode:
 
    .. code::
 
-      occopus-rest-service --host [ip address of the virtual machine]
+      occopus-rest-service --host [ip address to bind the service to]
 
-#. Start deploying the infrastructure in Rest api mode. 
+#. Start deploying the infrastructure through the Occopus service: 
 
    .. code::
 
       curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_da.yaml
 
-#. You can test the infrastructure and see how it works if you create more nodes ( da for example) manually by scaling occopus on REST service. After few minutes you can observe that the newly connected nodes will be scaled down and deleted because the underloaded alert is firing. You can check the status of your alerts at [PrometheusIP]:9090/alerts.
+#. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``[PrometheusIP]:9090/alerts``.
 
    .. code::
 
-      curl -X POST http://[occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
    
+   .. important::
+
+      Depending on the cloud you are using for you virtual machines it can take a few minutes to start a new node and connect it to your infrastructure. The connected nodes are present on prometheus's Targets page.
+
+#. To test the up-scaling mechanism put some load on the data nodes with the command below. Just select one of your LB node and generate load on it with running the command below in a few copy. After a few minutes the cluster will be overloaded, the overloaded alerts will fire in Prometheus and a new da node will be started and connected to your cluster. Also, if you stop sending files for a while, the overloaded alerts will fire in Prometheus and one (or more) of the da nodes will be shut (scaled) down.
+
+   To query the nodes and their ip addresses, use this command:
+
+   .. code::
+
+      curl -X GET http://[Occopus ip]:5000/infrastructures/[infrastructure_id]
+   
+   Once, you have the ip of the selected LB node, generate load on it by transferring a 1GB file using the command below. Do not forget to update the placeholder!
+
+   .. code::
+
+      curl -k -o /dev/null -H "X-Key: 1a7e159a-ffd8-49c8-8b40-549870c70e73" -H "X-URI:https://autoscale.s3.lpds.sztaki.hu/files_for_autoscale/1GB.dat" http://[LB node ip address]/blacktop3/rest/file 
+
+   To check the status of alerts under Prometheus during the testing, keep watching the following url in your browser:
+
+   .. code::
+ 
+      http://[prometheus node ip]:9090/alerts
+ 
    .. important::
 
       Depending on the cloud you are using for you virtual machines it can take a few minutes to start a new node and connect it to your infrastructure. The connected nodes are present on prometheus's Targets page.

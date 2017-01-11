@@ -14,7 +14,7 @@
       subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
-      context_template: !text_import
+      context_template: !yaml_import
         url: file://db_cloud_init.yaml
 
 'node_def:prometheus':
@@ -33,7 +33,7 @@
       subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
-      context_template: !text_import
+      context_template: !yaml_import
         url: file://prometheus_cloud_init.yaml
 
 
@@ -53,7 +53,7 @@
       subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
-      context_template: !text_import
+      context_template: !yaml_import
         url: file://da_cloud_init.yaml
 
 
@@ -73,5 +73,5 @@
       subnet_id: replace_with_subnet_id_on_your_target_cloud
     contextualisation:
       type: cloudinit 
-      context_template: !text_import
+      context_template: !yaml_import
         url: file://lb_cloud_init.yaml 

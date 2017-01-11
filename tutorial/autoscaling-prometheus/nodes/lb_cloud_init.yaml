@@ -131,7 +131,7 @@ write_files:
     start on networking
     stop on runlevel [06]
     respawn
-    exec consul-template -consul {{ibget('node.resource.address', find_node_id(variables.consul_host))}}:8500 -template "/etc/haproxy/haproxy.ctmpl:/etc/haproxy/haproxy.cfg:service haproxy reload"
+    exec consul-template -consul {{getip(variables.consul_host)}}:8500 -template "/etc/haproxy/haproxy.ctmpl:/etc/haproxy/haproxy.cfg:service haproxy reload"
 
 # node_exporter service
 - path: /etc/init/node_exporter.conf

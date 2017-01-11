@@ -149,11 +149,11 @@ write_files:
     fi
     
     over_loaded() {
-      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaleup/$2
+      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaleup/$2
     }
     
     under_loaded() {
-      curl -X POST http://[your occopus installation IP address]:5000/infrastructures/$1/scaledown/$2
+      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaledown/$2
     }
     
     main() {
