@@ -261,7 +261,7 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
    - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must be defined on the target nova cloud before launching the VM. 
    - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
    - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
-   - ``floating_ip`` optionally specifies the name of pool from which the floating ip must be selected.
+   - ``floating_ip_pool`` optionally specifies the name of pool from which the floating ip must be selected.
    
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
@@ -363,7 +363,7 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
    - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must be defined on the target nova cloud before launching the VM. 
    - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
    - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
-   - ``floating_ip`` optionally specifies the name of pool from which the floating ip must be selected.
+   - ``floating_ip_pool`` optionally specifies the name of pool from which the floating ip must be selected.
 
    For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
