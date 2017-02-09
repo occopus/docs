@@ -601,7 +601,7 @@ The following steps are suggested to be performed:
 
 
 
-Autoscaling-Prometheus
+Autoscaling-DataAvenue
 ~~~~~~~~~~~~~~~~~~~~~~
 
 This tutorial aims to complement the scaling capabilities of Occopus. With this solution users can scale their application without user intervention in a predefined scaling range to guarantee that its running always with the optimum level of resources. In this infrastructure, nodes are discovered by Consul, which is a service discovery tool also providing DNS service and are monitored by Prometheus, a monitoring software. Prometheus supports alert definitions which later will help you write custom scaling events. 
@@ -625,7 +625,7 @@ In case, this architecture fits to your need, you may replace the Data Avenue (w
 
 **Download**
 
-You can download the example as `tutorial.examples.autoscaling-prometheus <../../examples/autoscaling-prometheus.tgz>`_ .
+You can download the example as `tutorial.examples.autoscaling-dataavenue <../../examples/autoscaling-dataavenue.tgz>`_ .
 
 .. note::
 
@@ -665,12 +665,11 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
              ...
   
 
-#. Optionally, edit the ``infra_da.yaml`` infrastructure descriptor file. Set the following attributes:
+#. Optionally, edit the ``infra_as_dataavenue.yaml`` infrastructure descriptor file. Set the following attributes:
 
    - ``scaling`` is the interval in which the number of nodes can change (min,max). You can change da and lb nodes or leave them as they are.
    
    .. code::
- 
       
       - &DA_cluster # Node Running your application
   	   name: da
@@ -683,15 +682,15 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
 
       Keep in mind that Occopus has to start at least one node from each node type to work properly!
 
-#. Optionally, you can edit the ``nodes/da_cloud_init.yaml`` node descriptor file. If you wish, you can replace the actually implemented Grid Data Avenue webapplication with your own one. Be careful, when modifying this example! 
+#. Optionally, you can edit the ``nodes/cloud_init_da.yaml`` node descriptor file. If you wish, you can replace the actually implemented Grid Data Avenue webapplication with your own one. Be careful, when modifying this example! 
 
-   This autoscaling project scales the infrastructure over your application while you can run any application on it. You have to put your application code into the da_cloud_init.yaml file and make sure it starts automatically when the node boots up. This way every data node will run your application and load balancers will share the load between them. This solution fits to web applications serving high number of incoming http requests.
+   This autoscaling project scales the infrastructure over your application while you can run any application on it. You have to put your application code into the cloud_init_da.yaml file and make sure it starts automatically when the node boots up. This way every data node will run your application and load balancers will share the load between them. This solution fits to web applications serving high number of incoming http requests.
 
    .. note::
 
      For detailed explanation on cloud-init and its usage, please read `the cloud-init documentation <http://cloudinit.readthedocs.org/en/latest/topics/examples.html>`_!
 
-#. Optionally, edit the ``nodes/prometheus_cloud_init.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
+#. Optionally, edit the ``nodes/cloud_init_prometheus.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
    
 	- ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
 	- ``node`` should be set to da or lb depending on which type of node the alerts should work.
@@ -722,20 +721,15 @@ You can download the example as `tutorial.examples.autoscaling-prometheus <../..
       Autoscaling events (scale up, scale down) are based on Prometheus rules which act as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your da-lb cluster with some threshold values. Please, always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too. For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
 
 
-#. Edit the "executor config" section of the ``nodes/prometheus_cloud_init.yaml`` file. Set the following attributes:
+#. Edit the "variables" section of the ``infra_as_dataavenue.yaml`` file. Set the following attributes:
 
-   - ``[your occopus service IP address]`` is the ip address of you Occopus installation
+   - ``occopus_restservice_ip`` is the ip address of the host where you will start the occopus-rest-service
+   - ``occopus_restservice_port`` is the port you will bind the occopus-rest-service to
    
    .. code::
  
-      
-    over_loaded() {
-      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaleup/$2
-    }
-    
-    under_loaded() {
-      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaledown/$2
-    }
+    occopus_restservice_ip: "127.0.0.1"
+    occopus_restservice_port: "5000" 
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
