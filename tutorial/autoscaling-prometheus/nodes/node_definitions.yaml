@@ -15,7 +15,7 @@
     contextualisation:
       type: cloudinit 
       context_template: !yaml_import
-        url: file://db_cloud_init.yaml
+        url: file://cloud_init_db.yaml
 
 'node_def:prometheus':
   - resource:
@@ -34,7 +34,7 @@
     contextualisation:
       type: cloudinit 
       context_template: !yaml_import
-        url: file://prometheus_cloud_init.yaml
+        url: file://cloud_init_prometheus.yaml
 
 
 'node_def:da':
@@ -54,7 +54,7 @@
     contextualisation:
       type: cloudinit 
       context_template: !yaml_import
-        url: file://da_cloud_init.yaml
+        url: file://cloud_init_da.yaml
 
 
 'node_def:lb':
@@ -74,4 +74,4 @@
     contextualisation:
       type: cloudinit 
       context_template: !yaml_import
-        url: file://lb_cloud_init.yaml 
+        url: file://cloud_init_lb.yaml 

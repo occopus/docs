@@ -1,5 +1,5 @@
 user_id: yourusername
-infra_name: dataavenue
+infra_name: autoscale_dataavenue
 
 nodes:
 - &Database # Data Avenue database + Consul server
@@ -27,6 +27,8 @@ dependencies: # build order: database -> prometheus -> data avenue nodes -> load
 - connection: [ *Prometheus, *Database ]
 
 variables:
+  occopus_restservice_ip: "127.0.0.1"
+  occopus_restservice_port: "5000"
   consul_host: "db"
   mysql_root_password: "root"
   mysql_database_name: "dataavenue"

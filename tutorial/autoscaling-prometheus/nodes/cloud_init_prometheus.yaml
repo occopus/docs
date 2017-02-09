@@ -2,15 +2,6 @@
 packages:
 - unzip
 
-groups:
-- prometheus
-
-users:
-- name: prometheus
-  gecos: Prometheus server
-  primary-group: prometheus
-  system: true
-
 write_files:
 # Prometheus config
 - path: /opt/prometheus/monitor_prometheus.yml
@@ -149,11 +140,11 @@ write_files:
     fi
     
     over_loaded() {
-      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaleup/$2
+      curl -X POST http://{{variables.occopus_restservice_ip}}:{{variables.occopus_restservice_port}}/infrastructures/$1/scaleup/$2
     }
     
     under_loaded() {
-      curl -X POST http://[your occopus service IP address]:5000/infrastructures/$1/scaledown/$2
+      curl -X POST http://{{variables.occopus_restservice_ip}}:{{variables.occopus_restservice_port}}/infrastructures/$1/scaledown/$2
     }
     
     main() {
@@ -175,6 +166,7 @@ write_files:
     main "$@"
 #- rm -rf /opt/prometheus/prometheus-0.20.0.linux-amd64
 runcmd:
+- adduser --disabled-password --gecos "" prometheus
 - mkdir -p /opt/prometheus/
 - mkdir -p /opt/prometheus/prometheus_executor
 - wget "https://github.com/prometheus/prometheus/releases/download/0.20.0/prometheus-0.20.0.linux-amd64.tar.gz" -O prometheus.tar.gz
