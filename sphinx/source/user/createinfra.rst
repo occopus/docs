@@ -161,7 +161,7 @@ EC2
   ``subnet_id``
     Optional. The ID of the subnet which should be assigned to the allocated virtual machine.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
 Nova
 ^^^^
@@ -192,7 +192,7 @@ Nova
   ``floating_ip_pool``
     Optional. If defined, also implies **floating_ip**, and specifies the name of the floating IP pool that should be used to allocate a new floating IP for the VM.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` as well.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
 
 OCCI
@@ -210,7 +210,7 @@ OCCI
   ``link``
     Optional. List of compute or network resources to be attached to the VM. Using this option enables one to attach additional disk images or public networks to the VM.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
 CloudBroker
 ^^^^^^^^^^^
@@ -229,7 +229,7 @@ CloudBroker
   ``instance_type_id``
     The ID of the CloudBroker Instance to use.
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
       
 Docker
 ^^^^^^
@@ -246,7 +246,7 @@ Docker
   ``tag``
     Docker tag. (default = latest)
   ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>`.
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
 CloudSigma
 ^^^^^^^^^^
@@ -288,6 +288,16 @@ CloudSigma
                ip: null
              runtime:
                interface_type: public
+
+Collecting Resource Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following subsections detail how the string values (identifiers, settings, etc.) for the different attributes/keywords under the resource section of the node definition can be collected using the user interface of a particular resource.
+
+.. toctree:: 
+
+   collect_resource_attributes/amazon/index
+   collect_resource_attributes/cloudsigma/index
 
 .. _userdefinitioncontextualisationsection:
 
@@ -387,7 +397,7 @@ Urls
          - http://{{ip}}:5000/myserviceOne
          - http://{{ip}}:6000/myserviceTwo
 
-  Optional. Health check includes testing against web services if urls are specified. Default is none. {{ip}} are substituted with the real ip of the node before health checking.
+  Optional. Health check includes testing against web services if urls are specified. Default is none. The ``{{ip}}`` in the url means the ip address of the node being specified.
 
 MysqlDBs
 ^^^^^^^^
@@ -465,3 +475,4 @@ Examples
 ~~~~~~~~
 
 Examples can be found in the :ref:`tutorial section <tutorial>` of the User Guide.
+
