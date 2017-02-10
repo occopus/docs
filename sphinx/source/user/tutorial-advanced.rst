@@ -731,6 +731,16 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
     occopus_restservice_ip: "127.0.0.1"
     occopus_restservice_port: "5000" 
 
+#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   .. code::
+
+      TCP 22   (ssh)
+      TCP 8500 (Consul)
+      TCP 9090 (Prometheus)
+      TCP 8080 (Data Avenue)
+      TCP 9093 (Alertmanager)
+ 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
 #. Load the node definitions into the database.
