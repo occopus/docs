@@ -5,7 +5,7 @@
             endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
             libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
             description:
-                cpu: 2048
+                cpu: 2000
                 mem: 1073741824
                 vnc_password: secret
                 pubkeys:
@@ -16,9 +16,6 @@
                         firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
                         ip_v4_conf:
                             conf: dhcp
-                            ip: null
-                        runtime:
-                            interface_type: public
         contextualisation:
             type: cloudinit
             context_template: !text_import

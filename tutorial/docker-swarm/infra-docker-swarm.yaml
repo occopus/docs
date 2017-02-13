@@ -1,13 +1,13 @@
-infra_name: occi_dockerswarm_infra
+infra_name: dockerswarm_infra
 user_id: somebody@somewhere.com
 
 nodes:
     - &H
         name: head
-        type: occi_dockerswarm_head_node
+        type: dockerswarm_head_node
     - &W
         name: worker
-        type: occi_dockerswarm_worker_node
+        type: dockerswarm_worker_node
         scaling:
             min: 2
         variables:

@@ -1,7 +1,7 @@
-.. _tutorial-basic:
+.. _tutorial-resource-plugins:
 
-Basic
------
+Tutorials on resource plugins
+=============================
 
 In this section, simple examples will be shown. The examples will focus on introducing the different resource types and will have two categories:
 
@@ -1065,7 +1065,7 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
 
    - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`). 
    - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
-   - ``cpu`` is the speed of CPU (e.g. `2048`) in terms of MHz of your VM to be instantiated.
+   - ``cpu`` is the speed of CPU (e.g. `2000`) in terms of MHz of your VM to be instantiated.
    - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
    - ``vnc_password`` set the password for your VNC session.
    - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
@@ -1082,7 +1082,7 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
                 endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
                 libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
                 description:
-                    cpu: 2048
+                    cpu: 2000
                     mem: 1073741824
                     vnc_password: secret
                     pubkeys:
@@ -1093,9 +1093,6 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
                             firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
                             ip_v4_conf:
                                 conf: dhcp
-                                ip: null
-                            runtime:
-                                interface_type: public
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 

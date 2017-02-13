@@ -1,7 +1,6 @@
-'node_def:cloudsigma_ping_receiver_node':
+'node_def:dockerswarm_head_node':
     -
         resource:
-            name: my_cloudsigma_cloud
             type: cloudsigma
             endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
             libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
@@ -20,11 +19,14 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_ping_receiver.yaml
-'node_def:cloudsigma_ping_sender_node':
+                url: file://cloud_init_head_node.yaml
+        health_check:
+            ports:
+                - 2375
+
+'node_def:dockerswarm_worker_node':
     -
         resource:
-            name: my_cloudsigma_cloud
             type: cloudsigma
             endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
             libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
@@ -43,4 +45,4 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_ping_sender.yaml
+                url: file://cloud_init_worker_node.yaml
