@@ -29,58 +29,14 @@ You can download the example as `tutorial.examples.docker-swarm <../../examples/
 
 The following steps are suggested to be performed:
 
-#. Open ``nodes/node_definitions.yaml`` and edit the resource section of ``dockerswarm_head_node`` and ``dockerswarm_worker_node`` nodes. Set the followings in their ``resource`` section:
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
 
-   - ``endpoint`` is an url of a CloudSigma interface of a cloud (e.g. `https://zrh.cloudsigma.com/api/2.0`).
-   - ``libdrive_id`` is the image id (e.g. `40aa6ce2-5198-4e6b-b569-1e5e9fbaf488`) on your CloudSigma cloud. Select an image containing a base os installation with cloud-init support!
-   - ``cpu`` is the speed of CPU (e.g. `2000`) in terms of MHz of your VM to be instantiated.
-   - ``mem`` is the amount of RAM (e.g. `1073741824`) in terms of bytes to be allocated for your VM.
-   - ``vnc_password`` set the password for your VNC session.
-   - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM.
-   - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
+   - you must select an `Occopus compatible resource plugin <clouds.html>`_ 
+   - you can find and specify the relevant `list of attributes for the plugin <createinfra.html#resource>`_
+   - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
+   - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code::
-
-     'node_def:dockerswarm_head_node':
-         -
-            resource:
-                type: cloudsigma
-                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
-                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
-                description:
-                    cpu: 2000
-                    mem: 1073741824
-                    vnc_password: secret
-                    pubkeys:
-                        -
-                            replace_with_id_of_your_pubkey_on_your_target_cloud
-                    nics:
-                        -
-                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
-                            ip_v4_conf:
-                                conf: dhcp
-             ...
-     'node_def:dockerswarm_worker_node':
-         -
-             resource:
-                type: cloudsigma
-                endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
-                libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
-                description:
-                    cpu: 2000
-                    mem: 1073741824
-                    vnc_password: secret
-                    pubkeys:
-                        -
-                            replace_with_id_of_your_pubkey_on_your_target_cloud
-                    nics:
-                        -
-                            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
-                            ip_v4_conf:
-                                conf: dhcp
-             ...
+   The downloadable package for this example contains a resource template for the Cloudsigma plugin.
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -164,57 +120,14 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
 
 **Steps**
 
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
 
-#. Edit ``nodes/node_definitions.yaml``. For hadoop_master_node and for hadoop_slave_node nodes set the followings in their resource section as seen in the basic tutorials. For example, if you are using a ``nova`` cloud, you have to set the following:
+   - you must select an `Occopus compatible resource plugin <clouds.html>`_ 
+   - you can find and specify the relevant `list of attributes for the plugin <createinfra.html#resource>`_
+   - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
+   - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
 
-   - ``endpoint`` must point to the endpoint (url) of your target Nova cloud.
-   - ``project_id`` is the id of project you would like to use on your target Nova cloud.
-   - ``user_domain_name`` is the user domain name you would like to use on your target Nova cloud.
-   - ``image_id`` is the image id on your Nova cloud. Select an image containing a base os installation with cloud-init support!
-   - ``flavor_name`` is the name of flavor to be instantiated on your Nova cloud.
-   - ``key_name`` optionally sets the name of the keypair to be associated to the instance. Keypair name must be defined on the target nova cloud before launching the VM.
-   - ``security_groups`` optionally specifies security settings (you can define multiple security groups in the form of a list) for your VM.
-   - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
-   - ``floating_ip_pool`` optionally specifies the name of pool from which the floating ip must be selected.
-
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code::
-
-     'node_def:hadoop_master_node':
-         -
-             resource:
-                 type: nova
-                 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-                 project_id: replace_with_projectid_to_use
-                 user_domain_name: Default
-                 image_id: replace_with_id_of_your_image_on_your_target_cloud
-                 network_id: replace_with_id_of_network_on_your_target_cloud
-                 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
-                 key_name: replace_with_name_of_keypair_or_remove
-                 security_groups:
-                     -
-                         replace_with_security_group_to_add_or_remove_section
-                 floating_ip: add_yes_if_you_need_floating_ip_or_remove
-                 floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
-            ...
-     'node_def:hadoop_slave_node':
-         -
-             resource:
-                 type: nova
-                 endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
-                 project_id: replace_with_projectid_to_use
-                 user_domain_name: Default
-                 image_id: replace_with_id_of_your_image_on_your_target_cloud
-                 network_id: replace_with_id_of_network_on_your_target_cloud
-                 flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
-                 key_name: replace_with_name_of_keypair_or_remove
-                 security_groups:
-                     -
-                         replace_with_security_group_to_add_or_remove_section
-                 floating_ip: add_yes_if_you_need_floating_ip_or_remove
-                 floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
-             ...
+   The downloadable package for this example contains a resource template for the Nova plugin.
 
    .. important::
 

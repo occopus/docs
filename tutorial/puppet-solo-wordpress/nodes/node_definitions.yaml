@@ -1,4 +1,4 @@
-'node_def:ec2_chef_mysql_server_node':
+'node_def:puppet_solo_mysql_node':
     -
         resource:
             type: ec2
@@ -16,26 +16,24 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_chef.yaml
-            attributes:
-                mysql:
-                    server_root_password: '{{ variables.mysql_root_password }}'
-                database_management:
-                    database_name: '{{ variables.mysql_database_name }}'
-                    dbuser_username: '{{ variables.mysql_dbuser_username }}'
-                    dbuser_password: '{{ variables.mysql_dbuser_password }}'
+                url: file://cloud_init_puppet.yaml
         config_management:
-            type: chef
-            endpoint: replace_with_url_of_chef_server
-            run_list: 
-                - recipe[database-setup::db]
-        health_check: 
+            type: puppet_solo
+            manifests:
+                - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/puppet-solo-wordpress/manifests/mysql-init.pp
+            modules:
+                - puppetlabs-mysql
+            attributes:
+                - rootpassword: "{{ variables.mysql_root_password }}"
+                - dbuser: "{{ variables.mysql_dbuser_username }}"
+                - dbpass: "{{ variables.mysql_dbuser_password }}"
+                - dbname: "{{ variables.mysql_database_name }}"
+        health_check:
             mysqldbs:
                 - {name: '{{ variables.mysql_database_name }}',
                    user: '{{ variables.mysql_dbuser_username }}',
                    pass: '{{ variables.mysql_dbuser_password }}'}
-
-'node_def:ec2_chef_wordpress_node':
+'node_def:puppet_solo_wp_node':
     -
         resource:
             type: ec2
@@ -53,19 +51,22 @@
         contextualisation:
             type: cloudinit
             context_template: !text_import
-                url: file://cloud_init_chef.yaml
-            attributes:
-                wordpress:
-                    db:
-                        name: '{{ variables.mysql_database_name }}'
-                        user: '{{ variables.mysql_dbuser_username }}'
-                        pass: '{{ variables.mysql_dbuser_password }}'
+                url: file://cloud_init_puppet.yaml
         config_management:
-            type: chef
-            endpoint: replace_with_url_of_chef_server
-            run_list:
-                - recipe[wordpress]
+            type: puppet_solo
+            manifests:
+                - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/puppet-solo-wordpress/manifests/wordpress-init.pp
+            modules:
+                - example42-apache
+                - example42-php
+                - hunner-wordpress
+            attributes:
+                - dbuser: "{{ variables.mysql_dbuser_username }}"
+                - dbpass: "{{ variables.mysql_dbuser_password }}"
+                - dbname: "{{ variables.mysql_database_name }}"
+                - mysqlhost: "{{getip(puppet_solo_mysql)}}"
         health_check:
             ping: true
             urls:
                 - http://{{ip}}/wordpress
+
