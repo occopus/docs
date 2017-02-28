@@ -10,6 +10,8 @@ In this section, simple examples will be shown. The examples will focus on intro
 
 Please, note that the following examples require a properly configured Occopus, therefore we suggest to continue this section if you already followed the instructions written in the :ref:`Installation <installation>` section.
 
+.. _ec2-helloworld:
+
 EC2-Helloworld
 ~~~~~~~~~~~~~~
 This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
