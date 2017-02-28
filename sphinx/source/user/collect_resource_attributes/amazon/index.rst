@@ -34,7 +34,7 @@ You can get your access key and secret key through the web interface of Amazon A
  
 4. Click on the "Create New Access Key" button to create new credentials if you don't know the Secret Access Key of your already existing key(s). A window similar to the following screenshot will appear. Here you can make your **Access Key ID** and **Secret Access Key** appear, but you can also download your credentials for later use.
 
-  .. image:: collecting_resource_attributes_amazon_fig3.png
+.. image:: collecting_resource_attributes_amazon_fig3.png
 
 **Amazon region name and its EC2 endpoint**
 
@@ -74,7 +74,7 @@ Two possible methods are available to get a proper image ID: using the EC2 CLI t
 In the AWS EC2 management console, select **AMIs** from the **IMAGES** menu. Search for an AMI, as shown in the screenshot below:
 
 
- .. image:: collecting_resource_attributes_amazon_fig4.png
+.. image:: collecting_resource_attributes_amazon_fig4.png
 
 Here, the value of the **AMI ID** column contains the image identifier.
 
@@ -89,21 +89,21 @@ The instance type determines the characteristics (CPU, memory) of the VM created
 Security groups define the network traffic allowed for the instances to be started. Thus, you should create security groups in order to enable SSH or HTTP traffic into your VM.
 The following screenshot shows a number of security groups already defined. Select those you'd like to attach to the VM started by Occous. The value of the **Group ID** column contains the values which are needed by Occopus.
 
-  .. image:: collecting_resource_attributes_amazon_fig5.png
+.. image:: collecting_resource_attributes_amazon_fig5.png
 
 
 **Get keypair name**
 
 Key pairs are importd into your running VM so SSH access is possible. You can check the name of available keypairs in the AWS EC2 management console, under the **Key Pairs** menu as shown in the following screenshot. The value of the **Key pair name** is the one Occopus needs.
 
-  .. image:: collecting_resource_attributes_amazon_fig6.png
+.. image:: collecting_resource_attributes_amazon_fig6.png
 
 
 **Get Subnet identifier**
 
 You can get the list of available subnets through the AWS VPC dashboard, by selecting **Subnets** from the menu as shown in the following screenshot. You should use the value of the **Subnet ID** column for Occopus.
 
-  .. image:: collecting_resource_attributes_amazon_fig7.png
+.. image:: collecting_resource_attributes_amazon_fig7.png
 
 
 **Closing**
