@@ -44,7 +44,9 @@ You can download the example as `tutorial.examples.ec2-helloworld <../../example
    - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
    - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM. 
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -136,8 +138,10 @@ You can download the example as `tutorial.examples.ec2-ping <../../examples/ec2-
    - ``security_group`` optionally specifies security settings (you can define multiple security groups in the form of a list, e.g. `sg-93d46bf7`) of your VM.
    - ``subnet_id`` optionally specifies subnet identifier (e.g. `subnet-644e1e13`) to be attached to the VM.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-   
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
    .. code::
 
      'node_def:ec2_ping_receiver_node':
@@ -265,7 +269,9 @@ You can download the example as `tutorial.examples.nova-helloworld <../../exampl
    - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
    - ``floating_ip_pool`` optionally specifies the name of pool from which the floating ip must be selected.
    
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -367,7 +373,9 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
    - ``floating_ip`` optionally allocates new floating IP address to the VM if set to any value.
    - ``floating_ip_pool`` optionally specifies the name of pool from which the floating ip must be selected.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -491,7 +499,9 @@ You can download the example as `tutorial.examples.occi-helloworld <../../exampl
    - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM. 
    - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -579,7 +589,9 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
    - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM. 
    - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -874,7 +886,9 @@ You can download the example as `tutorial.examples.docker-helloworld <../../exam
 
    - ``endpoint`` is the endpoint of your docker cluster (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -962,7 +976,9 @@ You can download the example as `tutorial.examples.docker-ping <../../examples/d
   
    - ``endpoint`` is the endpoint of your docker cluster (e.g. `tcp://1.2.3.4:2375` or `unix://var/run/docker.sock`). 
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -1073,7 +1089,9 @@ You can download the example as `tutorial.examples.cloudsigma-helloworld <../../
    - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
    - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
 
    .. code::
 
@@ -1168,8 +1186,10 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
    - ``pubkeys``  optionally specifies the keypairs (e.g. `f80c3ffb-3ab5-461e-ad13-4b253da122bd`) to be assigned to your VM. 
    - ``firewall_policy`` optionally specifies network policies (you can define multiple security groups in the form of a list, e.g. `8cd00652-c5c8-4af0-bdd6-0e5204c66dc5`) of your VM.
 
-   For further explanation, read the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-   
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide. 
+
    .. code::
 
      'node_def:cloudsigma_ping_receiver_node':
