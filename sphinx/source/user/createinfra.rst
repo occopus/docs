@@ -298,6 +298,8 @@ The following subsections detail how the string values (identifiers, settings, e
 
    collect_resource_attributes/amazon/index
    collect_resource_attributes/cloudsigma/index
+   collect_resource_attributes/openstack_horizon/index
+   
 
 .. _userdefinitioncontextualisationsection:
 
