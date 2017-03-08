@@ -178,7 +178,7 @@ Nova
   ``network_id``
     Optional. Specifies the ID of the network to attach to the virtual machine.
   ``image_id``
-    The identifier of the image behind the ec2 cloud to be instantiated to realize a virtual machine.
+    The identifier of the image on the cloud to be instantiated to realize a virtual machine.
   ``flavor_name``
     The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
   ``server_name``
@@ -298,6 +298,8 @@ The following subsections detail how the string values (identifiers, settings, e
 
    collect_resource_attributes/amazon/index
    collect_resource_attributes/cloudsigma/index
+   collect_resource_attributes/openstack_horizon/index
+   
 
 .. _userdefinitioncontextualisationsection:
 
