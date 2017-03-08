@@ -1,6 +1,6 @@
 
-Amazon
-======
+Amazon (EC2)
+============
 
 .. _collect_amazon:
 
@@ -10,7 +10,7 @@ First of all, you need of course an Amazon AWS account. Using Amazon AWS is impl
 
 In case of Amazon EC2, the following information is necessary to start up a node in an Occopus infrastructure:
 
-* Security credentials (access key and secret key)
+* security credentials (access key and secret key)
 * Amazon region name and its EC2 endpoint
 * an image ID (AMI)
 * an instance type
