@@ -161,7 +161,7 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_da.yaml
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_dataavenue.yaml
 
 #. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``[PrometheusIP]:9090/alerts``.
 
