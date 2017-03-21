@@ -48,10 +48,6 @@ In case, this architecture fits to your need, you may replace the Data Avenue (w
 
 You can download the example as `tutorial.examples.autoscaling-dataavenue <../../examples/autoscaling-dataavenue.tgz>`_ .
 
-.. note::
-
-   In this tutorial, we will use ec2 cloud resources (based on our ec2 tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes - you can even use different types of resources for each node.
-
 **Steps**
 
 #. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``
@@ -203,4 +199,180 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
       curl -X DELETE http://[occopus ip address]:5000/infrastructures/[infra id]
 
+
+Autoscaling-Hadoop cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This tutorial aims to demonstrate the scaling capabilities of Occopus. With this solution applications can automatically scale without user intervention in a predefined scaling range to guarantee that the application always runs at the optimum level of resources.
+
+The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occopus and performs the automatic scaling of the application based on Occopus and Prometheus (a monitoring tool). It contains a Hadoop Master node and Hadoop Slave worker nodes, which can be scaled up or down. To register Hadoop Slave nodes Consul is used.
+
+
+**Features**
+ - creating two types of nodes through contextualisation
+ - utilising health check against a predefined port
+ - using Prometheus to scale automatically Hadoop Slave node numbers
+ - using load balancers to share system load between data nodes
+ - using Consul as a DNS service discovery agent
+
+**Prerequisites**
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
+ - generated ssh key-pair (or for testing purposes one is attached)
+ - start Occopus in Rest-API mode (# occopus-rest-service -h [Occopus ip address])
+
+**Download**
+
+You can download the example as --empty--
+
+**Steps**
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an `Occopus compatible resource plugin <clouds.html>`_
+   - you can find and specify the relevant `list of attributes for the plugin <createinfra.html#resource>`_
+   - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
+   - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
+
+   The downloadable package for this example contains a resource template for the Nova plugin.
+
+   .. important::
+
+     Do not modify the values of the contextualisation and the health_check section’s attributes!
+
+   .. important::
+
+     Do not specify the server_name attribute for slaves so they are named automatically by Occopus to make sure node names are unique!
+
+   .. note::
+
+     If you want Occopus to monitor (health_check) your Hadoop Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
+
+#. Optionally, edit the ``nodes/cloud_init_hadoop_master.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
+
+        - ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
+
+   .. code::
+
+    hd_cpu_utilization = 100 - (avg (rate(node_cpu{group="hd_cluster",mode="idle"}[60s])) * 100)
+    hd_ram_utilization = (sum(node_memory_MemFree{job="hd_cluster"}) / sum(node_memory_MemTotal{job="hd_cluster"})) * 100
+    hd_hdd_utilization = sum(node_filesystem_free{job="hd_cluster",mountpoint="/", device="rootfs"}) / sum(node_filesystem_size{job="hd_cluster",mountpoint="/", device="rootfs"}) *100
+
+    ALERT hd_overloaded
+      IF hd_cpu_utilization > 80
+      FOR 1m
+      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "HD cluster overloaded",
+      description = "HD cluster average CPU utilization is overloaded"}
+    ALERT hd_underloaded
+      IF hd_cpu_utilization < 20
+      FOR 2m
+      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "HD cluster underloaded",
+      description = "HD cluster average CPU utilization is underloaded"}
+
+   .. important::
+
+      Autoscaling events (scale up, scale down) are based on Prometheus rules which act as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your Hadoop cluster with some threshold values. Please, always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too. For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
+
+
+#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   .. code::
+
+      TCP 22
+      TCP 8025
+      TCP 8042
+      TCP 8080 
+      TCP 8088
+      TCP 8300-8600
+      TCP 9000
+      TCP 9090
+      TCP 9093
+      TCP 50000-51000
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Update the number of Hadoop Slave worker nodes if necessary. For this, edit the ``infra-occopus-hadoop.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup), and the maximum is set to 10.
+   .. code::
+
+     - &S
+        name: hadoop_slave
+        type: hadoop_slave_node
+        scaling:
+                min: 2
+                max: 10
+
+   .. important::
+
+     Important: Keep in mind that Occopus has to start at least one node from each node type to work properly and scaling can be applied only for Hadoop Slave nodes in this example!
+
+#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start Occopus in REST service mode:
+
+   .. code::
+
+      occopus-rest-service --host [ip address to bind the service to]
+
+#. Start deploying the infrastructure through the Occopus service:
+
+   .. code::
+
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_dataavenue.yaml
+
+#. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``<HaddopMasterIP>:9090/alerts``.
+
+   .. code::
+
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
+
+   .. important::
+
+      Depending on the cloud you are using for you virtual machines it can take a few minutes to start a new node and connect it to your infrastructure. The connected nodes are present on prometheus's Targets page.
+
+#. To test the up-scaling mechanism put some load on the Hadoop Slave nodes. After a few minutes the cluster will be overloaded, the overloaded alerts will fire in Prometheus and a new Hadoop Slave node will be started and connected to your cluster. Also, if you stop sending files for a while, the overloaded alerts will fire in Prometheus and one (or more) of the Hadoop Slave nodes will be shut (scaled) down.
+
+   To query the nodes and their ip addresses, use this command:
+
+   .. code::
+
+      curl -X GET http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]
+
+   Once, you have the ip of the Hadoop Master node, generate load on it by executing Hadoop MapRedcue jobs. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To access Hadoop Master node use the keypair defined in the descriptors.
+
+
+   To check the status of alerts under Prometheus during the testing, keep watching the following url in your browser:
+
+   .. code::
+
+      http://<HadoopMasterIP>:9090/alerts
+
+   .. important::
+
+      Depending on the cloud you are using for you virtual machines it can take a few minutes to start a new node and connect it to your infrastructure. The connected nodes are present on prometheus's Targets page.
+
+
+#. You can check the  health and statistics of the cluster through the following web pages:
+
+   .. code::
+
+      Health of nodes: "http://<HadoopMasterIP>:50070"
+      Job statistics: "http://<HadoopMasterIP>:8088"
+
+#. Finally, you may destroy the infrastructure using the infrastructure id.
+
+   .. code::
+
+      curl -X DELETE http://[Occopus ip address]:5000/infrastructures/[infra id]
 
