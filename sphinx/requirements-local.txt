@@ -24,6 +24,8 @@ pbr==1.8.1
 PyYAML==3.11
 redis==2.10.3
 requests==2.5.2
+ruamel.yaml==0.13.14
+ruamel.ordereddict==0.4.9
 six==1.8.0
 Werkzeug==0.10.4
 websocket-client==0.32.0
@@ -46,6 +48,7 @@ positional==1.0.1
 netaddr==0.7.18
 netifaces==0.10.4
 stevedore==1.12.0
+typing==3.5.3.0
 cmd2==0.6.8
 msgpack-python==0.4.7
 pyparsing==2.1.0
