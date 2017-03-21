@@ -189,7 +189,7 @@ write_files:
 
 - path: /etc/hosts
   content: |
-    {{getip(hadoop_master)}} HadoopMaster
+    {{getip('hadoop_master')}} HadoopMaster
   permissions: '644'
 
 ##################################
@@ -219,7 +219,7 @@ write_files:
     su - hduser -c 'ssh-keyscan localhost >> /home/hduser/.ssh/known_hosts'
     su - hduser -c 'ssh-keyscan 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
 
-    masterpubip="{{getip(hadoop_master)}}"
+    masterpubip="{{getip('hadoop_master')}}"
     su - hduser -c "ssh-keyscan $masterpubip >> /home/hduser/.ssh/known_hosts"
     masteripret=`su - hduser -c "ssh hduser@$masterpubip hostname -i"`
     masterip=`echo $masteripret | rev | cut -f1 -d " " | rev`
@@ -268,7 +268,7 @@ write_files:
     #!/bin/bash
     echo "Install HADOOP starts."
     echo "  Copying hadoop package from master..."
-    su - hduser -c "scp -c blowfish -C hduser@{{getip(hadoop_master)}}:/usr/local/hadoop-2.6.0.tar.gz /tmp"
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/usr/local/hadoop-2.6.0.tar.gz /tmp"
     #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz -O /tmp/hadoop-2.6.0.tar.gz
     echo "  Extracting hadoop package..."
     tar zxf /tmp/hadoop-2.6.0.tar.gz --directory /usr/local
@@ -287,8 +287,8 @@ write_files:
     echo "  Copying consul packages from master..."
     mkdir -p /tmp/consulpackage
     chown hduser:hduser /tmp/consulpackage
-    su - hduser -c "scp -c blowfish -C hduser@{{getip(hadoop_master)}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
-    su - hduser -c "scp -c blowfish -C hduser@{{getip(hadoop_master)}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
     #wget -nc https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip
     #wget -nc https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip
     echo "  Extracting consul packages..."
