@@ -2,7 +2,7 @@ infra_name: cloudbroker_runexe_infra
 user_id: somebody@somewhere.com
 
 nodes:
-    - 
-        name: runexe
-        type: cloudbroker_runexe_node
+  - 
+    name: runexe
+    type: cloudbroker_runexe_node
 

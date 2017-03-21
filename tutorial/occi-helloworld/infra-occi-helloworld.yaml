@@ -2,8 +2,8 @@ infra_name: occi_helloworld_infra
 user_id: somebody@somewhere.com
 
 nodes:
-    -
-        name: helloworld
-        type: occi_helloworld_node
-        variables:
-            message: "Hello World! I have been created by Occopus"
+  -
+    name: helloworld
+    type: occi_helloworld_node
+    variables:
+      message: "Hello World! I have been created by Occopus"
