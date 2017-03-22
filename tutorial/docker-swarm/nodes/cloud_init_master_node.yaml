@@ -8,6 +8,7 @@ runcmd:
  - add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
  - apt-get update
  - apt-get install -y docker-engine
- - wget --retry-connrefused -qO /tmp/swarm_join {{getip('master')}}:2375/v1.26/swarm
- - export TOKEN=$(grep -Eo 'SWMTKN-[[:alnum:]]*-[[:alnum:]]*-[[:alnum:]]*' /tmp/swarm_join | head -1)
- - docker swarm join --token $TOKEN {{getip('master')}}:2377
+ - echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
+ - service docker restart
+ - export IP=$(hostname --ip-address)
+ - docker swarm init --advertise-addr=$IP

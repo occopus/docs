@@ -6,7 +6,7 @@ Tutorials on building clusters
 Docker-Swarm cluster
 ~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a head node and predefined number of worker nodes. The worker nodes receive the ip of the head node and attach to the head node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port 2375).
+This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a master node and predefined number of worker nodes. The worker nodes receive the ip of the master node and attach to the master node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port 2375).
 
 **Features**
 
@@ -40,7 +40,7 @@ The following steps are suggested to be performed:
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``dockerswarm_head_node`` and ``dockerswarm_worker_node`` nodes into the database.
+#. Load the node definition for ``dockerswarm_master_node`` and ``dockerswarm_worker_node`` nodes into the database.
 
    .. important::
 
@@ -59,8 +59,6 @@ The following steps are suggested to be performed:
          type: dockerswarm_worker_node
          scaling:
              min: 2
-         variables:
-             head_node: head
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
 
@@ -70,21 +68,21 @@ The following steps are suggested to be performed:
 
    .. note::
 
-      It may take a few minutes until the services on the head node come to live. Please, be patient!
+      It may take a few minutes until the services on the master node come to live. Please, be patient!
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
    .. code::
 
      List of nodes/ip addresses:
-     head:
+     master:
        <ip-address> (dfa5f4f5-7d69-432e-87f9-a37cd6376f7a)
      worker:
        <ip-address> (cae40ed8-c4f3-49cd-bc73-92a8c027ff2c)
        <ip-address> (8e255594-5d9a-4106-920c-62591aabd899)
      77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
-#. Check the result by submitting docker commands to the docker head node!
+#. Check the result by submitting docker commands to the docker master node!
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 

@@ -1,48 +1,49 @@
-'node_def:dockerswarm_head_node':
-    -
-        resource:
-            type: cloudsigma
-            endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
-            libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
-            description:
-                cpu: 2000
-                mem: 1073741824
-                vnc_password: secret
-                pubkeys:
-                    -
-                        replace_with_id_of_your_pubkey_on_your_target_cloud
-                nics:
-                    -
-                        firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
-                        ip_v4_conf:
-                            conf: dhcp
-        contextualisation:
-            type: cloudinit
-            context_template: !text_import
-                url: file://cloud_init_head_node.yaml
-        health_check:
-            ports:
-                - 2375
+'node_def:dockerswarm_master_node':
+  - 
+    resource:
+      type: cloudsigma
+      endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+      libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+      description:
+        cpu: 2000
+        mem: 1073741824
+        vnc_password: secret
+        pubkeys:
+          -
+            replace_with_id_of_your_pubkey_on_your_target_cloud
+        nics:
+          -
+            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
+            ip_v4_conf:
+              conf: dhcp
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_master_node.yaml
+    health_check:
+      ports:
+        - 22
+        - 2375
 
 'node_def:dockerswarm_worker_node':
-    -
-        resource:
-            type: cloudsigma
-            endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
-            libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
-            description:
-                cpu: 2000
-                mem: 1073741824
-                vnc_password: secret
-                pubkeys:
-                    -
-                        replace_with_id_of_your_pubkey_on_your_target_cloud
-                nics:
-                    -
-                        firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
-                        ip_v4_conf:
-                            conf: dhcp
-        contextualisation:
-            type: cloudinit
-            context_template: !text_import
-                url: file://cloud_init_worker_node.yaml
+  - 
+    resource:
+      type: cloudsigma
+      endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
+      libdrive_id: replace_with_id_of_your_library_drive_on_your_target_cloud
+      description:
+        cpu: 2000
+        mem: 1073741824
+        vnc_password: secret
+        pubkeys:
+          -
+            replace_with_id_of_your_pubkey_on_your_target_cloud
+        nics:
+          -
+            firewall_policy: replace_with_id_of_your_network_policy_on_your_target_cloud
+            ip_v4_conf:
+              conf: dhcp
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_worker_node.yaml

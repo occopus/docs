@@ -2,16 +2,14 @@ infra_name: dockerswarm_infra
 user_id: somebody@somewhere.com
 
 nodes:
-  - &H
-    name: head
-    type: dockerswarm_head_node
+  - &M
+    name: master
+    type: dockerswarm_master_node
   - &W
     name: worker
     type: dockerswarm_worker_node
     scaling:
       min: 2
-    variables:
-      head_node: head
 
 dependencies:
-  - [*W, *H]
+  - [ *W, *M ]
