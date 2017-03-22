@@ -10,8 +10,8 @@ chef:
     omnibus_url: "https://www.opscode.com/chef/install.sh"
     force_install: false
     server_url: "replace_with_your_chef_server_url"
-    environment: {{infra_id}}
-    node_name: {{node_id}}
+    environment: "{{infra_id}}"
+    node_name: "{{node_id}}"
     validation_name: "replace_with_chef_validation_client_name"
     validation_key: |
         replace_with_chef_validation_client_key
