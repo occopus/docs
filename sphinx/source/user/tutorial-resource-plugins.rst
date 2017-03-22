@@ -899,7 +899,6 @@ You can download the example as `tutorial.examples.docker-helloworld <../../exam
 		 endpoint: replace_with_your_docker_endpoint
 		 origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
 		 image: busybox_helloworld
-		 network_mode: bridge
 		 tag: latest
 
 #. Make sure your authentication information is set correctly in your authentication file. The docker plugin in Occopus does not apply authentication, however a dummy authentication block is needed. The instructions for setting the authentication properly is described at the :ref:`authentication page <authentication>`. There you can download a default authentication file containing the docker section already.
@@ -989,7 +988,6 @@ You can download the example as `tutorial.examples.docker-ping <../../examples/d
 		 endpoint: replace_with_your_docker_endpoint
 		 origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
 		 image: busybox_helloworld
-		 network_mode: overlaynet
 		 tag: latest
              ...
      'node_def:docker_ping_sender_node':
@@ -999,7 +997,6 @@ You can download the example as `tutorial.examples.docker-ping <../../examples/d
 		 endpoint: replace_with_your_docker_endpoint
 		 origin: https://s3.lpds.sztaki.hu/docker/busybox_ping.tar
 		 image: busybox_ping
-		 network_mode: overlaynet
 		 tag: latest
 
 #. Make sure your authentication information is set correctly in your authentication file. The docker plugin in Occopus does not apply authentication, however a dummy authentication block is needed. Instructions for setting the authentication properly is described at the :ref:`authentication page <authentication>`. There you can download a default authentication file containing the docker section already.

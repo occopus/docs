@@ -5,7 +5,6 @@
       endpoint: replace_with_your_docker_endpoint
       origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
       image: busybox_helloworld
-      network_mode: bridge
       tag: latest
     contextualisation:
       type: docker
