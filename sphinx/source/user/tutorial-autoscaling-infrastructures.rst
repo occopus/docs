@@ -225,7 +225,7 @@ The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occ
 
 **Download**
 
-You can download the example as `tutorial.examples.autoscaling-hadoop <../../examples/autoscaling-hadoop.tgz>
+You can download the example as `tutorial.examples.autoscaling-hadoop <../../examples/autoscaling-hadoop.tgz>`_.
 
 **Steps**
 
