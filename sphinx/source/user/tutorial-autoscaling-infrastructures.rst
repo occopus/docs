@@ -225,7 +225,7 @@ The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occ
 
 **Download**
 
-You can download the example as --empty--
+You can download the example as `tutorial.examples.autoscaling-hadoop <../../examples/autoscaling-hadoop.tgz>
 
 **Steps**
 
@@ -279,6 +279,15 @@ You can download the example as --empty--
 
       Autoscaling events (scale up, scale down) are based on Prometheus rules which act as thresholds, let’s say scale up if cpu usage > 80%. In this example you can see the implementation of a cpu utilization in your Hadoop cluster with some threshold values. Please, always use infra_id in you alerts as you can see below since Occopus will resolve this variable to your actual infrastructure id. If you are planning to write new alerts after you deployed your infrastructure, you can copy the same infrastructure id to the new one. Also make sure that the "node" property is set in the Labels subsection, too. For more information about Prometheus rules and alerts, please visit: https://prometheus.io/docs/alerting/rules/
 
+#. Edit the "variables" section of the ``infra_as_hadoop.yaml`` file. Set the following attributes:
+
+   - ``occopus_restservice_ip`` is the ip address of the host where you will start the occopus-rest-service
+   - ``occopus_restservice_port`` is the port you will bind the occopus-rest-service to
+
+   .. code::
+
+    occopus_restservice_ip: "127.0.0.1"
+    occopus_restservice_port: "5000"
 
 #. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
 
@@ -297,14 +306,14 @@ You can download the example as --empty--
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Update the number of Hadoop Slave worker nodes if necessary. For this, edit the ``infra-occopus-hadoop.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup), and the maximum is set to 10.
+#. Update the number of Hadoop Slave worker nodes if necessary. For this, edit the ``infra-occopus-hadoop.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 1 (which will be the initial number at startup), and the maximum is set to 10.
    .. code::
 
      - &S
         name: hadoop_slave
         type: hadoop_slave_node
         scaling:
-                min: 2
+                min: 1
                 max: 10
 
    .. important::
@@ -331,13 +340,13 @@ You can download the example as --empty--
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_dataavenue.yaml
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_hadoop.yaml
 
 #. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``<HaddopMasterIP>:9090/alerts``.
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
+      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/hadoop_slave
 
    .. important::
 
