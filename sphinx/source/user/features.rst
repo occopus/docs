@@ -39,7 +39,7 @@ same infrastructure. Occopus has access to various configuration and contextuali
 
   * :ref:`Using Chef in node definition <userdefinitionconfigmanagementsection>`
 
-  * :ref:`Demo infrastructures using chef <tutorial-advanced>`
+  * :ref:`Demo infrastructures using chef <tutorial-configmanager-plugins>`
 
 **Different usage possibilities**
 

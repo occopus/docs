@@ -42,7 +42,7 @@ In case, this architecture fits to your need, you may replace the Data Avenue (w
 
  - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
  - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
- - start Occopus in Rest-API mode (# occopus-rest-service -h [Occopus ip address])
+ - start Occopus in Rest-API mode ( occopus-rest-service )
 
 **Download**
 
@@ -151,7 +151,9 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
    .. code::
 
-      occopus-rest-service --host [ip address to bind the service to]
+      occopus-rest-service --host [<occopus_restservice_ip>] --port [<occopus_restservice_ip>]
+
+   Use ``ip`` and ``port`` values as defined in the infrastructure description!
 
 #. Start deploying the infrastructure through the Occopus service: 
 
