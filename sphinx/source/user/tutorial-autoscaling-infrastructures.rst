@@ -66,11 +66,11 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
    .. code::
       
       - &DA_cluster # Node Running your application
-  	   name: da
-	   type: da
-  	   scaling:
- 	     min: 1
- 	     max: 10
+        name: da
+        type: da
+        scaling:
+          min: 1
+          max: 10
 
    .. important::
 
@@ -151,21 +151,22 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
    .. code::
 
-      occopus-rest-service --host [<occopus_restservice_ip>] --port [<occopus_restservice_ip>]
+      occopus-rest-service --host [occopus_restservice_ip] --port [occopus_restservice_port]
 
    Use ``ip`` and ``port`` values as defined in the infrastructure description!
+   Alternatively, use 0.0.0.0 for the host ip.
 
 #. Start deploying the infrastructure through the Occopus service: 
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_dataavenue.yaml
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_port]/infrastructures/ --data-binary @infra_as_dataavenue.yaml
 
 #. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``[PrometheusIP]:9090/alerts``.
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/da
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_port]/infrastructures/[infrastructure_id]/scaleup/da
    
    .. important::
 
@@ -177,7 +178,7 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
    .. code::
 
-      curl -X GET http://[Occopus ip]:5000/infrastructures/[infrastructure_id]
+      curl -X GET http://[occopus_restservice_ip]:[occopus_restservice_port]/infrastructures/[infrastructure_id]
    
    Once, you have the ip of the selected LB node, generate load on it by transferring a 1GB file using the command below. Do not forget to update the placeholder!
 
@@ -199,7 +200,7 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
 
    .. code::
 
-      curl -X DELETE http://[occopus ip address]:5000/infrastructures/[infra id]
+      curl -X DELETE http://[occopus_restservice_ip]:[occopus_restservice_port]/infrastructures/[infra id]
 
 
 Autoscaling-Hadoop cluster
@@ -213,15 +214,14 @@ The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occ
 **Features**
  - creating two types of nodes through contextualisation
  - utilising health check against a predefined port
- - using Prometheus to scale automatically Hadoop Slave node numbers
- - using load balancers to share system load between data nodes
+ - using Prometheus to scale Hadoop Slaves automatically
  - using Consul as a DNS service discovery agent
 
 **Prerequisites**
  - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
  - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
  - generated ssh key-pair (or for testing purposes one is attached)
- - start Occopus in Rest-API mode (# occopus-rest-service -h [Occopus ip address])
+ - start Occopus in Rest-API mode ( occopus-rest-service )
 
 **Download**
 
@@ -307,14 +307,15 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
 #. Update the number of Hadoop Slave worker nodes if necessary. For this, edit the ``infra-occopus-hadoop.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 1 (which will be the initial number at startup), and the maximum is set to 10.
+   
    .. code::
 
      - &S
-        name: hadoop_slave
-        type: hadoop_slave_node
-        scaling:
-                min: 1
-                max: 10
+       name: hadoop_slave
+       type: hadoop_slave_node
+       scaling:
+         min: 1
+         max: 10
 
    .. important::
 
@@ -334,19 +335,22 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 
    .. code::
 
-      occopus-rest-service --host [ip address to bind the service to]
+      occopus-rest-service --host [occopus_restservice_ip] --port [occopus_restservice_port]
+
+   Use ``ip`` and ``port`` values as defined in the infrastructure description!
+   Alternatively, use 0.0.0.0 for the host ip.
 
 #. Start deploying the infrastructure through the Occopus service:
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/ --data-binary @infra_as_hadoop.yaml
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/ --data-binary @infra_as_hadoop.yaml
 
-#. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``<HaddopMasterIP>:9090/alerts``.
+#. To test the down-scaling mechanism scale up manually the da nodes through the occopus REST interface and after a few minutes you can observe that the newly connected nodes will be automatically removed because the underloaded alert is firing. You can also check the status of your alerts during the testing at ``[HaddopMasterIP]:9090/alerts``.
 
    .. code::
 
-      curl -X POST http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]/scaleup/hadoop_slave
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]/scaleup/hadoop_slave
 
    .. important::
 
@@ -358,16 +362,19 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 
    .. code::
 
-      curl -X GET http://[Occopus ip address]:5000/infrastructures/[infrastructure_id]
+      curl -X GET http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]
 
-   Once, you have the ip of the Hadoop Master node, generate load on it by executing Hadoop MapRedcue jobs. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To access Hadoop Master node use the keypair defined in the descriptors.
+   Once, you have the ip of the Hadoop Master node, generate load on it by executing Hadoop MapRedcue jobs. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To login to the Hadoop Master node use the private key attached to the tutorial package:
+ 
+   .. code::
 
+      ssh -i builtin_hadoop_private_key hduser@[HadoopMaster ip]
 
    To check the status of alerts under Prometheus during the testing, keep watching the following url in your browser:
 
    .. code::
 
-      http://<HadoopMasterIP>:9090/alerts
+      http://[HadoopMasterIP]:9090/alerts
 
    .. important::
 
@@ -378,12 +385,12 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 
    .. code::
 
-      Health of nodes: "http://<HadoopMasterIP>:50070"
-      Job statistics: "http://<HadoopMasterIP>:8088"
+      Health of nodes: "http://[HadoopMasterIP]:50070"
+      Job statistics: "http://[HadoopMasterIP]:8088"
 
 #. Finally, you may destroy the infrastructure using the infrastructure id.
 
    .. code::
 
-      curl -X DELETE http://[Occopus ip address]:5000/infrastructures/[infra id]
+      curl -X DELETE http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infra id]
 

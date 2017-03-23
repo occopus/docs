@@ -204,7 +204,11 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
       Health of nodes: "http://<HadoopMasterIP>:50070"
       Job statistics: "http://<HadoopMasterIP>:8088"
 
-#. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To access Hadoop Master node use the keypair defined in the descriptors. 
+#. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To login to the Hadoop Master node use the private key attached to the tutorial package:
+
+   .. code::
+
+      ssh -i builtin_hadoop_private_key hduser@[HadoopMaster ip]
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
