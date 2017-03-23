@@ -79,15 +79,14 @@ write_files:
       timeout server  36000000
       option http-server-close
     frontend http-frontend
-      bind {{address}}:80
+      bind *:80
       default_backend dataavenue
     frontend https-frontend
-      bind {{address}}:443 ssl crt /etc/ssl/private/mypem.pem
+      bind *:443 ssl crt /etc/ssl/private/mypem.pem
       reqadd X-Forwarded-Proto:\ https
       default_backend dataavenue
     backend dataavenue
       redirect scheme https if !{ ssl_fc }
-      server da1 192.168.152.210:8080
 
   # Consul-template template
 - path: /etc/haproxy/haproxy.ctmpl
@@ -103,10 +102,10 @@ write_files:
       timeout server  36000000
       option http-server-close
     frontend http-frontend
-      bind {{address}}:80
+      bind *:80
       default_backend dataavenue
     frontend https-frontend
-      bind {{address}}:443 ssl crt /etc/ssl/private/mypem.pem
+      bind *:443 ssl crt /etc/ssl/private/mypem.pem
       reqadd X-Forwarded-Proto:\ https
       default_backend dataavenue
     backend dataavenue
