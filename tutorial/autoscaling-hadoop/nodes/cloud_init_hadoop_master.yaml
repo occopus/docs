@@ -1,0 +1,607 @@
+#cloud-config
+users:
+- name: hduser
+  shell: /bin/bash
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  lock-passwd: true
+  ssh_authorized_keys:
+  - "{{variables.hduser_public_key}}"
+
+write_files:
+################################
+# HDUSER PRIVATE KEY
+################################
+- path: /tmp/hduser/id_rsa
+  content: |
+    {{variables.hduser_private_key}}
+  permissions: '600'
+
+################################
+# PROMETHEUS FILES
+################################
+- path: /opt/prometheus/monitor_prometheus.yml
+  content: |
+    rule_files:
+    - 'prometheus.rules'
+    scrape_configs:
+    - job_name: cluster_monitoring
+      scrape_interval: 10s
+      consul_sd_configs:
+      - server: 'localhost:8500'
+        services: ['hd_cluster']
+      relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        regex:         '(.*)'
+        target_label:  'job'
+        replacement:   '$1'
+      - source_labels: ['__meta_consul_service']
+        regex:         '(.*)'
+        target_label:  'group'
+        replacement:   '$1'
+
+# Prometheus rules (expressions and alerts)
+- path: /opt/prometheus/prometheus.rules
+  content: |
+    hd_cpu_utilization = 100 - (avg (rate(node_cpu{group="hd_cluster",mode="idle"}[60s])) * 100)
+    hd_ram_utilization = (sum(node_memory_MemFree{job="hd_cluster"}) / sum(node_memory_MemTotal{job="hd_cluster"})) * 100
+    hd_hdd_utilization = sum(node_filesystem_free{job="hd_cluster",mountpoint="/", device="rootfs"}) / sum(node_filesystem_size{job="hd_cluster",mountpoint="/", device="rootfs"}) *100
+
+    ALERT hd_overloaded
+      IF hd_cpu_utilization > 80
+      FOR 1m
+      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "HD cluster overloaded",
+      description = "HD cluster average CPU utilization is overloaded"}
+    ALERT hd_underloaded
+      IF hd_cpu_utilization < 20
+      FOR 2m
+      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      ANNOTATIONS {
+      summary = "HD cluster underloaded",
+      description = "HD cluster average CPU utilization is underloaded"}
+
+# Prometheus service
+- path: /etc/init/prometheus.conf
+  content: |
+    start on startup
+    setuid prometheus
+   
+    setgid prometheus
+    script
+      cd /opt/prometheus
+      ./prometheus -config.file /opt/prometheus/monitor_prometheus.yml -alertmanager.url=http://localhost:9093 >/opt/prometheus/prometheus.log 2>&1
+    end script
+
+# alertmanager service
+- path: /etc/init/prometheus_alertmanager.conf
+  content: |
+    start on startup
+    setuid prometheus
+
+    setgid prometheus
+    script
+      cd /opt/prometheus
+      ./alertmanager -config.file=/opt/prometheus/alertmanager.conf >/opt/prometheus/prometheus_alertmanager.log 2>&1
+    end script
+
+# prometheus executor service
+- path: /etc/init/prometheus_executor.conf
+  content: |
+    start on startup
+    setuid prometheus
+
+    setgid prometheus
+    script
+      cd /opt/prometheus/prometheus_executor
+      ./executor -l 127.0.0.1:9095 ./executor_conf.sh >/opt/prometheus/prometheus_executor.log 2>&1
+    end script
+
+# alertmanager
+- path: /opt/prometheus/alertmanager.conf
+  content: |
+    global:
+    
+    # The root route on which each incoming alert enters.
+    # The root route with all parameters, which are inherited by the child
+    # routes if they are not overwritten.
+    route:
+      receiver: 'default'
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 3m
+      group_by: [cluster, alertname]
+    
+      routes:
+      - match:
+          alertname: hd_underloaded
+      - receiver: default
+    
+    receivers:
+    - name: 'default'
+      webhook_configs: 
+       - url: http://localhost:9095
+
+# executor config
+- path: /opt/prometheus/prometheus_executor/executor_conf.sh
+  content: |
+    #!/bin/bash
+    
+    if [[ "$AMX_STATUS" != "firing" ]]; then
+      exit 0
+    fi
+    
+    over_loaded() {
+      curl -X POST http://{{variables.occopus_restservice_ip}}:{{variables.occopus_restservice_port}}/infrastructures/$1/scaleup/$2
+    }
+    
+    under_loaded() {
+      curl -X POST http://{{variables.occopus_restservice_ip}}:{{variables.occopus_restservice_port}}/infrastructures/$1/scaledown/$2
+    }
+    
+    main() {
+      for i in $(seq 1 "$AMX_ALERT_LEN"); do
+        alert="AMX_ALERT_${i}_LABEL_alert"
+        infra="AMX_ALERT_${i}_LABEL_infra_id"
+        node="AMX_ALERT_${i}_LABEL_node"
+    
+        if [ "${!alert}" = "overloaded" ]
+        then
+            over_loaded "${!infra}" "${!node}"
+        else
+            under_loaded "${!infra}" "${!node}"
+        fi
+      done
+      wait
+    }
+
+    main "$@"
+#- rm -rf /opt/prometheus/prometheus-0.20.0.linux-amd64
+
+################################
+# CONSUL FILES
+################################
+- path: /opt/consul/service.json
+  content: |
+    {"service": {"name": "hadoop"}}
+  permissions: '644'
+
+- path: /tmp/consul/consul.conf
+  content: |
+    description "Consul agent"
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+    respawn
+    script
+      if [ -f "/etc/service/consul" ]; then
+        . /etc/service/consul
+      fi
+      # Make sure to use all our CPUs, because Consul can block a scheduler thread
+      export GOMAXPROCS=`nproc`
+      exec /usr/local/bin/consul agent \
+      -server -bootstrap-expect 1 -data-dir=/tmp/consul \
+      -config-file=/opt/consul/service.json \
+      -client=0.0.0.0 \
+      >>/var/log/consul.log 2>&1 
+    end script
+  permissions: '644'
+
+- path: /tmp/consul/consul-template-hosts.conf
+  content: |
+    description "Consul template for hosts file"
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+    respawn
+    script
+      # Make sure to use all our CPUs, because Consul template can block a scheduler thread
+      export GOMAXPROCS=`nproc`
+      exec /usr/local/bin/consul-template \
+      -consul $(hostname --ip-address):8500 \
+      -template "/etc/hosts.ctmpl:/etc/hosts" \
+      >>/var/log/consul-template-hosts.log 2>&1
+    end script
+  permissions: '644'
+
+- path: /tmp/consul/consul-template-hadoop-slaves.conf
+  content: |
+    description "Consul template for slaves file"
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+    respawn
+    script
+      # Make sure to use all our CPUs, because Consul template can block a scheduler thread
+      export GOMAXPROCS=`nproc`
+      exec /usr/local/bin/consul-template \
+      -consul $(hostname --ip-address):8500 \
+      -template "/etc/hadoop-slaves.ctmpl:/var/consul/hadoop-slaves:/bin/refresh-hadoop-slaves-file.sh" \
+      >>/var/log/consul-template-hadoop-slaves.log 2>&1
+    end script
+  permissions: '644'
+
+- path: /etc/hosts.ctmpl
+  content: |
+     127.0.0.1       localhost
+
+     # The following lines are desirable for IPv6 capable hosts
+     ::1     localhost ip6-localhost ip6-loopback
+     ff02::1 ip6-allnodes
+     ff02::2 ip6-allrouters
+
+     # Consul nodes
+     {% raw %}
+     {{range service "hadoop"}}
+     {{.Address}} {{.Node}}{{end}}
+     {% endraw %}
+  permissions: '644'
+
+- path: /etc/hadoop-slaves.ctmpl
+  content: |
+     {% raw %}
+     {{range service "hadoop"}}
+     {{.Node}}{{end}}
+     {% endraw %}
+  permissions: '644'
+
+- path: /bin/refresh-hadoop-slaves-file.sh
+  content: |
+    #!/bin/bash
+    slaves_file="/var/consul/hadoop-slaves"
+    pre_slaves_file="/etc/consul/pre-slaves-file.txt"
+     
+    if [ -e $pre_slaves_file ]; then
+      actual_slaves=$(cat $slaves_file | wc -l)
+      prev_slaves=$(cat $pre_slaves_file | wc -l)
+        if [ $actual_slaves -gt $prev_slaves ]; then
+          newslaves=`grep -v -F -x -f $pre_slaves_file $slaves_file`
+          for aslave in $newslaves
+          do
+            echo "Setting ssh for \"$aslave\"..."
+            su - hduser -c "ssh-keyscan $aslave >> ~/.ssh/known_hosts"
+          done
+          su - hduser -c start-dfs.sh
+          su - hduser -c start-yarn.sh
+        elif [ $actual_slaves -lt $prev_slaves ]; then
+          su - hduser -c 'hdfs dfsadmin -refreshNodes'
+        fi
+    fi
+    mkdir -p `dirname $pre_slaves_file`
+    cp $slaves_file $pre_slaves_file
+  permissions: '0755'
+
+################################
+# HADOOP FILES
+################################
+- path: /tmp/hadoop/configs/core-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>fs.default.name</name>
+        <value>hdfs://HadoopMaster:9000</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/hdfs-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+      </property>
+      <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:/usr/local/hadoop_tmp/hdfs/namenode</value>
+      </property>
+      <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:/usr/local/hadoop_tmp/hdfs/datanode</value>
+      </property>
+      <property>
+        <name>dfs.hosts.exclude</name>
+        <value>/usr/local/hadoop/etc/hadoop/dfs.exclude</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/yarn-site.xml
+  content: |
+      <configuration>
+      <!-- Site specific YARN configuration properties -->
+      <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>HadoopMaster:8025</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>HadoopMaster:8035</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>HadoopMaster:8050</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/mapred-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>mapreduce.job.tracker</name>
+        <value>HadoopMaster:5431</value>
+      </property>
+      <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/hadoop-env.sh
+  content: |
+      export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+      export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"/etc/hadoop"}
+      # Extra Java CLASSPATH elements.  Automatically insert capacity-scheduler.
+      for f in $HADOOP_HOME/contrib/capacity-scheduler/*.jar; do
+        if [ "$HADOOP_CLASSPATH" ]; then
+             export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$f
+        else
+             export HADOOP_CLASSPATH=$f
+        fi
+      done
+      export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
+      export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
+      export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS $HADOOP_DATANODE_OPTS"
+      export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
+      export HADOOP_NFS3_OPTS="$HADOOP_NFS3_OPTS"
+      export HADOOP_PORTMAP_OPTS="-Xmx512m $HADOOP_PORTMAP_OPTS"
+      export HADOOP_CLIENT_OPTS="-Xmx512m $HADOOP_CLIENT_OPTS"
+      export HADOOP_SECURE_DN_USER=${HADOOP_SECURE_DN_USER}
+      export HADOOP_SECURE_DN_LOG_DIR=${HADOOP_LOG_DIR}/${HADOOP_HDFS_USER}
+      export HADOOP_PID_DIR=${HADOOP_PID_DIR}
+      export HADOOP_SECURE_DN_PID_DIR=${HADOOP_PID_DIR}
+      export HADOOP_IDENT_STRING=$USER
+  permissions: '644'
+
+- path: /tmp/hduser/.bash_profile
+  content: |
+      # -- HADOOP ENVIRONMENT VARIABLES START -- #
+      export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+      export HADOOP_HOME=/usr/local/hadoop
+      export PATH=$PATH:$HADOOP_HOME/bin
+      export PATH=$PATH:$HADOOP_HOME/sbin
+      export HADOOP_MAPRED_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_HOME=$HADOOP_HOME
+      export HADOOP_HDFS_HOME=$HADOOP_HOME
+      export YARN_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+      # -- HADOOP ENVIRONMENT VARIABLES END -- #
+  permissions: '644'
+
+################################
+# SCRIPT TO SETUP NETWORK
+################################
+- path: /bin/hadoop-set-network.sh
+  content: |
+    #!/bin/bash
+    echo "Setup NETWORK starts."
+    myhost=`hostname`
+    ipaddress=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    cp /etc/hosts /etc/hosts.old
+    grep -v "$myhost" /etc/hosts.old > /etc/hosts
+    
+    echo "IPADDRESS: $ipaddress"
+    echo "$ipaddress $myhost" >> /etc/hosts
+
+    rm -rf /etc/resolvconf/*
+    echo "Setup NETWORK finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO DEPLOY HDUSER KEY
+################################
+- path: /bin/hadoop-set-hduser-keys.sh
+  content: |
+    #!/bin/bash
+    echo "Setup HDUSER KEYS starts."
+    mkdir -p /home/hduser/.ssh
+    chmod 700 /home/hduser/.ssh
+    chown hduser:hduser /home/hduser/.ssh
+
+    mv /tmp/hduser/id_rsa /home/hduser/.ssh
+    chmod 600 /home/hduser/.ssh/id_rsa
+    chown hduser:hduser /home/hduser/.ssh/id_rsa
+
+    ipaddress=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    su - hduser -c "ssh-keyscan -p 22 $ipaddress > /home/hduser/.ssh/known_hosts"
+    su - hduser -c 'ssh-keyscan -p 22 `hostname` >> /home/hduser/.ssh/known_hosts'
+    su - hduser -c 'ssh-keyscan -p 22 localhost >> /home/hduser/.ssh/known_hosts'
+    su - hduser -c 'ssh-keyscan -p 22 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
+    echo "Setup HDUSER KEYS finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL JAVA
+################################
+- path: /bin/hadoop-install-java.sh
+  content: |
+    #!/bin/bash
+    echo "Install JAVA starts."
+    add-apt-repository -y ppa:webupd8team/java
+    apt-get update
+    echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+    apt-get install -y oracle-java8-installer
+    #You can use the following 4 lines instead of the above as an alternate solution
+    #- wget http://mail-tp.fareoffice.com/java/jdk-8u111-linux-x64.tar.gz -P /tmp
+    #- mkdir -p /usr/lib/jvm
+    #- tar zxvf /tmp/jdk-8u111-linux-x64.tar.gz --directory=/usr/lib/jvm
+    #- mv /usr/lib/jvm/jdk1.8.0_111 /usr/lib/jvm/java-8-oracle
+    echo "Install JAVA finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL HADOOP
+################################
+- path: /bin/hadoop-install-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Install HADOOP starts."
+    wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz -O /usr/local/hadoop-2.6.0.tar.gz
+    tar zxf /usr/local/hadoop-2.6.0.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.6.0 /usr/local/hadoop
+    chown -R hduser:hduser /usr/local/hadoop
+    echo "Install HADOOP finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL CONSUL
+################################
+- path: /bin/hadoop-install-consul.sh
+  content: |
+    #!/bin/bash
+    echo "Install CONSUL starts."
+    mkdir -p /tmp/consulpackage
+    wget -nv -nc https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip -O /tmp/consulpackage/consul_0.7.0_linux_amd64.zip
+    wget -nv -nc https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip -O /tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip
+    cd /tmp/consulpackage
+    unzip -n consul_0.7.0_linux_amd64.zip
+    unzip -n consul-template_0.15.0_linux_amd64.zip
+    mv consul /usr/local/bin/
+    mv consul-template /usr/local/bin/
+    cd -
+    echo "Install CONSUL finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO SETUP HADOOP CONFIG
+################################
+- path: /bin/hadoop-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure HADOOP starts."
+    mv /tmp/hduser/.bash_profile /home/hduser/.bash_profile
+    chown hduser:hduser /home/hduser/.bash_profile
+
+    myhost=`hostname`
+    chown hduser:hduser /tmp/hadoop/configs/*
+    mv /tmp/hadoop/configs/* /usr/local/hadoop/etc/hadoop
+    sed -i 's/HadoopMaster/'$myhost'/g' /usr/local/hadoop/etc/hadoop/core-site.xml
+    sed -i 's/HadoopMaster/'$myhost'/g' /usr/local/hadoop/etc/hadoop/yarn-site.xml
+    sed -i 's/HadoopMaster/'$myhost'/g' /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+    echo `hostname` >> /usr/local/hadoop/masters
+    mkdir -p /var/consul
+    echo `hostname` > /var/consul/hadoop-slaves
+    rm -f /usr/local/hadoop/etc/hadoop/slaves
+    ln -s /var/consul/hadoop-slaves /usr/local/hadoop/etc/hadoop/slaves
+    echo "" > /usr/local/hadoop/etc/hadoop/dfs.exclude
+    echo "Configure HADOOP finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO LAUNCH HADOOP
+################################
+- path: /bin/hadoop-launch-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Launch HADOOP starts."
+    #Hadoop tmp
+    mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+    mkdir -p /usr/local/hadoop_tmp/hdfs/datanode
+    chown hduser:hduser -R /usr/local/hadoop_tmp/
+    #Make sure all files belong to hduser
+    chown hduser:hduser -R /usr/local/hadoop
+    #Format Namenode
+    su - hduser -c 'hdfs namenode -format'
+    #Start all Hadoop daemons
+    su - hduser -c 'start-dfs.sh'
+    su - hduser -c 'start-yarn.sh'
+    echo "Launch HADOOP finished."
+  permissions: '0755'
+
+################################
+# SCRIPT TO LAUNCH CONSUL
+################################
+- path: /bin/hadoop-launch-consul.sh
+  content: |
+    #!/bin/bash
+    echo "Launch CONSUL starts."
+    mv /tmp/consul/* /etc/init
+    service consul start
+    service consul-template-hosts start
+    service consul-template-hadoop-slaves start
+    echo "Launch CONSUL finished."
+  permissions: '0755'
+
+################################
+# SCRIPT TO INSTALL PROMETHEUS
+################################
+- path: /bin/hadoop-install-prometheus.sh
+  content: |
+    #!/bin/bash
+    echo "Install PROMETHEUS starts."
+    adduser --disabled-password --gecos "" prometheus
+    mkdir -p /opt/prometheus/
+    mkdir -p /opt/prometheus/prometheus_executor
+    wget "https://github.com/prometheus/prometheus/releases/download/0.20.0/prometheus-0.20.0.linux-amd64.tar.gz" -O prometheus.tar.gz
+    tar -xvzf prometheus.tar.gz -C /opt/prometheus/
+    rm /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus.yml
+    cp -R /opt/prometheus/prometheus-0.20.0.linux-amd64/prometheus /opt/prometheus/
+    chown -R prometheus:prometheus /opt/prometheus/
+    wget "https://github.com/occopus/docs/raw/devel/tutorial/autoscaling-hadoop/deploy/prometheus/alertmanager" -O alertmanager
+    wget "https://github.com/occopus/docs/raw/devel/tutorial/autoscaling-hadoop/deploy/prometheus/executor" -O executor
+    chmod 777 alertmanager
+    chmod 777 executor
+    chmod 777 /opt/prometheus/prometheus_executor/executor_conf.sh
+    mv alertmanager /opt/prometheus
+    mv executor /opt/prometheus/prometheus_executor
+    sudo rm -rvf /opt/prometheus/data/*
+    echo "Install PROMETHEUS finished."
+  permissions: '0755'
+
+################################
+# SCRIPT TO LAUNCH PROMETHEUS
+################################
+- path: /bin/hadoop-launch-prometheus.sh
+  content: |
+    #!/bin/bash
+    echo "Launch PROMETHEUS starts."
+    sudo service prometheus start
+    sudo service prometheus_executor start
+    sleep 2
+    sudo service prometheus_alertmanager start
+    echo "Launch PROMETHEUS finished."
+  permissions: '0755'
+
+packages:
+- openssh-server
+- unzip
+- python-software-properties
+- debconf-utils
+
+runcmd:
+#Setup NETWORK
+- /bin/hadoop-set-network.sh
+#Setup HDUSER keys
+- /bin/hadoop-set-hduser-keys.sh
+#Install JAVA
+- /bin/hadoop-install-java.sh
+#Install HADOOP
+- /bin/hadoop-install-hadoop.sh
+#Install CONSUL
+- /bin/hadoop-install-consul.sh
+#Configure HADOOP
+- /bin/hadoop-setup-config.sh
+#Launch HADOOP
+- /bin/hadoop-launch-hadoop.sh
+#Launch CONSUL
+- /bin/hadoop-launch-consul.sh
+#Launch PROMETHEUS
+- /bin/hadoop-install-prometheus.sh
+#launch PROMETHEUS
+- /bin/hadoop-launch-prometheus.sh
+- echo "HADOOP DEPLOYMENT DONE."

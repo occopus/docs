@@ -5,6 +5,8 @@ Tutorial
 
 .. toctree::
 
-   tutorial-basic
-   tutorial-advanced
+   tutorial-resource-plugins
+   tutorial-configmanager-plugins
+   tutorial-building-clusters
+   tutorial-autoscaling-infrastructures
 

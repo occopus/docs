@@ -2,20 +2,20 @@ infra_name: nova_ping_infra
 user_id: somebody@somewhere.com
 
 nodes:
-    - &R
-        name: ping_receiver
-        type: nova_ping_receiver_node
-        variables:
-            message: "Hello World! I am the receiver node created by Occopus."
-    - &S
-        name: ping_sender
-        type: nova_ping_sender_node
-        variables:
-            message: "Hello World! I am the sender node created by Occopus."
-            targetnode: ping_receiver
+  - &R
+    name: ping_receiver
+    type: nova_ping_receiver_node
+    variables:
+      message: "Hello World! I am the receiver node created by Occopus."
+  - &S
+    name: ping_sender
+    type: nova_ping_sender_node
+    variables:
+      message: "Hello World! I am the sender node created by Occopus."
+      targetnode: ping_receiver
 
 dependencies:
-    -
-        connection: [ *S, *R ]
+  -
+    connection: [ *S, *R ]
 
 

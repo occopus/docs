@@ -2,9 +2,9 @@ infra_name: cloudsigma_helloworld_infra
 user_id: somebody@somewhere.com
 
 nodes:
-    - &A
-        name: helloworld
-        type: cloudsigma_helloworld_node
-        variables:
-            message: "Hello World! I have been created by Occopus"
+  - &A
+    name: helloworld
+    type: cloudsigma_helloworld_node
+    variables:
+      message: "Hello World! I have been created by Occopus"
 

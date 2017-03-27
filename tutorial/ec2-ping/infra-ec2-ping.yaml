@@ -2,19 +2,19 @@ infra_name: ec2_ping_infra
 user_id: somebody@somewhere.com
 
 nodes:
-    - &R
-        name: ping_receiver
-        type: ec2_ping_receiver_node
-        variables:
-            message: "Hello World! I am the receiver node created by Occopus."
-    - &S
-        name: ping_sender
-        type: ec2_ping_sender_node
-        variables:
-            message: "Hello World! I am the sender node created by Occopus."
+- &R
+  name: ping_receiver
+  type: ec2_ping_receiver_node
+  variables:
+    message: "Hello World! I am the receiver node created by Occopus."
+- &S
+  name: ping_sender
+  type: ec2_ping_sender_node
+  variables:
+    message: "Hello World! I am the sender node created by Occopus."
 
 dependencies:
-    -
-        connection: [ *S, *R ]
+  -
+    connection: [ *S, *R ]
 
 

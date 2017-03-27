@@ -1,0 +1,72 @@
+'node_def:puppet_solo_mysql_node':
+  -
+    resource:
+      type: ec2
+      endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+      regionname: replace_with_regionname_of_your_ec2_interface
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+      key_name: replace_with_key_name_on_your_target_cloud
+      security_group_ids:
+        -
+          replace_with_security_group_id1_on_your_target_cloud
+        -
+          replace_with_security_group_id2_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_puppet.yaml
+    config_management:
+      type: puppet_solo
+      manifests:
+        - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/puppet-solo-wordpress/manifests/mysql-init.pp
+      modules:
+        - puppetlabs-mysql
+      attributes:
+        - rootpassword: "{{ variables.mysql_root_password }}"
+        - dbuser: "{{ variables.mysql_dbuser_username }}"
+        - dbpass: "{{ variables.mysql_dbuser_password }}"
+        - dbname: "{{ variables.mysql_database_name }}"
+    health_check:
+      mysqldbs:
+        - {name: '{{ variables.mysql_database_name }}',
+           user: '{{ variables.mysql_dbuser_username }}',
+           pass: '{{ variables.mysql_dbuser_password }}'}
+'node_def:puppet_solo_wp_node':
+  -
+    resource:
+      type: ec2
+      endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+      regionname: replace_with_regionname_of_your_ec2_interface
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+      key_name: replace_with_key_name_on_your_target_cloud
+      security_group_ids:
+        -
+          replace_with_security_group_id1_on_your_target_cloud
+        -
+          replace_with_security_group_id2_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_puppet.yaml
+    config_management:
+      type: puppet_solo
+      manifests:
+        - https://raw.githubusercontent.com/occopus/docs/devel/tutorial/puppet-solo-wordpress/manifests/wordpress-init.pp
+      modules:
+        - example42-apache
+        - example42-php
+        - hunner-wordpress
+      attributes:
+        - dbuser: "{{ variables.mysql_dbuser_username }}"
+        - dbpass: "{{ variables.mysql_dbuser_password }}"
+        - dbname: "{{ variables.mysql_database_name }}"
+        - mysqlhost: "{{getip('puppet_solo_mysql')}}"
+    health_check:
+      ping: true
+      urls:
+        - http://{{ip}}/wordpress
+
