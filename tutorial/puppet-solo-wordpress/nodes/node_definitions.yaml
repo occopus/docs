@@ -64,7 +64,7 @@
         - dbuser: "{{ variables.mysql_dbuser_username }}"
         - dbpass: "{{ variables.mysql_dbuser_password }}"
         - dbname: "{{ variables.mysql_database_name }}"
-        - mysqlhost: "{{getip('puppet_solo_mysql')}}"
+        - mysqlhost: "{{getip('puppet-solo-mysql')}}"
     health_check:
       ping: true
       urls:

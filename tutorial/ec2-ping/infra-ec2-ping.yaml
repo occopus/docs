@@ -1,4 +1,4 @@
-infra_name: ec2_ping_infra
+infra_name: ec2-ping-infra
 user_id: somebody@somewhere.com
 
 nodes:

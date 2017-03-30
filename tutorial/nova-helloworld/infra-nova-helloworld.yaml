@@ -1,4 +1,4 @@
-infra_name: nova_helloworld_infra
+infra_name: nova-helloworld-infra
 user_id: somebody@somewhere.com
 
 nodes:

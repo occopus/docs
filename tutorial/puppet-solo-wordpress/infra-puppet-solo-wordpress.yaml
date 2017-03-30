@@ -1,12 +1,12 @@
-infra_name: puppet_solo_wordpress_infra
+infra_name: puppet-solo-wordpress-infra
 user_id: somebody@somewhere.com
 
 nodes:
   -
-    name: puppet_solo_mysql
+    name: puppet-solo-mysql
     type: puppet_solo_mysql_node
   -
-    name: puppet_solo_wp
+    name: puppet-solo-wp
     type: puppet_solo_wp_node
 
 variables:

@@ -1,4 +1,4 @@
-infra_name: pinde_docker_infra
+infra_name: pinde-docker-infra
 user_id: somebody@somewhere.com
 
 nodes:
