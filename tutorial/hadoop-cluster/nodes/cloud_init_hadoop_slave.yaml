@@ -54,7 +54,7 @@ write_files:
       # Make sure to use all our CPUs, because Consul template can block a scheduler thread
       export GOMAXPROCS=`nproc`
       exec /usr/local/bin/consul-template \
-      -consul localhost:8500 \
+      -consul $(hostname --ip-address):8500 \
       -template "/etc/hosts.ctmpl:/etc/hosts" \
       >>/var/log/consul-template-hosts.log 2>&1
     end script
@@ -268,11 +268,11 @@ write_files:
     #!/bin/bash
     echo "Install HADOOP starts."
     echo "  Copying hadoop package from master..."
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/usr/local/hadoop-2.6.0.tar.gz /tmp"
-    #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz -O /tmp/hadoop-2.6.0.tar.gz
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/usr/local/hadoop-2.6.5.tar.gz /tmp"
+    #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.5/hadoop-2.6.5.tar.gz -O /tmp/hadoop-2.6.5.tar.gz
     echo "  Extracting hadoop package..."
-    tar zxf /tmp/hadoop-2.6.0.tar.gz --directory /usr/local
-    mv /usr/local/hadoop-2.6.0 /usr/local/hadoop
+    tar zxf /tmp/hadoop-2.6.5.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.6.5 /usr/local/hadoop
     chown -R hduser:hduser /usr/local/hadoop
     echo "Install HADOOP finished."
   permissions: '755'
