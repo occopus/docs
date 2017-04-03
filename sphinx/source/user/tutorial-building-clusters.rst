@@ -158,7 +158,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
    .. code::
 
      - &S
-    	name: hadoop_slave
+    	name: hadoop-slave
     	type: hadoop_slave_node
     	scaling:
         	min: 2
@@ -189,9 +189,9 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
    .. code::
 
       List of nodes/ip addresses:
-      hadoop_master:
+      hadoop-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-      hadoop_slave:
+      hadoop-slave:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
           192.168.xxx.xxx (7b387348-b3a3-5556-83c3-26c43d498f39)
 
