@@ -130,7 +130,12 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
    .. code::
 
       TCP 22   (ssh)
-      TCP 8500 (Consul)
+      TCP 8300 (Consul) TCP Server RPC. This is used by servers to handle incoming requests from other agents.
+      TCP and UDP 8301 (Consul)  This is used to handle gossip in the LAN. Required by all agents.
+      TCP and UDP 8302 (Consul)  This is used by servers to gossip over the WAN to other servers.
+      TCP 8400 (Consul) CLI RPC. This is used by all agents to handle RPC from the CLI.
+      TCP 8500 (Consul) HTTP API. This is used by clients to talk to the HTTP API.
+      TCP and UDP 8600 (Counsul) DNS Interface. Used to resolve DNS queries.
       TCP 9090 (Prometheus)
       TCP 8080 (Data Avenue)
       TCP 9093 (Alertmanager)
