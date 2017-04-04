@@ -263,14 +263,14 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
     ALERT hd_overloaded
       IF hd_cpu_utilization > 80
       FOR 1m
-      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop-slave", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "HD cluster overloaded",
       description = "HD cluster average CPU utilization is overloaded"}
     ALERT hd_underloaded
       IF hd_cpu_utilization < 20
       FOR 2m
-      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop-slave", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "HD cluster underloaded",
       description = "HD cluster average CPU utilization is underloaded"}
@@ -311,7 +311,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
    .. code::
 
      - &S
-       name: hadoop_slave
+       name: hadoop-slave
        type: hadoop_slave_node
        scaling:
          min: 1
@@ -350,7 +350,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 
    .. code::
 
-      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]/scaleup/hadoop_slave
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]/scaleup/hadoop-slave
 
    .. important::
 

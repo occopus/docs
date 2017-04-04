@@ -1,12 +1,12 @@
-infra_name: occopus-hadoop-infra
+infra_name: hadoop-autoscale
 user_id: somebody@somewhere
 
 nodes:
   - &M
-    name: hadoop_master
+    name: hadoop-master
     type: hadoop_master_node
   - &S
-    name: hadoop_slave
+    name: hadoop-slave
     type: hadoop_slave_node
     scaling: 
       min: 1
