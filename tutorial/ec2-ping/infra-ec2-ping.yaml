@@ -3,12 +3,12 @@ user_id: somebody@somewhere.com
 
 nodes:
 - &R
-  name: ping_receiver
+  name: ping-receiver
   type: ec2_ping_receiver_node
   variables:
     message: "Hello World! I am the receiver node created by Occopus."
 - &S
-  name: ping_sender
+  name: ping-sender
   type: ec2_ping_sender_node
   variables:
     message: "Hello World! I am the sender node created by Occopus."
