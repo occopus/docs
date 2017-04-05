@@ -200,9 +200,9 @@ You can download the example as `tutorial.examples.ec2-ping <../../examples/ec2-
    .. code::
    
       List of ip addresses:
-      ping_receiver:
+      ping-receiver:
           192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
+      ping-sender:
           192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
       30f566d1-9945-42be-b603-795d604b362f
@@ -438,9 +438,9 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
    .. code::
    
       List of ip addresses:
-      ping_receiver:
+      ping-receiver:
           192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
+      ping-sender:
           192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
       30f566d1-9945-42be-b603-795d604b362f
@@ -644,9 +644,9 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
    .. code::
    
       List of ip addresses:
-      ping_receiver:
+      ping-receiver:
           192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
+      ping-sender:
           192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
       30f566d1-9945-42be-b603-795d604b362f
@@ -845,9 +845,9 @@ You can download the example as `tutorial.examples.cloudbroker-ping <../../examp
    .. code::
 
       List of nodes/ip addresses:
-      ping_receiver:
+      ping-receiver:
         192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
+      ping-sender:
         192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
       30f566d1-9945-42be-b603-795d604b362f
 
@@ -1022,9 +1022,9 @@ You can download the example as `tutorial.examples.docker-ping <../../examples/d
    .. code::
 
       List of nodes/ip addresses:
-      ping_receiver:
+      ping-receiver:
         10.0.0.2 (552fe5b2-23a6-4c12-a4e2-077521027832)
-      ping_sender:
+      ping-sender:
         10.0.0.3 (eabc8d2f-401b-40cf-9386-4739ecd99fbd)    
       14032858-d628-40a2-b611-71381bd463fa
 
@@ -1259,9 +1259,9 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
    .. code::
    
       List of ip addresses:
-      ping_receiver:
+      ping-receiver:
           192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping_sender:
+      ping-sender:
           192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
       30f566d1-9945-42be-b603-795d604b362f
