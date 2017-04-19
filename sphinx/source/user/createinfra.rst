@@ -260,7 +260,7 @@ CloudSigma
     Obligatory keywords to be defined under `description` are as follows:
 
     ``cpu``
-      Server's CPU Clock speed measured in MHz, e.g.: 2048
+      Server's CPU Clock speed measured in MHz, e.g.: 2000
     ``mem``
       Server's Random Access Memory measured in bytes, e.g.: 1073741824 (for 1 GByte)
     ``vnc_password``
@@ -271,7 +271,7 @@ CloudSigma
     .. code:: yaml
 
        description:
-         cpu: 2048
+         cpu: 2000
          mem: 1073741824
          vnc_password: the_password
          name: the_hostname
