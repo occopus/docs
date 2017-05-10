@@ -12,7 +12,6 @@ nodes:
     type: cloudbroker_ping_sender_node
     variables:
       message: "Hello World! I am the sender node created by Occopus."
-      targetnode: ping-receiver
 
 dependencies:
   - [ *S, *R ]
