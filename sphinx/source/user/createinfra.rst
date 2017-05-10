@@ -218,19 +218,38 @@ CloudBroker
     Selects the cloudbroker resource handler.
   ``endpoint``
     The endpoint (url) of the cloudbroker interface.
-  ``software_id``
-    The ID of the CloudBroker Software to use.
-  ``executable_id``
-    The ID of the CloudBroker Executable to use.
-  ``resource_id``
-    The ID of the CloudBroker Resource (cloud) to use.
-  ``region_id``
-    The ID of the CloudBroker Region (cloud region) to use.
-  ``instance_type_id``
-    The ID of the CloudBroker Instance to use.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
+  ``description``
+    Description of the virtual machine to be started by CloudBroker. This is a subsection containing further keywords. The available keywords in this section is documented in the `REST Web Service API documentation of CloudBroker <https://cola-prototype.cloudbroker.com/documents/CloudBrokerPlatform_RESTAPIUsageManual-2.3.13.0.pdf>`_ on page 49. However, the most important ones are detailed below.
+
+    Obligatory keywords to be defined under `description` are as follows:
+
+    ``deployment_id``
+      Id of the deployment registered in CloudBroker. A deployment defines the cloud, the image, etc. to be instantiated.
+    ``instance_type_id``
+      Id of an instance type registered in CloudBroker and valid for the selected deployment. Instance type specifies the capabilities of the virtual machine to be instantiated.
+    
+    Important/suggested keywords to be defined under `description` are as follows:
+
+    ``key_pair_id``
+      The ID of the (ssh) key pair to be deployed on the virtual machine. Key pairs can be registered in the CloudBroker platform behind the 'Users'/'Key Pairs' menu after login. 
+    ``opened_port``
+      Determines if a port to be opened to the world. This is a list of numbers separated by comma.
       
+  Example for a resource section including the description subsection:
+
+  .. code:: yaml
+
+     resource:
+       type: cloudbroker
+       endpoint: https://cola-prototype.cloudbroker.com/
+       description:
+         deployment_id: bcbdca8e-2841-45ae-884e-d3707829f548
+         instance_type_id: c556cb53-7e79-48fd-ae71-3248133503ba
+         key_pair_id: d865f75f-d32b-4444-9fbb-3332bcedeb75
+         opened_port: 22,80
+
 Docker
 ^^^^^^
   ``type: docker`` 
@@ -254,6 +273,8 @@ CloudSigma
     The endpoint (URL) of the CloudSigma interface, e.g. https://zrh.cloudsigma.com/api/2.0
   ``libdrive_id``
     The UUID of the library drive image to use. After login to CloudSigma UI at https://zrh.cloudsigma.com/ui, select the menu ``Storage/Library``, select a library on page at https://zrh.cloudsigma.com/ui/#/library and use the uuid from the url of the selected item e.g. 40aa6ce2-5198-4e6b-b569-1e5e9fbaf488 for ``Ubuntu 15.10 (Wily)`` found at page https://zrh.cloudsigma.com/ui/#/library/40aa6ce2-5198-4e6b-b569-1e5e9fbaf488 .
+  ``name``
+    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
   ``description``
     Description of the virtual machine to be started in CloudSigma (e.g. CPU, memory, network, public key). This is a section containing further keywords. The available keywords in this section is defined in the `schema definition of CloudSigma VMs <https://cloudsigma-docs.readthedocs.io/en/2.14/servers.html#schema>`_ under the top-level keyword ``fields``.
 
