@@ -336,19 +336,6 @@ Cloudinit
   ``attributes``
     Optional. Any user-defined attributes. Used for specifying values of attributes in chef recipes.
 
-Cloudbroker
-^^^^^^^^^^^
-  ``type: cloudinit`` 
-    Selects the cloudbroker contextualisation plugin. Can be used with the following resource handlers: cloudbroker.
-  ``template_files``
-    A list of file templates. These templates will be actualized, and passed as input files to the jobs instantiated. The following child attributes must be defined:
-      ``file_name``
-          The name of the file. This name will be used to upload the actualized content.
-      ``content_template``
-          This section contains the template.
-  ``files``
-    A list of files. The files listed under this section will not be resolved i.e. their content will be used without any modification.
-
 Docker
 ^^^^^^
   ``type: docker`` 
