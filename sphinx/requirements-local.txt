@@ -8,6 +8,7 @@ boto==2.34.0
 python-fuelclient==8.0.0
 python_novaclient==2.33.0
 dateutils==0.6.6
+dicttoxml==1.7.4
 docker-py==1.6.0
 Flask==0.10.1
 itsdangerous==0.24
