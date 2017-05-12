@@ -217,7 +217,7 @@ CloudBroker
   ``type: cloudbroker`` 
     Selects the cloudbroker resource handler.
   ``endpoint``
-    The endpoint (url) of the cloudbroker interface.
+    The endpoint (url) of the cloudbroker REST API interface.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
   ``description``
