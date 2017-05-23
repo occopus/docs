@@ -7,8 +7,8 @@ resource:
     -
         type: nova
         auth_data:
-            type: voms
-            proxy: path_to_your_voms_proxy_file
+            username: your_username
+            password: your_password
     -   
         type: occi
         auth_data: 

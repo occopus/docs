@@ -309,9 +309,9 @@ write_files:
   content: |
     #!/bin/bash
     echo "Install HADOOP starts."
-    wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz -O /usr/local/hadoop-2.6.0.tar.gz
-    tar zxf /usr/local/hadoop-2.6.0.tar.gz --directory /usr/local
-    mv /usr/local/hadoop-2.6.0 /usr/local/hadoop
+    wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.5/hadoop-2.6.5.tar.gz -O /usr/local/hadoop-2.6.5.tar.gz
+    tar zxf /usr/local/hadoop-2.6.5.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.6.5 /usr/local/hadoop
     chown -R hduser:hduser /usr/local/hadoop
     echo "Install HADOOP finished."
   permissions: '755'

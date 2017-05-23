@@ -130,7 +130,12 @@ You can download the example as `tutorial.examples.autoscaling-dataavenue <../..
    .. code::
 
       TCP 22   (ssh)
-      TCP 8500 (Consul)
+      TCP 8300 (Consul) TCP Server RPC. This is used by servers to handle incoming requests from other agents.
+      TCP and UDP 8301 (Consul)  This is used to handle gossip in the LAN. Required by all agents.
+      TCP and UDP 8302 (Consul)  This is used by servers to gossip over the WAN to other servers.
+      TCP 8400 (Consul) CLI RPC. This is used by all agents to handle RPC from the CLI.
+      TCP 8500 (Consul) HTTP API. This is used by clients to talk to the HTTP API.
+      TCP and UDP 8600 (Counsul) DNS Interface. Used to resolve DNS queries.
       TCP 9090 (Prometheus)
       TCP 8080 (Data Avenue)
       TCP 9093 (Alertmanager)
@@ -263,14 +268,14 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
     ALERT hd_overloaded
       IF hd_cpu_utilization > 80
       FOR 1m
-      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      LABELS {alert="overloaded", cluster="hd_cluster", node="hadoop-slave", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "HD cluster overloaded",
       description = "HD cluster average CPU utilization is overloaded"}
     ALERT hd_underloaded
       IF hd_cpu_utilization < 20
       FOR 2m
-      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop_slave", infra_id="{{infra_id}}"}
+      LABELS {alert="underloaded", cluster="hd_cluster", node="hadoop-slave", infra_id="{{infra_id}}"}
       ANNOTATIONS {
       summary = "HD cluster underloaded",
       description = "HD cluster average CPU utilization is underloaded"}
@@ -311,7 +316,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
    .. code::
 
      - &S
-       name: hadoop_slave
+       name: hadoop-slave
        type: hadoop_slave_node
        scaling:
          min: 1
@@ -350,7 +355,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <../../exa
 
    .. code::
 
-      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]/scaleup/hadoop_slave
+      curl -X POST http://[occopus_restservice_ip]:[occopus_restservice_ip]/infrastructures/[infrastructure_id]/scaleup/hadoop-slave
 
    .. important::
 

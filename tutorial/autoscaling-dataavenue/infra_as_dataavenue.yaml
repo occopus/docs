@@ -1,5 +1,5 @@
 user_id: yourusername
-infra_name: autoscale_dataavenue
+infra_name: autoscale-dataavenue
 
 nodes:
   - &Database # Data Avenue database + Consul server

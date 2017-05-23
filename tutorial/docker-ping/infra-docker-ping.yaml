@@ -1,14 +1,14 @@
-infra_name: pinde_docker_infra
+infra_name: pinde-docker-infra
 user_id: somebody@somewhere.com
 
 nodes:
   - &R
-    name: ping_receiver
+    name: ping-receiver
     type: docker_ping_receiver_node
     variables:
       message: "Hello World! I am the receiver node."
   - &S
-    name: ping_sender
+    name: ping-sender
     type: docker_ping_sender_node
 
 dependencies:

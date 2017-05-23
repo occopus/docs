@@ -2,33 +2,28 @@
   -
     resource:
       type: cloudbroker
-      endpoint: https://cloudsme-prototype.cloudbroker.com
-      software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
-      executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
-      resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
-      region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
-      instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+      endpoint: replace_with_endpoint_of_cloudbroker_interface
+      description:
+        deployment_id: replace_with_deployment_id
+        instance_type_id: replace_with_instance_type_id
+        key_pair_id: replace_with_keypair_id
+        opened_port: replace_with_list_of_ports_separated_with_comma
     contextualisation:
-      type: cloudbroker
-      template_files:
-        -
-          file_name: execute.bin
-          content_template: !yaml_import
-            url: file://ping-receiver-script.sh
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_ping_receiver.yaml
+
 'node_def:cloudbroker_ping_sender_node':
   -
     resource:
       type: cloudbroker
-      endpoint: https://cloudsme-prototype.cloudbroker.com
-      software_id: 840ddb5e-9ecd-4e28-87ed-5f8f5a144f48
-      executable_id: 1211d2e7-de65-4e57-b956-c5bf1d5a66af
-      resource_id: 6df28843-8759-4270-8389-6cdc069bd8f2
-      region_id: fc522ff3-039a-4f43-a810-1d10402dfd3a
-      instance_type_id: 9ce671ff-eb7f-4bfc-b3bf-cefb6f6dafc2
+      endpoint: replace_with_endpoint_of_cloudbroker_interface
+      description:
+        deployment_id: replace_with_deployment_id
+        instance_type_id: replace_with_instance_type_id
+        key_pair_id: replace_with_keypair_id
+        opened_port: replace_with_list_of_ports_separated_with_comma
     contextualisation:
-      type: cloudbroker
-      template_files:
-        -
-          file_name: execute.bin
-          content_template: !yaml_import
-            url: file://ping-sender-script.sh
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_ping_sender.yaml

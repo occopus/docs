@@ -7,7 +7,15 @@ Setup
 Installation
 ------------
 
-The steps required to deploy Occopus and its dependencies are described below. Alternatively, you can watch a `video on installing Occopus v1.2 <http://smith.s3.lpds.sztaki.hu/Occopus/occopus_v1.2_installation.mp4>`_ .
+The steps required to deploy Occopus and its dependencies are described below. Alternatively, 
+
+- you can watch a `video on installing Occopus v1.2 <http://smith.s3.lpds.sztaki.hu/Occopus/occopus_v1.2_installation.mp4>`_ .
+
+- you can execute the commands below by using our installer script (requires sudo privileges!):
+
+  .. code::
+
+     curl -s https://raw.githubusercontent.com/occopus/util/devel/installer.sh | sh 
 
 #. Install a few system-wide packages
 

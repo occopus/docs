@@ -1,9 +1,9 @@
-infra_name: chef_wordpress_infra
+infra_name: chef-wordpress-infra
 user_id: somebody@somewhere.com
 
 nodes:
   - &DBS_Node
-    name: mysql_server
+    name: mysql-server
     type: chef_mysql_server_node
   - &WP_Node
     name: wordpress

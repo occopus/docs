@@ -55,7 +55,7 @@ write_files:
       # Make sure to use all our CPUs, because Consul can block a scheduler thread
       export GOMAXPROCS=`nproc`
       exec /usr/local/bin/consul agent \
-      -retry-join {{ getip('hadoop_master') }} -data-dir=/tmp/consul \
+      -retry-join {{ getip('hadoop-master') }} -data-dir=/tmp/consul \
       -config-file=/opt/consul/service.json \
       -bind=$(hostname --ip-address) -client=$(hostname --ip-address) \
       >>/var/log/consul.log 2>&1
@@ -72,7 +72,7 @@ write_files:
       # Make sure to use all our CPUs, because Consul template can block a scheduler thread
       export GOMAXPROCS=`nproc`
       exec /usr/local/bin/consul-template \
-      -consul localhost:8500 \
+      -consul $(hostname --ip-address):8500 \
       -template "/etc/hosts.ctmpl:/etc/hosts" \
       >>/var/log/consul-template-hosts.log 2>&1
     end script
@@ -207,7 +207,7 @@ write_files:
 
 - path: /etc/hosts
   content: |
-    {{getip('hadoop_master')}} HadoopMaster
+    {{getip('hadoop-master')}} HadoopMaster
   permissions: '644'
 
 ##################################
@@ -237,14 +237,14 @@ write_files:
     su - hduser -c 'ssh-keyscan localhost >> /home/hduser/.ssh/known_hosts'
     su - hduser -c 'ssh-keyscan 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
 
-    masterpubip="{{getip('hadoop_master')}}"
+    masterpubip="{{getip('hadoop-master')}}"
     su - hduser -c "ssh-keyscan $masterpubip >> /home/hduser/.ssh/known_hosts"
     masteripret=`su - hduser -c "ssh hduser@$masterpubip hostname -i"`
     masterip=`echo $masteripret | rev | cut -f1 -d " " | rev`
     su - hduser -c "ssh-keyscan $masterip >> /home/hduser/.ssh/known_hosts"
     mastername=`su - hduser -c "ssh hduser@$masterip hostname"`
 
-    echo $mastername > /etc/hadoop_master.name
+    echo $mastername > /etc/hadoop-master.name
     echo "$masterip $mastername" >> /etc/hosts
 
     su - hduser -c "ssh-keyscan $masterip >> /home/hduser/.ssh/known_hosts"
@@ -286,11 +286,11 @@ write_files:
     #!/bin/bash
     echo "Install HADOOP starts."
     echo "  Copying hadoop package from master..."
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/usr/local/hadoop-2.6.0.tar.gz /tmp"
-    #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz -O /tmp/hadoop-2.6.0.tar.gz
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.6.5.tar.gz /tmp"
+    #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.5/hadoop-2.6.5.tar.gz -O /tmp/hadoop-2.6.5.tar.gz
     echo "  Extracting hadoop package..."
-    tar zxf /tmp/hadoop-2.6.0.tar.gz --directory /usr/local
-    mv /usr/local/hadoop-2.6.0 /usr/local/hadoop
+    tar zxf /tmp/hadoop-2.6.5.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.6.5 /usr/local/hadoop
     chown -R hduser:hduser /usr/local/hadoop
     echo "Install HADOOP finished."
   permissions: '755'
@@ -305,8 +305,8 @@ write_files:
     echo "  Copying consul packages from master..."
     mkdir -p /tmp/consulpackage
     chown hduser:hduser /tmp/consulpackage
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop_master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
     #wget -nc https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip
     #wget -nc https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip
     echo "  Extracting consul packages..."
@@ -329,7 +329,7 @@ write_files:
     mv /tmp/hduser/.bash_profile /home/hduser/.bash_profile
     chown hduser:hduser /home/hduser/.bash_profile
 
-    masterhostname=`cat /etc/hadoop_master.name`
+    masterhostname=`cat /etc/hadoop-master.name`
     echo $masterhostname > /usr/local/hadoop/masters
   
     chown hduser:hduser /tmp/hadoop/configs/* 
