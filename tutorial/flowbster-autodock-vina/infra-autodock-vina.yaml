@@ -1,0 +1,93 @@
+infra_name: autodock-vina-3node
+user_id: yourname@gmail.com
+
+variables:
+    flowbster_global:
+            gather_ip: &gatherip UNDEFINED
+            gather_port: &gatherport 5001
+            receiver_port: &receiverport 5000
+
+nodes:
+    - &GENERATOR
+        name: GENERATOR
+        type: flowbster_node
+        variables:
+            flowbster:
+                app:
+                    exe:
+                        filename: execute.bin
+                        tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/generator_exe.tgz
+                    args: '240'
+                    in:
+                        -
+                            name: input-ligands.zip
+                        -
+                            name: vina-config.txt
+                        -
+                            name: input-receptor.pdbqt
+                    out:
+                        -
+                            name: output.zip
+                            filter: "output.zip*"
+                            distribution: random
+                            targetname: ligands.zip
+                            targetnode: VINA
+                        -
+                            name: config.txt
+                            targetname: config.txt
+                            targetnode: VINA
+                        -
+                            name: receptor.pdbqt
+                            targetname: receptor.pdbqt
+                            targetnode: VINA
+    - &VINA
+        name: VINA
+        type: flowbster_node
+        scaling:
+                min: 5
+        variables:
+            flowbster:
+                app:
+                    exe:
+                        filename: vina.run
+                        tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/vina_exe.tgz
+                    args: ''
+                    in:
+                        -
+                            name: ligands.zip
+                        -
+                            name: config.txt
+                        -
+                            name: receptor.pdbqt
+                    out:
+                        -
+                            name: output.tar
+                            targetname: output.tar
+                            targetnode: COLLECTOR
+    - &COLLECTOR
+        name: COLLECTOR
+        type: flowbster_node
+        variables:
+            flowbster:
+                app:
+                    exe:
+                        filename: execute.bin
+                        tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/collector_exe.tgz
+                    args: '5'
+                    in:
+                        -
+                            name: output.tar
+                            collector: true
+                            format: "output.tar_%i"
+                    out:
+                        -
+                            name: best.pdbqt
+                            targetname: COLLECTOR_result
+                            targetip: *gatherip
+                            targetport: *gatherport
+
+dependencies:
+    -
+        connection: [ *GENERATOR, *VINA ]
+    -
+        connection: [ *VINA, *COLLECTOR ]

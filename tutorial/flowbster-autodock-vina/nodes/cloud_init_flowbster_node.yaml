@@ -1,0 +1,91 @@
+#cloud-config
+packages:
+- python
+- python-pip
+- zip
+runcmd:
+- pip install Flask
+- pip install wget
+- wget -nc https://github.com/occopus/flowbster/raw/master/deploy/v0.2/flowbster_receiver.py -O /usr/bin/flowbster_receiver.py
+- wget -nc https://github.com/occopus/flowbster/raw/master/deploy/v0.2/flowbster_executor.py -O /usr/bin/flowbster_executor.py
+- wget -nc https://github.com/occopus/flowbster/raw/master/deploy/v0.2/flowbster_forwarder.py -O /usr/bin/flowbster_forwarder.py
+- wget -nc https://github.com/occopus/flowbster/raw/master/deploy/v0.2/ndimCollector.py -O /usr/bin/ndimCollector.py
+- wget -nc https://github.com/occopus/flowbster/raw/master/deploy/v0.2/flowbster-run.sh -O /usr/bin/flowbster-run.sh
+- chmod u+x /usr/bin/flowbster-run.sh
+- echo "* * * * * root /usr/bin/flowbster-run.sh" >> /etc/cron.d/flowbster
+- /usr/bin/flowbster-run.sh
+write_files:
+- content: |
+    sleepinterval: 5
+    jobdirroot: /var/flowbster/jobs/
+    listeningport: {{variables.flowbster_global.receiver_port}}
+    appconfigpath: /etc/flowbster-config-app.yaml
+    jobdirroot-gather: /var/flowbster/results/
+    listeningport-gather: {{variables.flowbster_global.gather_port}}
+    logging:
+        version: 1
+        root:
+            level: DEBUG
+            handlers: [console]
+        formatters:
+            simpleFormatter:
+                format: "%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s"
+        handlers:
+            console:
+                class: logging.StreamHandler
+                formatter: simpleFormatter
+                level: DEBUG
+                stream: ext://sys.stdout
+            file-flowbster-receiver:
+                class : logging.FileHandler
+                formatter: simpleFormatter
+                mode: w
+                level: DEBUG
+                filename: /var/log/flowbster/flowbster-receiver.log
+            file-flowbster-executor:
+                class : logging.FileHandler
+                formatter: simpleFormatter
+                mode: w
+                level: DEBUG
+                filename: /var/log/flowbster/flowbster-executor.log
+            file-flowbster-forwarder:
+                class : logging.FileHandler
+                formatter: simpleFormatter
+                mode: w
+                level: DEBUG
+                filename: /var/log/flowbster/flowbster-forwarder.log
+        loggers:
+            flowbster.receiver:
+                propagate: false
+                level: DEBUG
+                handlers: [file-flowbster-receiver]
+            flowbster.executor:
+                propagate: false
+                level: DEBUG
+                handlers: [file-flowbster-executor]
+            flowbster.forwarder:
+                propagate: false
+                level: DEBUG
+                handlers: [file-flowbster-forwarder]
+  path: /etc/flowbster-config-sys.yaml
+  permissions: '0644'
+- permissions: '0644'
+  content: |
+        executable:
+            filename: {{variables.flowbster.app.exe.filename}}
+            tgzURL: {{variables.flowbster.app.exe.tgzurl}}
+        inputs: {% for item in variables.flowbster.app.in %}
+            -
+                name: {{item.name}} {% if item.collector is defined %}
+                collector: {{item.collector}} {% endif %} {% if item.format is defined %}
+                format: {{item.format}} {% endif %} {% endfor %}
+        outputs: {% for item in variables.flowbster.app.out %}
+            -
+                name: {{item.name}} {% if item.filter is defined %}
+                filter: {{item.filter}} {% endif %}
+                targetname: {{item.targetname}} {% if item.distribution is defined %}
+                distribution: {{item.distribution}} {% endif %}
+                targetip  : {% if item.targetnode is defined %}{{getipall(item.targetnode)}}{% else %}{{item.targetip}}{% endif %}
+                targetport: {% if item.targetnode is defined %}{{variables.flowbster_global.receiver_port}}{% else %}{{item.targetport}}{% endif %}{% endfor %}
+        arguments: {{variables.flowbster.app.args}}
+  path: /etc/flowbster-config-app.yaml

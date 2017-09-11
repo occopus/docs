@@ -1,0 +1,10 @@
+
+center_x =  64 
+center_y =  73
+center_z =  53
+
+size_x = 30
+size_y = 30
+size_z = 30
+
+num_modes = 1
