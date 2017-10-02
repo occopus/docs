@@ -47,7 +47,7 @@ The following steps are suggested to be performed:
    - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
    - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
 
-   The downloadable package for this example contains a resource template for the ec2 plugin.
+   The downloadable package for this example contains a resource template for the nova plugin.
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -125,7 +125,7 @@ The following steps are suggested to be performed:
        <ip-address> (9b8dc4f1-bed4-4d1c-ba9e-45c18ee2523d)
      30bc1d09-8ed5-4b7e-9e51-24ed881fc166
 
-#. Once the infrastructure is ready, the input files can be sent to the Generator node of the workflow (check the address of the node at the end of the output of the  **occopus-build** command). Using the following command in the ``flowbster-autodock-vina/inputs`` directory from the testing directory:
+#. Once the infrastructure is ready, the input files can be sent to the Generator node of the workflow (check the address of the node at the end of the output of the  **occopus-build** command). Using the following command in the ``flowbster-autodock-vina/inputs`` directory:
 
    .. code::
 
