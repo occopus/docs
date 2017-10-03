@@ -18,12 +18,12 @@ The task of the generator node is to split the set of molecules to dock into a n
 The task of the Collector node is to get the processing result of each molecule part from the Vina nodes, and select the best 5 energy levels.
 
 
-For running the experiment, we selected a molecule set of 3840 molecules. This set was split into 240 parts, so each part included 16 molecules to dock against the receptor molecule.
+For running the experiment, we selected a molecule set of 60 molecules. This set was split into 10 parts, so each part included 6 molecules to dock against the receptor molecule.
 
 **Features**
 
  - creating nodes through contextualisation
- - using the nova resource handler
+ - using the ec2 resource handler
  - utilising health check against a predefined port and url
  - using parameters to scale up worker nodes
 
@@ -47,7 +47,7 @@ The following steps are suggested to be performed:
    - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
    - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
 
-   The downloadable package for this example contains a resource template for the nova plugin.
+   The downloadable package for this example contains a resource template for the ec2 plugin.
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -143,7 +143,7 @@ The following steps are suggested to be performed:
       It may take a quite few minutes until the processes end. Please, be patient!
 
 
-#. With step 10, the data processing was started. The whole processing time depends on the overall performance of the VINA nodes. VINA nodes process 240 molecule packages, which are collected by the Collector node. You can check the progress of processing on the Collector node by checking the number of files under ``/var/flowbster/jobs/<id of workflow>/inputs`` directory. When the number of files reaches 240, Collector node combines them and sends one package to Gather node which stores it under directory ``/tmp/flowbster/results``. 
+#. With step 10, the data processing was started. The whole processing time depends on the overall performance of the VINA nodes. VINA nodes process 10 molecule packages, which are collected by the Collector node. You can check the progress of processing on the Collector node by checking the number of files under ``/var/flowbster/jobs/<id of workflow>/inputs`` directory. When the number of files reaches 10, Collector node combines them and sends one package to Gather node which stores it under directory ``/tmp/flowbster/results``. 
 
 #. Once you finished processing molecules, you may stop the Gather service:
 
@@ -151,10 +151,30 @@ The following steps are suggested to be performed:
 
       scripts/flowbster-gather.sh -d
 
-
 #. Finally, you can destroy the infrastructure using the infrastructure id returned by **occopus-build**
 
 
    .. code::
 
       occopus-destroy -i 30bc1d09-8ed5-4b7e-9e51-24ed881fc166
+
+
+.. note::
+
+  You can run a bigger application, with more input files. This application will run for approximately 4 hours with 5 VINA nodes. Edit Generator node's variables section in the ``infra-autodock-3node.yaml`` file. Set the ``jobflow/app/args`` variable 10 to ``240`` and repeat the tutorial using the ``input2`` directory. For running this experiment, we selected a molecule set of 3840 molecules. This set will be splitted into 240 parts, so each part included 16 molecules to dock against the receptor molecule.
+
+  .. code::
+
+    nodes:
+        - &GENERATOR
+            name: GENERATOR
+            type: flowbster_node
+            variables:
+                flowbster:
+                    app:
+                        exe:
+                            filename: execute.bin
+                            tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/generator_exe.tgz
+                        args: '240'
+
+
