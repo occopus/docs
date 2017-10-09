@@ -38,6 +38,17 @@ The following steps are suggested to be performed:
 
    The downloadable package for this example contains a resource template for the Cloudsigma plugin.
 
+#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   .. code::
+
+      TCP 2375 
+      TCP 2377
+      TCP 7946
+
+   .. note:: 
+       Do not forget to open the ports which are needed for your Docker application!
+
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
 #. Load the node definition for ``dockerswarm_master_node`` and ``dockerswarm_worker_node`` nodes into the database.

@@ -17,7 +17,7 @@ nodes:
                     exe:
                         filename: execute.bin
                         tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/generator_exe.tgz
-                    args: '240'
+                    args: '10'
                     in:
                         -
                             name: input-ligands.zip
