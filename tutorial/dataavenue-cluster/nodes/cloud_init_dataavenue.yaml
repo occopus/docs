@@ -41,7 +41,7 @@ write_files:
     #!/bin/bash
     set -x
     echo "Install DATAAVENUE starts."
-    wget -nv -nc https://github.com/occopus/docs/blob/devel/tutorial/dataavenue-cluster/deploy/data-avenue-docker-compose-latest.tar.gz --directory /home/ubuntu/
+    wget https://github.com/occopus/docs/raw/devel/tutorial/dataavenue-cluster/deploy/data-avenue-docker-compose-latest.tar.gz --directory /home/ubuntu/
     cd /home/ubuntu/data-avenue-docker-compose/
     docker-compose up > dataavenue.out &
     echo "Install DATAAVENUE stops."
