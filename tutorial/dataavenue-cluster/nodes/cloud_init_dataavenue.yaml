@@ -1,0 +1,57 @@
+#cloud-config
+write_files:
+################################
+# SCRIPT TO INSTALL DOCKER
+################################
+- path: /bin/deploy-docker.sh
+  content: |
+    #!/bin/bash
+    echo "Install DOCKER starts."
+    set -x
+    apt-get update
+    apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
+    echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
+    curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
+    add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
+    apt-get update
+    apt-get install -y docker-engine
+    echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
+    service docker restart
+    echo "Install DOCKER stops."
+  permissions: '755'
+
+#####################################
+# SCRIPT TO INSTALL DOCKER-COMPOSE
+#####################################
+- path: /bin/deploy-docker-compose.sh
+  content: |
+    #!/bin/bash
+    set -x
+    echo "Install DOCKER-COMPOSE starts."
+    sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    echo "Install DOCKER-COMPOSE stops."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL DATAAVENUE
+################################
+- path: /bin/deploy-dataavenue.sh
+  content: |
+    #!/bin/bash
+    set -x
+    echo "Install DATAAVENUE starts."
+    wget -nv -nc https://github.com/occopus/docs/blob/devel/tutorial/dataavenue-cluster/deploy/data-avenue-docker-compose-latest.tar.gz --directory /home/ubuntu/
+    cd /home/ubuntu/data-avenue-docker-compose/
+    docker-compose up > dataavenue.out &
+    echo "Install DATAAVENUE stops."
+  permissions: '755'
+
+runcmd:
+#Install DOCKER
+- /bin/deploy-docker.sh
+#Install DOCKER-COMPOSE
+- /bin/deploy-docker-compose.sh
+#Run Dataavenue
+- /bin/deploy-dataavenue.sh
+- echo "DATAAAVENUE NODES'S CONTEXTUALIZATION DONE."
