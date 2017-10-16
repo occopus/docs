@@ -1,4 +1,4 @@
-.. _tutorial-building-clusters:
+.. _tutorials-for-flowbster:
 
 Tutorials for Flowbster
 =======================
