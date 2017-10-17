@@ -42,7 +42,9 @@ write_files:
     set -x
     echo "Install DATAAVENUE starts."
     wget https://github.com/occopus/docs/raw/devel/tutorial/dataavenue-cluster/deploy/data-avenue-docker-compose-latest.tar.gz --directory /home/ubuntu/
-    cd /home/ubuntu/data-avenue-docker-compose/
+    cd /home/ubuntu
+    tar zxvf data-avenue-docker-compose-latest.tar.gz
+    cd /home/ubuntu/data-avenue-docker-compose
     docker-compose up > dataavenue.out &
     echo "Install DATAAVENUE stops."
   permissions: '755'
