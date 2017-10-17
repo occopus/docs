@@ -247,7 +247,7 @@ In this tutorial we establish a cluster with two nodes types. On the DataAvenue 
 
 **Download**
 
-You can download the example as MISSINGLINK `tutorial.examples.docker-swarm <../../examples/docker-swarm.tgz>`_ .
+You can download the example as `tutorial.examples.dataavenue-cluster <../../examples/dataavenue-cluster.tgz>`_ .
 
 **Steps**
 
