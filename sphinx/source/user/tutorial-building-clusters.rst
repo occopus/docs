@@ -272,7 +272,7 @@ The following steps are suggested to be performed:
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Update the number of storage nodes if necessary. For this, edit the ``infra-dataavenue.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup).
+#. Update the number of storage nodes if necessary. For this, edit the ``infra-dataavenue.yaml`` file and modify the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup).
 
    .. code::
 
@@ -323,7 +323,7 @@ The following steps are suggested to be performed:
 
       db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
 
-#. On the S3 storage nodes a user with predefined parameters will be created. The ``access_key`` will be the Username and the ``secret_key`` will be the Password, which are prdefined in the ``infra-dataavenue.yaml``. Save user credentials into a file named ``credentials`` use the above command:
+#. On the S3 storage nodes a user with predefined parameters will be created. The ``access_key`` will be the Username and the ``secret_key`` will be the Password, which are predefined in the ``infra-dataavenue.yaml`` file. Save user credentials into a file named ``credentials`` use the above command:
 
    .. code::
 
