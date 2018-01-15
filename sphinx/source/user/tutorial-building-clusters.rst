@@ -116,7 +116,7 @@ This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Had
 **Prerequisites**
 
  - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
- - target cloud contains a base 14.04 Ubuntu OS image with cloud-init support
+ - target cloud contains a base 16.04 Ubuntu OS image with cloud-init support
  - generated ssh key-pair (or for testing purposes one is attached)
 
 **Download**

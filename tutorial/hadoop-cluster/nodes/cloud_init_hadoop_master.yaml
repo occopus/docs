@@ -1,19 +1,16 @@
 #cloud-config
-users:
-- name: hduser
-  shell: /bin/bash
-  sudo: ALL=(ALL) NOPASSWD:ALL
-  lock-passwd: true
-  ssh_authorized_keys:
-  - "{{variables.hduser_public_key}}"
 
 write_files:
 ################################
-# HDUSER PRIVATE KEY
+# HDUSER KEYS
 ################################
 - path: /tmp/hduser/id_rsa
   content: |
     {{variables.hduser_private_key}}
+  permissions: '600'
+- path: /tmp/hduser/authorized_keys
+  content: |
+    {{variables.hduser_public_key}}
   permissions: '600'
 
 ################################
@@ -24,56 +21,55 @@ write_files:
     {"service": {"name": "hadoop"}}
   permissions: '644'
 
-- path: /tmp/consul/consul.conf
+- path: /tmp/consul/consul.service
   content: |
-    description "Consul agent"
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    respawn
-    script
-      if [ -f "/etc/service/consul" ]; then
-        . /etc/service/consul
-      fi
-      # Make sure to use all our CPUs, because Consul can block a scheduler thread
-      export GOMAXPROCS=`nproc`
-      exec /usr/local/bin/consul agent \
-      -server -bootstrap-expect 1 -data-dir=/tmp/consul \
-      -config-file=/opt/consul/service.json -bind=$(hostname --ip-address) \
-      -client=$(hostname --ip-address) \
-      >>/var/log/consul.log 2>&1 
-    end script
+    [Unit]
+    Description=consul agent
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul agent -server -bootstrap-expect 1 -data-dir=/tmp/consul -config-file=/opt/consul/service.json -bind=$(hostname --ip-address) -client=$(hostname --ip-address) >>/var/log/consul.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
   permissions: '644'
 
-- path: /tmp/consul/consul-template-hosts.conf
+- path: /tmp/consul/consul-template-hosts.service
   content: |
-    description "Consul template for hosts file"
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    respawn
-    script
-      # Make sure to use all our CPUs, because Consul template can block a scheduler thread
-      export GOMAXPROCS=`nproc`
-      exec /usr/local/bin/consul-template \
-      -consul $(hostname --ip-address):8500 \
-      -template "/etc/hosts.ctmpl:/etc/hosts" \
-      >>/var/log/consul-template-hosts.log 2>&1
-    end script
+    [Unit]
+    Description=consul for hosts file
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul-template -consul $(hostname --ip-address):8500 -template \"/etc/hosts.ctmpl:/etc/hosts\" >>/var/log/consul-template-hosts.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
   permissions: '644'
 
-- path: /tmp/consul/consul-template-hadoop-slaves.conf
+- path: /tmp/consul/consul-template-hadoop-slaves.service
   content: |
-    description "Consul template for slaves file"
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    respawn
-    script
-      # Make sure to use all our CPUs, because Consul template can block a scheduler thread
-      export GOMAXPROCS=`nproc`
-      exec /usr/local/bin/consul-template \
-      -consul $(hostname --ip-address):8500 \
-      -template "/etc/hadoop-slaves.ctmpl:/var/consul/hadoop-slaves:/bin/refresh-hadoop-slaves-file.sh" \
-      >>/var/log/consul-template-hadoop-slaves.log 2>&1
-    end script
+    [Unit]
+    Description=consul for hadoop slaves
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul-template -consul $(hostname --ip-address):8500 -template \"/etc/hadoop-slaves.ctmpl:/var/consul/hadoop-slaves:/bin/refresh-hadoop-slaves-file.sh\" >>/var/log/consul-template-hadoop-slaves.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
   permissions: '644'
 
 - path: /etc/hosts.ctmpl
@@ -153,7 +149,7 @@ write_files:
       </property>
       <property>
         <name>dfs.datanode.data.dir</name>
-        <value>file:/usr/local/hadoop_tmp/hdfs/datanode</value>
+        <value>file:///usr/local/hadoop/volume</value>
       </property>
       <property>
         <name>dfs.hosts.exclude</name>
@@ -267,6 +263,11 @@ write_files:
   content: |
     #!/bin/bash
     echo "Setup HDUSER KEYS starts."
+    
+    adduser --disabled-password --gecos "" hduser
+    usermod -aG sudo hduser
+    echo "hduser ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
+   
     mkdir -p /home/hduser/.ssh
     chmod 700 /home/hduser/.ssh
     chown hduser:hduser /home/hduser/.ssh
@@ -274,6 +275,10 @@ write_files:
     mv /tmp/hduser/id_rsa /home/hduser/.ssh
     chmod 600 /home/hduser/.ssh/id_rsa
     chown hduser:hduser /home/hduser/.ssh/id_rsa
+ 
+    mv /tmp/hduser/authorized_keys /home/hduser/.ssh
+    chmod 600 /home/hduser/.ssh/authorized_keys
+    chown hduser:hduser /home/hduser/.ssh/authorized_keys
 
     ipaddress=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
     su - hduser -c "ssh-keyscan -p 22 $ipaddress > /home/hduser/.ssh/known_hosts"
@@ -389,10 +394,11 @@ write_files:
   content: |
     #!/bin/bash
     echo "Launch CONSUL starts."
-    mv /tmp/consul/* /etc/init
-    service consul start
-    service consul-template-hosts start
-    service consul-template-hadoop-slaves start
+    cp /tmp/consul/*.service /etc/systemd/system
+    systemctl daemon-reload
+    systemctl start consul.service
+    systemctl start consul-template-hosts.service
+    systemctl start consul-template-hadoop-slaves.service
     echo "Launch CONSUL finished."
   permissions: '0755'
 
