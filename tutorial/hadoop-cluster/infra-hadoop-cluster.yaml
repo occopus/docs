@@ -10,8 +10,9 @@ nodes:
     type: hadoop_slave_node
     scaling: 
       min: 2
-      max: 10 
+      max: 10
 variables:
+  resource_memory_mb: "2048" 
   hduser_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
 
