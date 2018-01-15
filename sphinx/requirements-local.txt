@@ -11,6 +11,7 @@ dateutils==0.6.6
 dicttoxml==1.7.4
 docker-py==1.6.0
 Flask==0.10.1
+Flask-Cors==3.0.3
 itsdangerous==0.24
 Jinja2==2.7.3
 MarkupSafe==0.23
