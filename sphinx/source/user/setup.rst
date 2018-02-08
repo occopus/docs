@@ -9,7 +9,7 @@ Installation
 
 .. important::
 
-   We support  **Ubuntu 14.04** and **Ubuntu 16.04**. The following instruction steps were tested on these Operating Systems only.
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 14.04 and Ubuntu 16.04** versions.
  
 
 The steps required to deploy Occopus and its dependencies are described below. Alternatively, 
