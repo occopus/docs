@@ -28,6 +28,6 @@ runcmd:
 #Install DOCKER CE
 - /bin/install-docker-ce.sh
 #Launch CQueue worker 
-- docker run -d -e BROKER=amqp://guest:guest@{{getip(queue)}}:5672 -e RESULT_BACKEND=redis://{{getip(queue)}}:6379 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker sanyi86/cqueue_worker
+- docker run -d -e BROKER=amqp://guest:guest@{{getip(master)}}:5672 -e RESULT_BACKEND=redis://{{getip(master)}}:6379 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker sanyi86/cqueue_worker
 - echo "CQUEUE WORKER DEPLOYMENT DONE."
 

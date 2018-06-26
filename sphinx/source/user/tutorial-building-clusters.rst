@@ -468,7 +468,7 @@ The following steps are suggested to be performed:
    - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
    - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
 
-   The downloadable package for this example contains a resource template for the nova plugin.
+   The downloadable package for this example contains a resource template for the CloudBroker plugin.
 
 #. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
 

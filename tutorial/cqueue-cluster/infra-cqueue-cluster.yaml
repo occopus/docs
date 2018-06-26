@@ -3,10 +3,10 @@ user_id: somebody@somewhere
 
 nodes:
   - &M
-    name: cqueue-master
+    name: master
     type: cqueue_master_node
   - &W
-    name: cqueue-worker
+    name: worker
     type: cqueue_worker_node
     scaling: 
       min: 1
