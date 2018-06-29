@@ -362,7 +362,7 @@ The following steps are suggested to be performed:
 
    .. code::
 
-     curl -H "$(cat credentials)" -H "X-URI: s3://$TARGET_NODE_IP:80" http://$DATAAVENUE_NODE_IP:8080/dataavenue/rest/directory
+     curl -H "$(cat credentials)" -H "X-URI: s3://$TARGET_NODE_IP:80/" http://$DATAAVENUE_NODE_IP:8080/dataavenue/rest/directory
 
    The result should be: ``["targetbucket/"]``
 
@@ -437,3 +437,155 @@ The following steps are suggested to be performed:
 
    In this tutorial we used HTTP protocol only. DataAvenue also supports HTTPS on port 8443; storages could also be accessed over secure HTTP by deploying e.g. HAPROXY on their nodes.
 
+CQueue cluster
+~~~~~~~~~~~~~~~~~~~~
+
+CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers. 
+
+The CQueue cluster contains one Master node and any number of Worker nodes. The Master node implements a queue, where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes fetch the tasks one after the other and execute the container specified by the task. Worker nodes can be manually scaled up and down with Occopus. 
+
+Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs and the return value. CQueue retries the execution of failed containers as well.
+
+
+In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
+
+In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node having a RabbitMQ (for queuing), a Redis (for storing container logs) and a web-based frontend (for providing a REST API) component, 2) a Worker node containing a CQueue worker component which pulls tasks from the Master and performs the execution of containers specified by the tasks.
+
+**Features**
+
+ - creating two types of nodes through contextualisation
+ - using the nova resource handler
+ - using parameters to scale up worker nodes
+
+**Prerequisites**
+
+ - accessing an Occopus compatible interface
+ - target cloud contains an Ubuntu 16.04 image with cloud-init support
+
+**Download**
+
+You can download the example as `tutorial.examples.cqueue-cluster <../../examples/cqueue-cluster.tgz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an `Occopus compatible resource plugin <clouds.html>`_
+   - you can find and specify the relevant `list of attributes for the plugin <createinfra.html#resource>`_
+   - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
+   - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
+
+   The downloadable package for this example contains a resource template for the CloudBroker plugin.
+
+#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   .. code::
+
+      TCP 22 (SSH)
+      TCP 5672 (amqp)
+      TCP 6379 (redis server) 
+      TCP 8080 (frontend)
+      TCP 15672 (RabbitMQ management)
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Update the number of worker nodes if necessary. For this, edit the ``infra-cqueue-cluster.yaml`` file and modify the min and max parameter under the scaling keyword. Scaling is the interval, in which the number of nodes can change (min, max). Currently, the minimum is set to 1 (which will be the initial number at startup).
+
+   .. code::
+
+      - &W
+        name: cqueue-worker
+        type: cqueue-worker_node
+            scaling:
+                min: 1
+
+   .. important::
+
+     Important: Keep in mind that Occopus has to start at least one node from each node type to work properly and scaling can be applied only for worker nodes in this example!
+
+
+#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure.
+
+   .. code::
+
+      occopus-build infra-cqueue-cluster.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      cqueue-worker:
+          192.168.xxx.xxx (34b07a23-a26a-4a42-a5f4-73966b8ed23f)
+      cqueue-master:
+          192.168.xxx.xxx (29b98290-c6f4-4ae7-95ca-b91a9baf2ea8)
+
+      db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
+
+#. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue master receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue master and execute them. One worker process one task at a time.
+
+   Push 'hello world' task (available params: image string, env []string, cmd []string, container_name string):
+
+   .. code::
+
+     curl -H 'Content-Type: application/json' -X POST -d'{"image":"ubuntu", "cmd":["echo", "hello Docker"]}' http://<masterip>:8080/task
+   
+
+   The result should be: ``{"id":"task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9"}``
+ 
+   .. note::
+
+     This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in oder to query it's status and result.
+
+
+#. The worker continuously updates the status (pending, received, started, retry, success, failure) of the task with the task’s ID. After the task is completed, the workers send a notiﬁcation to the CQueue master, and this task will be removed from the queue. The status of a task and the result can be queried from the key-value store through the CQueue master.
+
+   Check the result of the push command by querying the ``task_id`` returned by the push command:
+
+   .. code::
+
+     curl -X GET http://<masterip>:8080/task/$task_id
+
+   The result should be: ``{"status":"SUCCESS"}``
+
+#. Fetch the result of the push command by querying the ``task_id`` returned by the push command:
+   
+   .. code::
+
+     curl -X GET http://<masterip>:8080/task/$task_id/result
+    
+   The result should be: ``hello Docker``
+
+#. Delete the the task with the following command:
+
+   .. code::
+
+     curl -X DELETE http://<masterip>:8080/task/$task_id
+
+#. For debugging, check the logs of the container at the CQueue worker node.
+    
+   .. code::
+
+      docker logs -f $(containerID)
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+      
+      occopus-destroy -i db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
+
+   .. note::
+     
+      The CQueue master and the worker components are written in golang, and they have a shared code-base. The open-source code is available `at GitLab <https://gitlab.com/lpds-public/documents/tree/master/COLA/cqueue>`_ .
