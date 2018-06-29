@@ -440,7 +440,16 @@ The following steps are suggested to be performed:
 CQueue cluster
 ~~~~~~~~~~~~~~~~~~~~
 
-CQueue stands for "Container Queue". Since Docker does not provide pull model for tasks execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queue service for processing tasks via application containers. In this tutorial we establish a cluster with two nodes types: on the Master node the RabbitMQ (for queuing), Redis (for key-value storing) and CQueue frontend components will run, and on a predefined number of CQueue worker nodes will run, which pull tasks from the CQueue master.  
+CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers. 
+
+The CQueue cluster contains one Master node and any number of Worker nodes. The Master node implements a queue, where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes fetch the tasks one after the other and execute the container specified by the task. Worker nodes can be manually scaled up and down with Occopus. 
+
+Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs and the return value. CQueue retries the execution of failed containers as well.
+
+
+In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
+
+In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node having a RabbitMQ (for queuing), a Redis (for storing container logs) and a web-based frontend (for providing a REST API) component, 2) a Worker node containing a CQueue worker component which pulls tasks from the Master and performs the execution of containers specified by the tasks.
 
 **Features**
 
@@ -525,7 +534,7 @@ The following steps are suggested to be performed:
 
       db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
 
-#. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker container-based tasks with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue server receives the tasks via a REST-Like API and the workers pull the registered tasks from the CQueue master and execute them. One worker process one task at a time.
+#. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue master receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue master and execute them. One worker process one task at a time.
 
    Push 'hello world' task (available params: image string, env []string, cmd []string, container_name string):
 
