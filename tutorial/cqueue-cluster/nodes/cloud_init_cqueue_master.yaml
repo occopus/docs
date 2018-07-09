@@ -26,7 +26,7 @@ write_files:
           - "6379:6379"
 
       frontend:
-        image: sanyi86/cqueue_frontend
+        image: sztakilpds/cqueue_frontend
         environment:
           - BROKER=amqp://guest:guest@rabbitmq:5672
           - RESULT_BACKEND=redis://redis:6379
