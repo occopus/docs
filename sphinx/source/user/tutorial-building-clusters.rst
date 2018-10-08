@@ -449,7 +449,14 @@ Please, note that CQueue is not aware of what happens inside the container, simp
 
 In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
 
+.. figure:: images/cqueue_cluster.jpg
+   :align: center
+
+   Figure 1. CQueue cluster architecture
+
 In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node having a RabbitMQ (for queuing), a Redis (for storing container logs) and a web-based frontend (for providing a REST API) component, 2) a Worker node containing a CQueue worker component which pulls tasks from the Master and performs the execution of containers specified by the tasks.
+
+As Figure 1 shows, we will establish a CQueue cluster (CQueue Master and Worker) using Occopus and CloudBroker Platform. In each task submission a new Docker container will be launched within at CQueue Worker.
 
 **Features**
 
@@ -536,7 +543,7 @@ The following steps are suggested to be performed:
 
 #. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue master receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue master and execute them. One worker process one task at a time.
 
-   Push 'hello world' task (available params: image string, env []string, cmd []string, container_name string):
+   Push 'hello world' task (available parameters: image string, env []string, cmd []string, container_name string):
 
    .. code::
 
@@ -547,7 +554,7 @@ The following steps are suggested to be performed:
  
    .. note::
 
-     This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in oder to query it's status and result.
+     This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in order to query its status and result.
 
 
 #. The worker continuously updates the status (pending, received, started, retry, success, failure) of the task with the task’s ID. After the task is completed, the workers send a notiﬁcation to the CQueue master, and this task will be removed from the queue. The status of a task and the result can be queried from the key-value store through the CQueue master.
@@ -568,7 +575,7 @@ The following steps are suggested to be performed:
     
    The result should be: ``hello Docker``
 
-#. Delete the the task with the following command:
+#. Delete the task with the following command:
 
    .. code::
 
