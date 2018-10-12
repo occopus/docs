@@ -227,6 +227,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
+
 DataAvenue cluster
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -442,14 +443,21 @@ CQueue cluster
 
 CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers. 
 
-The CQueue cluster contains one Master node and any number of Worker nodes. The Master node implements a queue, where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes fetch the tasks one after the other and execute the container specified by the task. Worker nodes can be manually scaled up and down with Occopus. 
+Figure 1 shows, the overall architecture of a CQueue cluster. The CQueue cluster contains one Master node (VM1) and any number of Worker nodes (VM2). Worker nodes can be manually scaled up and down with Occopus. The Master node implements a queue (see "Q" box within VM1), where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes (VM2) fetch the tasks one after the other and execute the container specified by the task (see "A" box within VM2). In each task submission a new Docker container will be launched within at CQueue Worker.
 
-Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs and the return value. CQueue retries the execution of failed containers as well.
+.. figure:: images/cqueue_cluster.jpg
+   :align: center
+
+   Figure 1. CQueue cluster architecture
+
+Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs (see "DB" box within VM1), and the return value. CQueue retries the execution of failed containers as well.
 
 
 In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
 
-In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node having a RabbitMQ (for queuing), a Redis (for storing container logs) and a web-based frontend (for providing a REST API) component, 2) a Worker node containing a CQueue worker component which pulls tasks from the Master and performs the execution of containers specified by the tasks.
+
+In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (see VM1 on Figure 1) having a RabbitMQ (for queuing) (see "Q" box within VM1), a Redis (for storing container logs) (see "DB" within VM1), and a web-based frontend (for providing a REST API) component (see "F" in VM1); 2) a Worker node (see VM2 on Figure 1) containing a CQueue worker component (see "W" box within VM2) which pulls tasks from the Master and performs the execution of containers specified by the tasks (see "A" box in VM2).
+
 
 **Features**
 
@@ -536,7 +544,7 @@ The following steps are suggested to be performed:
 
 #. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue master receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue master and execute them. One worker process one task at a time.
 
-   Push 'hello world' task (available params: image string, env []string, cmd []string, container_name string):
+   Push 'hello world' task (available parameters: image string, env []string, cmd []string, container_name string):
 
    .. code::
 
@@ -547,7 +555,7 @@ The following steps are suggested to be performed:
  
    .. note::
 
-     This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in oder to query it's status and result.
+     This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in order to query its status and result.
 
 
 #. The worker continuously updates the status (pending, received, started, retry, success, failure) of the task with the task’s ID. After the task is completed, the workers send a notiﬁcation to the CQueue master, and this task will be removed from the queue. The status of a task and the result can be queried from the key-value store through the CQueue master.
@@ -568,7 +576,7 @@ The following steps are suggested to be performed:
     
    The result should be: ``hello Docker``
 
-#. Delete the the task with the following command:
+#. Delete the task with the following command:
 
    .. code::
 
