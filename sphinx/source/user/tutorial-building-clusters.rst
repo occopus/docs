@@ -227,6 +227,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <../../example
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
+
 DataAvenue cluster
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -440,23 +441,23 @@ The following steps are suggested to be performed:
 CQueue cluster
 ~~~~~~~~~~~~~~~~~~~~
 
-CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers. 
-
-The CQueue cluster contains one Master node and any number of Worker nodes. The Master node implements a queue, where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes fetch the tasks one after the other and execute the container specified by the task. Worker nodes can be manually scaled up and down with Occopus. 
-
-Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs and the return value. CQueue retries the execution of failed containers as well.
-
-
-In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
-
 .. figure:: images/cqueue_cluster.jpg
    :align: center
 
    Figure 1. CQueue cluster architecture
 
-In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node having a RabbitMQ (for queuing), a Redis (for storing container logs) and a web-based frontend (for providing a REST API) component, 2) a Worker node containing a CQueue worker component which pulls tasks from the Master and performs the execution of containers specified by the tasks.
+CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers. 
 
-As Figure 1 shows, we will establish a CQueue cluster (CQueue Master and Worker) using Occopus and CloudBroker Platform. In each task submission a new Docker container will be launched within at CQueue Worker.
+Figure 1 shows, the overall architecture of a CQueue cluster. The CQueue cluster contains one Master node (VM1) and any number of Worker nodes (VM2). Worker nodes can be manually scaled up and down with Occopus. The Master node implements a queue (see "Q" box within VM1), where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes (VM2) fetch the tasks one after the other and execute the container specified by the task (see "A" box within VM2). In each task submission a new Docker container will be launched within at CQueue Worker.
+
+Please, note that CQueue is not aware of what happens inside the container, simply executes them one after the other. CQueue does not handle data files, containers are responsible for downloading inputs and uploading results if necessary. For each container CQueue stores the logs (see "DB" box within VM1), and the return value. CQueue retries the execution of failed containers as well.
+
+
+In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
+
+
+In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (see VM1 on Figure 1) having a RabbitMQ (for queuing) (see "Q" box within VM1), a Redis (for storing container logs) (see "DB" within VM1), and a web-based frontend (for providing a REST API) component (see "F" in VM1); 2) a Worker node (see VM2 on Figure 1) containing a CQueue worker component (see "W" box within VM2) which pulls tasks from the Master and performs the execution of containers specified by the tasks (see "A" box in VM2).
+
 
 **Features**
 
