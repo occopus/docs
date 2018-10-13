@@ -268,10 +268,10 @@ write_files:
     #!/bin/bash
     echo "Install HADOOP starts."
     echo "  Copying hadoop package from master..."
-    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.6.5.tar.gz /tmp"
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.8.4.tar.gz /tmp"
     echo "  Extracting hadoop package..."
-    tar zxf /tmp/hadoop-2.6.5.tar.gz --directory /usr/local
-    mv /usr/local/hadoop-2.6.5 /usr/local/hadoop
+    tar zxf /tmp/hadoop-2.8.4.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.8.4 /usr/local/hadoop
     chown -R hduser:hduser /usr/local/hadoop
     echo "Install HADOOP finished."
   permissions: '755'
