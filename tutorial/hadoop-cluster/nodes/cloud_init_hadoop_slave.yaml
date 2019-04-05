@@ -1,19 +1,16 @@
 #cloud-config
-users:
-- name: hduser
-  shell: /bin/bash
-  sudo: ALL=(ALL) NOPASSWD:ALL
-  lock-passwd: true
-  ssh_authorized_keys:
-  - "{{variables.hduser_public_key}}"
 
-################################
-# HDUSER PRIVATE KEY
-################################
 write_files:
+################################
+# HDUSER KEYS
+################################
 - path: /tmp/hduser/id_rsa
   content: |
     {{variables.hduser_private_key}}
+  permissions: '600'
+- path: /tmp/hduser/authorized_keys
+  content: |
+    {{variables.hduser_public_key}}
   permissions: '600'
 
 ################################
@@ -24,41 +21,40 @@ write_files:
     {"service": {"name": "hadoop"}}
   permissions: '644'
 
-- path: /tmp/consul/consul.conf
+- path: /tmp/consul/consul.service
   content: |
-    description "Consul agent"
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    respawn
-    script
-      if [ -f "/etc/service/consul" ]; then
-        . /etc/service/consul
-      fi
-      # Make sure to use all our CPUs, because Consul can block a scheduler thread
-      export GOMAXPROCS=`nproc`
-      exec /usr/local/bin/consul agent \
-      -retry-join {{ getip('hadoop-master') }} -data-dir=/tmp/consul \
-      -config-file=/opt/consul/service.json \
-      -bind=$(hostname --ip-address) -client=$(hostname --ip-address) \
-      >>/var/log/consul.log 2>&1
-    end script
+    [Unit]
+    Description=consul agent
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul agent -retry-join {{ getip('hadoop-master') }} -data-dir=/tmp/consul -config-file=/opt/consul/service.json -bind=$(hostname --ip-address) -client=$(hostname --ip-address) >>/var/log/consul.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
   permissions: '644'
 
-- path: /tmp/consul/consul-template-hosts.conf
+- path: /tmp/consul/consul-template-hosts.service
   content: |
-    description "Consul template for hosts file"
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    respawn
-    script
-      # Make sure to use all our CPUs, because Consul template can block a scheduler thread
-      export GOMAXPROCS=`nproc`
-      exec /usr/local/bin/consul-template \
-      -consul $(hostname --ip-address):8500 \
-      -template "/etc/hosts.ctmpl:/etc/hosts" \
-      >>/var/log/consul-template-hosts.log 2>&1
-    end script
+    [Unit]
+    Description=consul for hosts file
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul-template -consul $(hostname --ip-address):8500 -template \"/etc/hosts.ctmpl:/etc/hosts\" >>/var/log/consul-template-hosts.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
   permissions: '644'
+
 
 - path: /etc/hosts.ctmpl
   content: |
@@ -99,10 +95,6 @@ write_files:
       <property>
         <name>dfs.namenode.name.dir</name>
         <value>file:/usr/local/hadoop_tmp/hdfs/namenode</value>
-      </property>
-      <property>
-        <name>dfs.datanode.data.dir</name>
-        <value>file:/usr/local/hadoop_tmp/hdfs/datanode</value>
       </property>
       </configuration>
   permissions: '644'
@@ -205,7 +197,11 @@ write_files:
     grep -v "$slavename" /etc/hosts.old > /etc/hosts
 
     echo "$slaveip $slavename" >> /etc/hosts
-    
+   
+    adduser --disabled-password --gecos "" hduser
+    usermod -aG sudo hduser
+    echo "hduser ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
+ 
     mkdir -p /home/hduser/.ssh
     chmod 700 /home/hduser/.ssh
     chown hduser:hduser /home/hduser/.ssh
@@ -213,7 +209,11 @@ write_files:
     mv /tmp/hduser/id_rsa /home/hduser/.ssh
     chmod 600 /home/hduser/.ssh/id_rsa
     chown hduser:hduser /home/hduser/.ssh/id_rsa
-   
+  
+    mv /tmp/hduser/authorized_keys /home/hduser/.ssh
+    chmod 600 /home/hduser/.ssh/authorized_keys
+    chown hduser:hduser /home/hduser/.ssh/authorized_keys
+ 
     su - hduser -c "ssh-keyscan $slaveip > /home/hduser/.ssh/known_hosts"
     su - hduser -c 'ssh-keyscan `hostname` >> /home/hduser/.ssh/known_hosts'
     su - hduser -c 'ssh-keyscan localhost >> /home/hduser/.ssh/known_hosts'
@@ -268,11 +268,10 @@ write_files:
     #!/bin/bash
     echo "Install HADOOP starts."
     echo "  Copying hadoop package from master..."
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.6.5.tar.gz /tmp"
-    #wget -nc https://www.apache.org/dist/hadoop/core/hadoop-2.6.5/hadoop-2.6.5.tar.gz -O /tmp/hadoop-2.6.5.tar.gz
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.8.4.tar.gz /tmp"
     echo "  Extracting hadoop package..."
-    tar zxf /tmp/hadoop-2.6.5.tar.gz --directory /usr/local
-    mv /usr/local/hadoop-2.6.5 /usr/local/hadoop
+    tar zxf /tmp/hadoop-2.8.4.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.8.4 /usr/local/hadoop
     chown -R hduser:hduser /usr/local/hadoop
     echo "Install HADOOP finished."
   permissions: '755'
@@ -287,8 +286,8 @@ write_files:
     echo "  Copying consul packages from master..."
     mkdir -p /tmp/consulpackage
     chown hduser:hduser /tmp/consulpackage
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
-    su - hduser -c "scp -c blowfish -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
     #wget -nc https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip
     #wget -nc https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip
     echo "  Extracting consul packages..."
@@ -338,9 +337,10 @@ write_files:
   content: |
     #!/bin/bash
     echo "Launch CONSUL starts."
-    mv /tmp/consul/* /etc/init
-    service consul start
-    service consul-template-hosts start
+    cp /tmp/consul/*.service /etc/systemd/system
+    systemctl daemon-reload
+    systemctl start consul.service
+    systemctl start consul-template-hosts.service
     echo "Launch CONSUL finished."
   permissions: '0755'
 

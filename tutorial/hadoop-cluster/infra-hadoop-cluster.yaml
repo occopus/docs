@@ -10,7 +10,7 @@ nodes:
     type: hadoop_slave_node
     scaling: 
       min: 2
-      max: 10 
+      max: 10
 variables:
   hduser_private_key: |
     -----BEGIN RSA PRIVATE KEY-----

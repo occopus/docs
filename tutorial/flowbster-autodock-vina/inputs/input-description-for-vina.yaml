@@ -1,0 +1,11 @@
+wfid: unique-id-of-the-wf
+inputs:
+    -
+        name: input-ligands.zip
+        post_file: input-ligands.zip
+    -
+        name: input-receptor.pdbqt
+        post_file: input-receptor.pdbqt
+    -
+        name: vina-config.txt
+        post_file: vina-config.txt

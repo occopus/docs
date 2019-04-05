@@ -7,6 +7,11 @@ Setup
 Installation
 ------------
 
+.. important::
+
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 14.04 and Ubuntu 16.04** versions.
+ 
+
 The steps required to deploy Occopus and its dependencies are described below. Alternatively, 
 
 - you can watch a `video on installing Occopus v1.2 <http://smith.s3.lpds.sztaki.hu/Occopus/occopus_v1.2_installation.mp4>`_ .

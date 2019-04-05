@@ -4,13 +4,14 @@
 voms-auth-system-openstack
 argparse>=1.2.1
 backports.ssl-match-hostname==3.5.0.1
-boto==2.34.0
+boto==2.48.0
 python-fuelclient==8.0.0
 python_novaclient==2.33.0
 dateutils==0.6.6
 dicttoxml==1.7.4
 docker-py==1.6.0
 Flask==0.10.1
+Flask-Cors==3.0.3
 itsdangerous==0.24
 Jinja2==2.7.3
 MarkupSafe==0.23

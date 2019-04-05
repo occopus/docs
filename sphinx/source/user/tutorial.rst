@@ -9,4 +9,5 @@ Tutorial
    tutorial-configmanager-plugins
    tutorial-building-clusters
    tutorial-autoscaling-infrastructures
+   tutorial-flowbster
 

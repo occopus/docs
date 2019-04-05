@@ -14,7 +14,6 @@
 #!/usr/bin/env -e python
 
 import setuptools
-from pip.req import parse_requirements
 
 setuptools.setup(
     name='Sphinx-IBKey',
