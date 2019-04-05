@@ -160,6 +160,8 @@ EC2
     Optional. The list of security group IDs which should be assigned to the allocated virtual machine.
   ``subnet_id``
     Optional. The ID of the subnet which should be assigned to the allocated virtual machine.
+  ``tags``
+    Optional. List of key-value pairs of tags to be registered for the virtual machine.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
