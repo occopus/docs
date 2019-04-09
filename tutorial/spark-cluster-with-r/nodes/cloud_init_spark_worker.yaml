@@ -1,0 +1,182 @@
+#cloud-config
+
+write_files:
+
+############################
+# SCRIPT TO CREATE SPARKUSER
+############################
+- path: /bin/create-user.sh
+  content: |
+    #!/bin/bash
+    echo "Creating SPARKUSER starts."
+    adduser --disabled-password --gecos "" sparkuser
+    echo "sparkuser:lpds" | chpasswd
+    echo "Creating SPARKUSER finished."
+  permissions: '755'
+
+###########################
+# SCRIPT TO INSTALL RSTUDIO
+###########################
+- path: /bin/install-studio.sh
+  content: |
+    #!/bin/bash
+    echo "Install RSTUDIO starts."
+    sudo apt-get update
+    sudo apt-get install r-base -y
+    echo "Install RSTUDIO finished."
+  permissions: '755'
+
+
+##########################
+# SCRIPT TO INSTALL HADOOP
+##########################
+- path: /bin/hadoop-install-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Install HADOOP starts."
+    wget -nc http://xenia.sote.hu/ftp/mirrors/www.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz -O /home/sparkuser/hadoop-2.9.2.tar.gz
+    tar -xvf /home/sparkuser/hadoop-2.9.2.tar.gz --directory /home/sparkuser
+    mv /home/sparkuser/hadoop-2.9.2 /home/sparkuser/hadoop
+    rm /home/sparkuser/hadoop-2.9.2.tar.gz
+    echo "Install HADOOP finished"
+  permissions: '755'
+
+############################
+# HADOOP CONFIGURATION FILES
+############################
+
+- path: /tmp/hadoop/configs/hdfs-site.xml
+  content: |
+   <configuration>
+    <property>
+     <name>dfs.namenode.http-address</name>
+      <value>{{getprivip('spark-master')}}:50070</value>
+    </property>
+    <property>
+      <name>dfs.name.dir</name>
+      <value>/tmp</value>
+      <final>true</final>
+    </property>
+    <property>
+       <name>dfs.permissions</name>
+       <value>false</value>
+    </property>
+    <property>
+      <name>dfs.datanode.du.reserved</name>
+      <value>500000000</value>
+    </property>
+   </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/core-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>fs.default.name</name>
+        <value>hdfs://{{getprivip('spark-master')}}:9000</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+
+###############################
+# SCRIPT TO SETUP HADOOP CONFIG
+###############################
+- path: /bin/hadoop-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure HADOOP starts."
+    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop-2.9.2" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop-2.9.2/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+
+    #SET HOSTS FILE
+    privateip=`hostname -i`
+    hostname=`hostname -s`
+    echo "$privateip $hostname" >> /etc/hosts
+
+    chown -R sparkuser:sparkuser /home/sparkuser/hadoop/etc/hadoop
+    echo "Configure HADOOP finished."
+  permissions: '755'
+
+
+#######################
+# SCRIPT TO LAUNCH HDFS
+#######################
+- path: /bin/launch-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Launch HADOOP starts."
+    #mkdir /home/hdfs
+    #chown sparkuser:sparkuser /home/hdfs
+    su - sparkuser -c "/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start datanode"
+    echo "Launch HADOOP finished."
+  permissions: '755'
+
+########################
+# SCRIPT TO INSTALL JAVA
+########################
+- path: /bin/spark-install-java.sh
+  content: |
+    #!/bin/bash
+    echo "Install JAVA starts."
+    sudo add-apt-repository ppa:webupd8team/java -y
+    sudo apt-get update
+    echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+    echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+    sudo apt-get install oracle-java8-installer -y    
+    echo "Install JAVA finished."
+  permissions: '755'
+
+
+################################
+# SCRIPT TO INSTALL APACHE SPARK
+################################
+- path: /bin/spark-install-spark.sh
+  content: |
+    echo "Install SPARK starts."
+    wget http://xenia.sote.hu/ftp/mirrors/www.apache.org/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
+    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
+    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    echo "Install SPARK finished."
+  permissions: '755'
+
+
+##############################
+# SCRIPT TO SETUP SPARK CONFIG
+##############################
+- path: /bin/spark-setup-config.sh
+  content: |
+    #!/bin/bash
+    set -x
+    echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
+    echo SPARK_MASTER_HOST={{getprivip('spark-master')}} >> /home/sparkuser/spark/conf/spark-env.sh
+    echo export SPARK_HOME=/home/sparkuser/spark >> /home/sparkuser/.profile
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
+    echo "Configure SPARK ends."
+  permissions: '755'
+  
+  
+runcmd:
+#Create USER
+- /bin/create-user.sh
+#Install R
+- /bin/install-studio.sh
+#Install JAVA
+- /bin/spark-install-java.sh
+#Install HADOOP
+- /bin/hadoop-install-hadoop.sh
+#Configure HADOOP
+- /bin/hadoop-setup-config.sh
+#Launch HDFS
+- /bin/launch-hadoop.sh
+#Install SPARK
+- /bin/spark-install-spark.sh
+#Setup SPARK
+- /bin/spark-setup-config.sh
+#Launch SPARK
+- su  - sparkuser -c "/home/sparkuser/spark/sbin/start-slave.sh spark://{{getip('spark-master')}}:7077"
+- echo "SPARK DEPLOYMENT DONE."
