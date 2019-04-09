@@ -22,13 +22,11 @@ write_files:
 ################################
 - path: /bin/spark-install-spark.sh
   content: |
-    #!/bin/bash
-    set -x
     echo "Install SPARK starts."
-    wget http://xenia.sote.hu/ftp/mirrors/www.apache.org/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz -O /usr/local/spark-2.3.1-bin-hadoop2.7.tgz
-    tar zxvf /usr/local/spark-2.3.1-bin-hadoop2.7.tgz  --directory /usr/local
-    rm /usr/local/spark-2.3.1-bin-hadoop2.7.tgz
-    chown -R ubuntu:ubuntu /usr/local/spark-2.3.1-bin-hadoop2.7/*
+    wget http://xenia.sote.hu/ftp/mirrors/www.apache.org/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
+    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
+    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
     echo "Install SPARK finished."
   permissions: '755'
 
@@ -39,13 +37,12 @@ write_files:
   content: |
     #!/bin/bash
     echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
     masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
-    cp /usr/local/spark-2.3.1-bin-hadoop2.7/conf/spark-env.sh.template /usr/local/spark-2.3.1-bin-hadoop2.7/conf/spark-env.sh
-    echo "SPARK_MASTER_HOST='$masterip'" >> /usr/local/spark-2.3.1-bin-hadoop2.7/conf/spark-env.sh
-    chown ubuntu:ubuntu /usr/local/spark-2.3.1-bin-hadoop2.7/conf/spark-env.sh
+    echo "SPARK_MASTER_HOST='$masterip'" >> /home/sparkuser/spark/conf/spark-env.sh
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
     echo "Configure SPARK ends."
   permissions: '755'
-  
   
 runcmd:
 #Install JAVA
@@ -55,5 +52,5 @@ runcmd:
 #Setup SPARK
 - /bin/spark-setup-config.sh
 #Launch SPARK
-- ./usr/local/spark-2.3.1-bin-hadoop2.7/sbin/start-master.sh
+- su - sparkuser -c /home/sparkuser/spark/sbin/start-master.sh
 - echo "SPARK DEPLOYMENT DONE."

@@ -1,0 +1,43 @@
+'node_def:spark_master_node':
+  -
+    resource:
+      type: nova
+      endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+      project_id: replace_with_projectid_to_use
+      user_domain_name: Default
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      network_id: replace_with_id_of_network_on_your_target_cloud
+      flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+      key_name: replace_with_name_of_keypair_or_remove
+      security_groups:
+        -
+          replace_with_security_group_to_add_or_remove_section
+      floating_ip: add_yes_if_you_need_floating_ip_or_remove
+      floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_spark_master.yaml
+    health_check:
+      ports:
+        - 8080
+      timeout: 600
+
+'node_def:spark_worker_node':
+  -
+    resource:
+      type: nova
+      endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+      project_id: replace_with_projectid_to_use
+      user_domain_name: Default
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      network_id: replace_with_id_of_network_on_your_target_cloud
+      flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+      key_name: replace_with_name_of_keypair_or_remove
+      security_groups:
+        -
+          replace_with_security_group_to_add_or_remove_section
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_spark_worker.yaml

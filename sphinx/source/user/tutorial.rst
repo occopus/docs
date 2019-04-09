@@ -10,4 +10,5 @@ Tutorial
    tutorial-building-clusters
    tutorial-autoscaling-infrastructures
    tutorial-flowbster
+   tutorial-bigdata-ai
 
