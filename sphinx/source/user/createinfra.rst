@@ -160,6 +160,8 @@ EC2
     Optional. The list of security group IDs which should be assigned to the allocated virtual machine.
   ``subnet_id``
     Optional. The ID of the subnet which should be assigned to the allocated virtual machine.
+  ``tags``
+    Optional. List of key-value pairs of tags to be registered for the virtual machine.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
@@ -438,6 +440,13 @@ Methods:
 
     - Example:	getip(„master”), getip(variables.masterhostname)
 
+  ``getprivip``
+    - Usage: 	getprivip(<name of node defined in infra description>)
+
+    - Output: 	string containing a private ip address of the (first) instance of the given node
+
+    - Example:	getprivip(„master”), getprivip(variables.masterhostname)
+
   ``getipall``
     -  Usage: 	getipall(<name of node defined in infra description>)
 
@@ -452,6 +461,12 @@ Methods:
 
     - Example:	cut(infra_id,0,7)
 
+  ``cmd``
+    - Usage: 	cmd('command with options')
+
+    - Output: 	string returned by the command
+
+    - Example:	cmd('curl -X GET http://localhost/message.txt'), cmd('cat /etc/hosts')
 
 .. _userdefinitionconfigmanagementsection:
 
