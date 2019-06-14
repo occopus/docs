@@ -1,0 +1,8 @@
+infra_name: jupyter-server
+user_id: somebody@somewhere
+
+nodes:
+  - &M
+    name: jupyter-server
+    type: jupyter_server_node
+

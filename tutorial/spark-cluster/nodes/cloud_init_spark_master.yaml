@@ -9,11 +9,8 @@ write_files:
   content: |
     #!/bin/bash
     echo "Install JAVA starts."
-    sudo add-apt-repository ppa:webupd8team/java -y
     sudo apt-get update
-    echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-    sudo apt-get install oracle-java8-installer -y    
+    sudo apt-get install default-jdk -y
     echo "Install JAVA finished."
   permissions: '755'
 
@@ -23,7 +20,7 @@ write_files:
 - path: /bin/spark-install-spark.sh
   content: |
     echo "Install SPARK starts."
-    wget http://xenia.sote.hu/ftp/mirrors/www.apache.org/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    wget https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
     tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
     mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
     rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
