@@ -615,7 +615,7 @@ The complete machine learning environment consists of the following components: 
 
 **Features**
 
- - creating two types of nodes through contextualisation
+ - creating a node through contextualisation
  - utilising health check against a predefined port
 
 **Prerequisites**
@@ -709,3 +709,119 @@ The complete machine learning environment consists of the following components: 
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
+TensorFlow and Keras with Jupyter Notebook Stack using NVIDIA GPU card
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
+
+Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
+
+The complete machine learning environment consists of the following components: Jupyter, Keras and TensorFlow utilizing the power of a GPU card.
+
+.. important::
+
+  If you want to use this tutorial, your virtual machine should have an attached NVIDIA GPU card. If you would like to alter the CUDA driver, feel free to personalize the install-cuda.sh script within nodes/cloud_init_jupyter_server_gpu.yaml file.
+
+
+**Features**
+
+ - creating a node through contextualisation
+ - utilising health check against a predefined port
+
+**Prerequisites**
+
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - target cloud contains a base 16.04 Ubuntu OS image with cloud-init support
+
+
+**Download**
+
+ You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <../../examples/tensorflow-keras-jupyter-gpu.tgz>`_ .
+
+.. note::
+
+ In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
+
+
+**Steps**
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an `Occopus compatible resource plugin <clouds.html>`_
+   - you can find and specify the relevant `list of attributes for the plugin <createinfra.html#resource>`_
+   - you may follow the help on `collecting the values of the attributes for the plugin <createinfra.html#collecting-resource-attributes>`_
+   - you may find a resource template for the plugin in the `resource plugin tutorials <tutorial-resource-plugins.html>`_
+
+   The downloadable package for this example contains a resource template for the Nova plugin.
+
+   .. important::
+
+     Do not modify the values of the contextualisation and the health_check section’s attribute!
+
+
+   .. note::
+
+     Make sure you assign public (floating) IP to the node.
+
+
+#. Services on the virtual machine should be available from outside, therefore some port numbers must be opened for the VM executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   .. code::
+
+      TCP 22 (SSH)
+      TCP 8888 (Jupyter Notebook)
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
+
+
+#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure.
+
+   .. code::
+
+      occopus-build infra-jupyter-server-gpu.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      jupyter-server-gpu:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. You can start using the TensorFlow/Keras stack through the Jupyter notebook using your web browster at the following URL:
+
+   .. code::
+
+      Jupyter notebook: "http://<JupyterServerIP>:8888"
+
+   .. note::
+
+     The webUIs are protected, the access needs a login. The default password is "lpds", which can be changed before deployment.
+
+#. Run a demo ML application. In this short demo application we can test our Anaconda development environment. We are building a convolutional neural network (_CNN_ or _ConvNet_) which is able to classify animals into 4 categories (dog, cat, bird and fish). Classification is a type of supervised learning - this means we need to provide labels for all the training data. We are going to utilize _Keras_ with _Tensorflow backend_ for achieving this goal, more precisely for creating and compiling model, training and testing. Keras enables fast experimentation with deep neural networks, and it focuses on being user-friendly and modular, so it's a natural choice for this task, while Tensorflow is responsible for managing the underlying structures and calculations.
+
+   Select keras-gpu-demo/Simple_image_classifier.ipynb file (see Figure 1) within the Jupyter notebook interface, and select Cells/Run All to run all of the commands below, or use shift+enter within a cell to run the cells one-by-one.
+
+   .. figure:: images/tf-keras-jupyter-gpu-tutorial.png
+      :align: center
+
+      Figure 1: Jupyter Notebook for testing TensorFlow/Keras environment with GPU
+
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa

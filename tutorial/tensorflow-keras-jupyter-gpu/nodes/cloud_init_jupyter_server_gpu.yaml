@@ -1,0 +1,95 @@
+#cloud-config
+
+write_files:
+
+############################
+# SCRIPT TO CREATE OCCOUSER
+############################
+- path: /bin/create-user.sh
+  content: |
+    #!/bin/bash
+    echo "Creating OCCOUSER starts."
+    adduser --disabled-password --gecos "" occouser
+    echo "Creating OCCOUSER finished."
+  permissions: '755'
+
+############################
+# SCRIPT TO INSTALL ANACONDA
+############################
+- path: /bin/install-anaconda.sh
+  content: |
+    #!/bin/bash
+    set -x
+    echo "Install ANACONDA starts."
+    wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh  -O /home/occouser/Anaconda3-5.0.1-Linux-x86_64.sh
+    bash /home/occouser/Anaconda3-5.0.1-Linux-x86_64.sh -b
+    echo export PATH="/home/occouser/anaconda3/bin:$PATH" >> /home/occouser/.profile
+    ./anaconda3/bin/conda create --name cnn_tasks python=3.6 -y
+    source anaconda3/bin/activate cnn_tasks
+    ./anaconda3/bin/conda install -c conda-forge numpy -y
+    ./anaconda3/bin/conda install -c anaconda pandas -y
+    ./anaconda3/bin/conda install -c anaconda scipy -y
+    ./anaconda3/bin/conda install -c anaconda scikit-learn -y
+    ./anaconda3/bin/conda install -c conda-forge matplotlib -y
+    ./anaconda3/bin/conda install -c anaconda pillow -y
+    ./anaconda3/bin/conda install -c anaconda keras-gpu -y
+    ./anaconda3/bin/conda install -c conda-forge  --override-channels opencv -y
+    ./anaconda3/bin/conda install -c anaconda ipykernel -y
+    python -m ipykernel install --user --name cnn_tasks --display-name "CNN tasks"
+    echo "Install ANACONDA starts."
+  permissions: '755'
+
+####################################
+# SCRIPT TO INSTALL CUDA ENVIRONMENT
+####################################
+- path: /bin/install-cuda.sh
+  content: |
+    #!/bin/bash
+    echo "Install CUDA starts."
+    #INSTALL CUDA
+    wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-ubuntu1604-10-1-local-10.1.168-418.67_1.0-1_amd64.deb
+    sudo dpkg -i cuda-repo-ubuntu1604-10-1-local-10.1.168-418.67_1.0-1_amd64.deb
+    sudo apt-key add /var/cuda-repo-10-1-local-10.1.168-418.67/7fa2af80.pub
+    sudo apt-get update
+    sudo apt-get install cuda -y
+    echo "Install CUDA finished."
+  permissions: '755'
+
+
+##################################
+# SCRIPT TO SETUP JUPYTER NOTEBOOK
+##################################
+- path: /bin/jupyter-config.sh
+  content: |
+    #!/bin/bash
+    set -x
+    echo "Configure JUPYTER NOTEBOOK starts."
+    su - occouser -c "~/anaconda3/bin/jupyter notebook --generate-config"
+    echo "c = get_config()" >> /home/occouser/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.password = u'sha1:3ba4370be377:24644d24dcb81bcbd346114fcf9095ad7c1dd0ad'"  >> /home/occouser/.jupyter/jupyter_notebook_config.py
+    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    
+    #DOWNLOAD TUTORIAL 
+    su - occouser -c "mkdir /home/occouser/tensorflow-GPU-demo"   
+    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/-/archive/master/occopus-ml-master.tar.gz?path=keras-gpu-demo -O /home/occouser/tensorflow-GPU-demo/occopus-ml-master-keras-gpu-demo.tar.gz"
+    su - occouser -c "tar zxvf /home/occouser/tensorflow-GPU-demo/occopus-ml-master-keras-gpu-demo.tar.gz -C /home/occouser/tensorflow-GPU-demo/. "
+    su - occouser -c "cp -r /home/occouser/tensorflow-GPU-demo/occopus-ml-master-keras-gpu-demo/* /home/occouser/."
+    rm -r /home/occouser/tensorflow-GPU-demo
+    
+
+    #START JUPYTER NOTEBOOK
+    su - occouser -c "~/anaconda3/bin/jupyter notebook --ip=$masterip --port=8888 >> /home/occouser/jupyter.log &"
+    echo "Configure JUPYTER NOTEBOOK finished."
+  permissions: '755'
+
+
+runcmd:
+#Create USER
+- bin/create-user.sh
+#Install ANACONDA
+- su - occouser -c "/bin/install-anaconda.sh"
+#Install CUDA
+- /bin/install-cuda.sh
+#Install JUPYTER NOTEBOOK
+- /bin/jupyter-config.sh
+- echo "DEPLOYMENT DONE."

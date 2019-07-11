@@ -1,4 +1,4 @@
-'node_def:jupyter_server_node':
+'node_def:jupyter_server_gpu_node':
   -
     resource:
       type: nova
@@ -17,7 +17,7 @@
     contextualisation:
       type: cloudinit
       context_template: !yaml_import
-        url: file://cloud_init_jupyter_server.yaml
+        url: file://cloud_init_jupyter_server_gpu.yaml
     health_check:
       ports:
         - 8888
