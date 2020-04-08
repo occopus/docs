@@ -39,13 +39,6 @@ Supporting Chef and cloud-init
     :members:
     :undoc-members:
 
-Supporting CloudBroker
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: occo.plugins.infraprocessor.node_resolution.cloudbroker
-    :members:
-    :undoc-members:
-
 Supporting Docker
 ~~~~~~~~~~~~~~~~~
 
