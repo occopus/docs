@@ -189,7 +189,7 @@ def purge_ibkeys(app, env, docname):
         return
 
     env.ibkey_all_ibkeys = dict((k, v)
-                                for k, v in env.ibkey_all_ibkeys.iteritems()
+                                for k, v in env.ibkey_all_ibkeys.items()
                                 if v['docname'] != docname)
 
 def process_ibkey_nodes(app, doctree, fromdocname):
@@ -200,7 +200,7 @@ def process_ibkey_nodes(app, doctree, fromdocname):
 
         all_ibkeys = getattr(env, 'ibkey_all_ibkeys', dict())
 
-        for key in sorted(all_ibkeys.iterkeys()):
+        for key in sorted(all_ibkeys.keys()):
             content.append(all_ibkeys[key]['catalog_entry'])
 
         node.replace_self(content)
