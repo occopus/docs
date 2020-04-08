@@ -10,12 +10,12 @@ PDIR=env/documentation
 rm -rf "$PDIR"
 
 # Create a virtual environment:
-virtualenv --no-site-packages "$PDIR"
+virtualenv -p python3 "$PDIR"
 
 # Activate it (this step is ALWAYS required before compiling)
 source "$PDIR"/bin/activate
 
-pip install --upgrade pip
+#pip install --upgrade pip
 
 # Install the locally checked out packages:
 pip install --no-deps -r requirements-local.txt --trusted-host pip.lpds.sztaki.hu
