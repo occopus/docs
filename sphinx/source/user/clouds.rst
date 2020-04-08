@@ -52,3 +52,8 @@ CloudSigma
 ----------
 
 The CloudSigma resource plugin of Occopus enables the usage of `CloudSigma <https://www.cloudsigma.com/>`_ resources.
+
+Azure
+-----
+
+The Azure resource plugin of Occopus enables the usage of `Azure <https://azure.microsoft.com//>`_ resources.

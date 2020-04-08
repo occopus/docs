@@ -310,6 +310,40 @@ CloudSigma
              runtime:
                interface_type: public
 
+Azure
+^^^^^
+  ``type: azure``
+    Selects the Azure resource handler.
+  ``endpoint``
+    The endpoint (url) of the Azure interface, e.g. https://management.azure.com
+  ``resource_group``
+    The resource group to allocate Azure resources in.
+  ``location``
+    The location where the resources should be allocated, e.g. francecentral.
+  ``vm_size``
+    The size of the VM to allocate, e.g. Standard_DS1_v2.
+  ``publisher``
+    The image publisher's name, e.g. Canonical.
+  ``offer``
+    The published name of the image, e.g. UbuntuServer.
+  ``sku``
+    The type of the OS, e.g. 16.04.0-LTS.
+  ``version``
+    The version of the image to use, e.g. latest.
+  ``username``
+    The name of the admin user to create on the VM.
+  ``password``
+    The password for the admin user.
+  ``vnet_name``
+    Optional. Name of the virtual network to use for the VM. If not specified, the Azure resource plugin will allocate a virtual network.
+  ``nic_name``
+    Optional. The name of the network interface to use for the VM. If not specified, the Azure resource plugin will allocate a network interface.
+  ``subnet_name``
+    Optional. The name of the subnet to use for the VM. If not specified, the Azure resource plugin will allocate a subnet.
+  ``public_ip_needed``
+    Optional. If specified with the value True, the Azure resource plugin will allocate a public IP address for the VM.
+
+
 Collecting Resource Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -333,7 +367,7 @@ In this section, the attributes (keywords) are listed and explained which can be
 Cloudinit
 ^^^^^^^^^
   ``type: cloudinit`` 
-    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma.
+    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma, azure.
   ``context_template``
     This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <https://cloudinit.readthedocs.org/en/latest>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``

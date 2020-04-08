@@ -200,6 +200,20 @@ For ``cloudsigma`` resources:
                 password: your_password
 
 
+For ``azure`` resources:
+
+.. code:: yaml
+
+    resource:
+        -
+            type: azure
+            auth_data:
+                tenant_id: your_tenant_id
+                client_id: your_client_id
+                client_secret: your_client_secret
+                subscription_id: your_subscription_id
+
+
 For ``chef`` config managers:
 
 .. code:: yaml
