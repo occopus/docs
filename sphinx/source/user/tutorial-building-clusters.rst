@@ -117,7 +117,7 @@ In this tutorial we establish a cluster with two nodes types. On the DataAvenue 
 **Prerequisites**
 
  - accessing an Occopus compatible interface
- - target cloud contains an Ubuntu 16.04 image with cloud-init support
+ - target cloud contains an Ubuntu image with cloud-init support
 
 **Download**
 
@@ -341,7 +341,7 @@ In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (se
 **Prerequisites**
 
  - accessing an Occopus compatible interface
- - target cloud contains an Ubuntu 16.04 image with cloud-init support
+ - target cloud contains an Ubuntu image with cloud-init support
 
 **Download**
 

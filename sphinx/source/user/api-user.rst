@@ -77,21 +77,27 @@ This command is capable of maintaining an infrastructure built by Occopus. Maint
  occopus-maintain [-h] 
                   [--cfg CFG_PATH] 
                   [--auth_data_path AUTH_DATA_PATH] 
+                  [--parallelize]
                   [-l|--list] 
                   [-r|--report]
                   [-i INFRA_ID] 
                   [-c|--cyclic] 
-                  [-t INTERVAL] 
+                  [-t INTERVAL]
+                  [-o|--output OUTPUT]
+                  [-f|--filter FILTER]
 
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
     * ``--cfg CFG_PATH:`` (optional) path to Occopus config file (default: None) if undefined, file named *occopus_config.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
+    * ``--parallelize:`` (optional) parallelize processing instructions e.g. independent nodes are created parallel (default: sequential)
     * ``-l, --list:`` (optional) list the built pieces of infrastructure
     * ``-r, --report:`` (optional) reports about an infrastructure
     * ``-i INFRA_ID:`` (optional) identifier of the infrastructure to maintain
     * ``-c, --cyclic:`` (optional) performs continuous maintenance
     * ``-t INTERVAL:`` (optional) specifies the time in seconds between maintenance sessions (default: 10)
+    * ``-o OUTPUT:`` (optional) defines output file name for reporting on an infra (default: None)
+    * ``-f FILTER:`` (optional) defines the nodename to be included in reporting (default: None)
 
 .. _api-user_scalecommand:
     
@@ -109,7 +115,9 @@ This command registers scaling requests for a given node in an infrastructure. W
                [--auth_data_path AUTH_DATA_PATH] 
                -i INFRA_ID 
                -n|--node NODE 
-               -c|--count COUNT
+               [-c|--changescale CHANGESCALE]
+               [-s|--setscale SETSCALE]
+               [-f|--filter FILTER]
 
 **Parameters:**
     * ``-h, --help:`` (optional) shows help message
@@ -117,12 +125,14 @@ This command registers scaling requests for a given node in an infrastructure. W
     * ``--auth_data_path AUTH_DATA_PATH:`` (optional) path to Occopus authentication file (default: None) if undefined, file named *auth_data.yaml* is searched at predefined locations, e.g. $HOME/.occopus
     * ``-i INFRA_ID:`` identifier of the infrastructure which contains the node to scale
     * ``-n NODE, --node NODE:`` name of the node to scale
-    * ``-c COUNT, --count COUNT:`` positive/negative number expressing the direction and magnitude of scaling (positive: scale up; negative: scale down)
+    * ``-c CHANGESCALE, --changescale CHANGESCALE:`` positive/negative number expressing the direction and magnitude of scaling (positive: scale up; negative: scale down)
+    * ``-s SETSCALE, --setscale SETSCALE:`` positive number expressing the number of nodes to scale to
+    * ``-f FILTER, --filter FILTER:`` filter for selecting nodes for downscaling; filter can be nodeid or ip address (default: None)
 
 occopus-import
 ~~~~~~~~~~~~~~
 
-This command imports i.e. loads the node definitions from file to the database behind Occopus. 
+This command imports i.e. loads the node definitions from file to the database of Occopus. 
 
 .. important::
 

@@ -9,7 +9,7 @@ Installation
 
 .. important::
 
-   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 14.04 and Ubuntu 16.04** versions.
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 18.04** version.
  
 
 The steps required to deploy Occopus and its dependencies are described below. Alternatively, 
@@ -156,6 +156,18 @@ For ``nova`` resources:
                 username: your_username
                 password: your_password
 
+  In case of application credential based authentication:
+
+  .. code:: yaml
+    
+    resource:
+        -
+            type: nova
+            auth_data:
+                type: application_credential
+                id: id_of_the_app_cred
+                secret: password_of_the_app_cred
+
   In case of VOMS proxy authentication:
 
   .. code:: yaml
@@ -166,6 +178,19 @@ For ``nova`` resources:
             auth_data:
                 type: voms
                 proxy: path_to_your_x509_voms_proxy_file
+
+For ``azure`` resources:
+
+.. code:: yaml
+
+    resource:
+        -
+            type: azure
+            auth_data:
+                tenant_id: your_tenant_id
+                client_id: your_client_id
+                client_secret: your_client_secret
+                subscription_id: your_subscription_id
 
 For ``occi`` resources:
 
@@ -198,20 +223,6 @@ For ``cloudsigma`` resources:
             auth_data:
                 email: your@email.com
                 password: your_password
-
-
-For ``azure`` resources:
-
-.. code:: yaml
-
-    resource:
-        -
-            type: azure
-            auth_data:
-                tenant_id: your_tenant_id
-                client_id: your_client_id
-                client_secret: your_client_secret
-                subscription_id: your_subscription_id
 
 
 For ``chef`` config managers:
