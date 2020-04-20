@@ -1,0 +1,9 @@
+infra_name: azure-helloworld-infra
+user_id: somebody@somewhere.com
+
+nodes:
+  -
+    name: helloworld
+    type: azure_helloworld_node
+    variables:
+      message: "Hello World! I have been created by Occopus"

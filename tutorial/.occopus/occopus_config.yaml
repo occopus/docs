@@ -4,6 +4,7 @@ plugins: !python_import
     - occo.infobroker.uds
     - occo.infobroker.rediskvstore
     - occo.resourcehandler
+    - occo.plugins.resourcehandler.azure
     - occo.plugins.resourcehandler.ec2
     - occo.plugins.resourcehandler.nova
     - occo.plugins.resourcehandler.cloudbroker
@@ -109,5 +110,3 @@ logging:
             propagate: false
             level: INFO
             handlers: [console, file]
-
-
