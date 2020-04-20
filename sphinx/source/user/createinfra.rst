@@ -175,6 +175,8 @@ Nova
     Optional. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, **project_id** and **user_domain_name** must be set.
   ``project_id``
     Optional. Specifies the ID of the project to connect to.
+  ``region_name``
+    Optional. Specifies the name of the region within the project.
   ``user_domain_name``
     Optional. Specifies the name of the user domain. The default value of this attribute is "Default".
   ``network_id``
@@ -196,6 +198,38 @@ Nova
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
 
+Azure
+^^^^^
+  ``type: azure``
+    Selects the Azure resource handler.
+  ``endpoint``
+    The endpoint (url) of the Azure interface, e.g. https://management.azure.com
+  ``resource_group``
+    The resource group to allocate Azure resources in.
+  ``location``
+    The location where the resources should be allocated, e.g. francecentral.
+  ``vm_size``
+    The size of the VM to allocate, e.g. Standard_DS1_v2.
+  ``publisher``
+    The image publisher's name, e.g. Canonical.
+  ``offer``
+    The published name of the image, e.g. UbuntuServer.
+  ``sku``
+    The type of the OS, e.g. 18.04.0-LTS.
+  ``version``
+    The version of the image to use, e.g. latest.
+  ``username``
+    The name of the admin user to create on the VM.
+  ``password``
+    The password for the admin user.
+  ``vnet_name``
+    Optional. Name of the virtual network to use for the VM. If not specified, the Azure resource plugin will allocate a virtual network.
+  ``nic_name``
+    Optional. The name of the network interface to use for the VM. If not specified, the Azure resource plugin will allocate a network interface.
+  ``subnet_name``
+    Optional. The name of the subnet to use for the VM. If not specified, the Azure resource plugin will allocate a subnet.
+  ``public_ip_needed``
+    Optional. If specified with the value True, the Azure resource plugin will allocate a public IP address for the VM.
 
 OCCI
 ^^^^
@@ -309,40 +343,6 @@ CloudSigma
                ip: null
              runtime:
                interface_type: public
-
-Azure
-^^^^^
-  ``type: azure``
-    Selects the Azure resource handler.
-  ``endpoint``
-    The endpoint (url) of the Azure interface, e.g. https://management.azure.com
-  ``resource_group``
-    The resource group to allocate Azure resources in.
-  ``location``
-    The location where the resources should be allocated, e.g. francecentral.
-  ``vm_size``
-    The size of the VM to allocate, e.g. Standard_DS1_v2.
-  ``publisher``
-    The image publisher's name, e.g. Canonical.
-  ``offer``
-    The published name of the image, e.g. UbuntuServer.
-  ``sku``
-    The type of the OS, e.g. 16.04.0-LTS.
-  ``version``
-    The version of the image to use, e.g. latest.
-  ``username``
-    The name of the admin user to create on the VM.
-  ``password``
-    The password for the admin user.
-  ``vnet_name``
-    Optional. Name of the virtual network to use for the VM. If not specified, the Azure resource plugin will allocate a virtual network.
-  ``nic_name``
-    Optional. The name of the network interface to use for the VM. If not specified, the Azure resource plugin will allocate a network interface.
-  ``subnet_name``
-    Optional. The name of the subnet to use for the VM. If not specified, the Azure resource plugin will allocate a subnet.
-  ``public_ip_needed``
-    Optional. If specified with the value True, the Azure resource plugin will allocate a public IP address for the VM.
-
 
 Collecting Resource Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
