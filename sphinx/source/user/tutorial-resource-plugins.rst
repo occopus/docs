@@ -470,56 +470,74 @@ You can download the example as `tutorial.examples.nova-ping <../../examples/nov
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
-OCCI-Helloworld
-~~~~~~~~~~~~~~~
+Azure-Helloworld
+~~~~~~~~~~~~~~~~
+
 This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
 
- - creating a node with basic contextualisation
- - using the occi resource handler
+- creating a node with basic contextualisation
+- using the azure resource handler
 
 **Prerequisites**
 
- - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
- - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
- - properly installed occi command-line client utility (occi command)
+- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
+- resource group name inside Azure
+- location to use inside Azure
+- virtual machine specifications (size, publisher, offer, sku and version)
 
 **Download**
 
-You can download the example as `tutorial.examples.occi-helloworld <../../examples/occi-helloworld.tgz>`_ .
+You can download the example as `tutorial.examples.azure-helloworld <../../examples/azure-helloworld.tgz>`_ .
 
 **Steps**
 
-#. Edit ``nodes/node_definitions.yaml``. For ``occi_helloworld_node`` set the followings in its ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. For ``azure_helloworld_node`` set the followings in its ``resource`` section:
 
-   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
-   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
-   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
-   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
-   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
+   - ``resource_group`` must contain the name of the resource group to allocate resources in.
+   - ``location`` is the name of the location (region) to use.
+   - ``vm_size`` is the size of the VM to allocate.
+   - ``publisher`` is the name of the publisher of the image to use.
+   - ``offer`` is the offer of the image to use.
+   - ``sku`` is the sku of the image to use.
+   - ``version`` is the version of the image to use.
+   - ``username`` the name of the admin user to create.
+   - ``password`` the password to set for thr admin user.
+   - ``public_ip_needed`` optional, when set to True, a public IP is allocated for the resource.
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at `https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate`. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code::
 
-     'node_def:occi_helloworld_node':
+     'node_def:azure_helloworld_node':
          -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
+           resource:
+               type: azure
+               endpoint: https://management.azure.com
+               resource_group: replace_with_resource_group_name
+               location : replace_with_location
+               vm_size: replace_with_vm_size
+               publisher : replace_with_publisher_name
+               offer : replace_with_offer
+               sku : replace_with_sku
+               version : replace_with_version
+               username : replace_with_admin_username
+               password : replace_with_admin_password
+               # Optional - Existing VNet's name to use
+               #vnet_name: replace_with_virtual_network_name
+               # Optional - Existing NIC's name to use
+               #nic_name: replace_with_nic_name
+               # Optional - Subnet name
+               #subnet_name: replace_with_subnet_name
+               # Optional - Set to True if public IP is needed
+               #public_ip_needed : True
 
-#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``occi_helloworld_node`` node into the database.
+#. Load the node definition for ``azure_helloworld_node`` node into the database.
 
    .. important::
 
@@ -533,7 +551,7 @@ You can download the example as `tutorial.examples.occi-helloworld <../../exampl
 
    .. code::
 
-      occopus-build infra-occi-helloworld.yaml
+      occopus-build infra-azure-helloworld.yaml
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
@@ -541,7 +559,7 @@ You can download the example as `tutorial.examples.occi-helloworld <../../exampl
 
       List of nodes/ip addresses:
       helloworld:
-          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+          aaa.bbb.ccc.ddd (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       14032858-d628-40a2-b611-71381bd463fa
 
 #. Check the result on your virtual machine.
@@ -558,72 +576,99 @@ You can download the example as `tutorial.examples.occi-helloworld <../../exampl
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-OCCI-Ping
-~~~~~~~~~
+Azure-Ping
+~~~~~~~~~~
+
 This tutorial builds an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
 
- - creating two nodes with dependencies (i.e. ordering of deployment)
- - querying a node's ip address and passing the address to another
- - using the occi resource handler
+- creating two nodes with dependencies (i.e. ordering of deployment)
+- querying a node's ip address and passing the address to another
+- using the azure resource handler
 
 **Prerequisites**
 
- - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
- - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
- - properly installed occi command-line client utility (occi command)
+- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
+- resource group name inside Azure
+- location to use inside Azure
+- virtual machine specifications (size, publisher, offer, sku and version)
 
 **Download**
 
-You can download the example as `tutorial.examples.occi-ping <../../examples/occi-ping.tgz>`_ .
+You can download the example as `tutorial.examples.azure-ping <../../examples/azure-ping.tgz>`_ .
 
 **Steps**
 
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in their ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``azure_ping_receiver_node`` and for ``azure_ping_sender_node`` set the followings in their ``resource`` section:
 
-   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
-   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
-   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
-   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
-   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
+   - ``resource_group`` must contain the name of the resource group to allocate resources in.
+   - ``location`` is the name of the location (region) to use.
+   - ``vm_size`` is the size of the VM to allocate.
+   - ``publisher`` is the name of the publisher of the image to use.
+   - ``offer`` is the offer of the image to use.
+   - ``sku`` is the sku of the image to use.
+   - ``version`` is the version of the image to use.
+   - ``username`` the name of the admin user to create.
+   - ``password`` the password to set for thr admin user.
+   - ``public_ip_needed`` optional, when set to True, a public IP is allocated for the resource.
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at `https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate`. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code::
 
-     'node_def:occi_ping_receiver_node':
-         -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
-             ...
-     'node_def:occi_ping_sender_node':
-         -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
-             ...
+     'node_def:azure_ping_receiver_node':
+	 -
+	     resource:
+             type: azure
+             endpoint: https://management.azure.com
+             resource_group: replace_with_resource_group_name
+             location : replace_with_location
+             vm_size: replace_with_vm_size
+             publisher : replace_with_publisher_name
+             offer : replace_with_offer
+             sku : replace_with_sku
+             version : replace_with_version
+             username : replace_with_admin_username
+             password : replace_with_admin_password
+             # Optional - Existing VNet's name to use
+             #vnet_name: replace_with_virtual_network_name
+             # Optional - Existing NIC's name to use
+             #nic_name: replace_with_nic_name
+             # Optional - Subnet name
+             #subnet_name: replace_with_subnet_name
+             # Optional - Set to True if public IP is needed
+             #public_ip_needed : True
+           ...
+     'node_def:azure_ping_sender_node':
+	 -
+	     resource:
+             type: azure
+             endpoint: https://management.azure.com
+             resource_group: replace_with_resource_group_name
+             location : replace_with_location
+             vm_size: replace_with_vm_size
+             publisher : replace_with_publisher_name
+             offer : replace_with_offer
+             sku : replace_with_sku
+             version : replace_with_version
+             username : replace_with_admin_username
+             password : replace_with_admin_password
+             # Optional - Existing VNet's name to use
+             #vnet_name: replace_with_virtual_network_name
+             # Optional - Existing NIC's name to use
+             #nic_name: replace_with_nic_name
+             # Optional - Subnet name
+             #subnet_name: replace_with_subnet_name
+             # Optional - Set to True if public IP is needed
+             #public_ip_needed : True
 
-#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-
-#. Load the node definition for ``occi_ping_receiver_node`` and ``occi_ping_sender_node`` nodes into the database.
+#. Load the node definition for ``azure_ping_receiver_node`` and ``azure_ping_sender_node`` nodes into the database.
 
    .. important::
 
@@ -637,7 +682,7 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
 
    .. code::
 
-      occopus-build infra-occi-ping.yaml
+      occopus-build infra-azure-ping.yaml
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
@@ -649,212 +694,6 @@ You can download the example as `tutorial.examples.occi-ping <../../examples/occ
       ping-sender:
           192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
-      30f566d1-9945-42be-b603-795d604b362f
-
-#. Check the result on your virtual machine.
-
-   .. code::
-
-      ssh ...
-      # cat /tmp/message.txt
-      Hello World! I am the sender node created by Occopus.
-      # cat /tmp/ping-result.txt
-      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
-      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
-
-      --- 192.168.xxx.xxx ping statistics ---
-      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
-      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
-
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
-
-   .. code::
-
-      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
-
-CloudBroker-Helloworld
-~~~~~~~~~~~~~~~~~~~~~~
-This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
-
-**Features**
-
- - creating a node with basic contextualisation
- - using the cloudbroker resource handler
-
-**Prerequisites**
-
- - accessing a CloudBroker Platform instance (URL, email and password)
- - Deployment, Instance type properly registered on the CloudBroker platform
-
-**Download**
-
-You can download the example as `tutorial.examples.cloudbroker-helloworld <../../examples/cloudbroker-helloworld.tgz>`_ .
-
-**Steps**
-
-#. Edit ``nodes/node_definitions.yaml``. For ``cloudbroker_helloworld_node`` set the followings in its ``resource`` section:
-
-   - ``endpoint`` is the url of the CloudBroker REST API interface (e.g. `https://cola-prototype.cloudbroker.com`).
-   - ``deployment_id`` is the id of a preregistered deployment in CloudBroker referring to a cloud, image, region, etc. Make sure the image contains a base os (preferably Ubuntu) installation with cloud-init support! The id is the UUID of the deployment which can be seen in the address bar of your browser when inspecting the details of the deployment.
-   - ``instance_type_id`` is the id of a preregistered instance type in CloudBroker referring to the capacity of the virtual machine to be deployed. The id is the UUID of the instance type which can be seen in the address bar of your browser when inspecting the details of the instance type.
-   - ``key_pair_id`` is the id of a preregistered ssh public key in CloudBroker which will be deployed on the virtual machine. The id is the UUID of the key pair which can be seen in the address bar of your browser when inspecting the details of the key pair.
-   - ``opened_port`` is one or more ports to be opened to the world. This is a string containing numbers separated by comma.
-
-   .. important::
-
-      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code::
-
-      ...
-      resource:
-	type: cloudbroker
-        endpoint: replace_with_endpoint_of_cloudbroker_interface
-        description:
-          deployment_id: replace_with_deployment_id
-          instance_type_id: replace_with_instance_type_id
-          key_pair_id: replace_with_keypair_id
-          opened_port: replace_with_list_of_ports_separated_with_comma
-      contextualisation:
-      ...
-
-#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
-
-#. Load the node definition for ``cloudbroker_helloworld_node`` node into the database.
-
-   .. important::
-
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
-   .. code::
-
-      occopus-import nodes/node_definitions.yaml
-
-#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
-
-   .. code::
-
-      occopus-build infra-cloudbroker-helloworld.yaml
-
-#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
-
-   .. code::
-
-      List of nodes/ip addresses:
-      helloworld:
-        192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-      14032858-d628-40a2-b611-71381bd463fa
-
-#. Check the result on your virtual machine.
-
-   .. code::
-
-      ssh ...
-      # cat /tmp/helloworld.txt
-      Hello World! I have been created by Occopus
-
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
-
-   .. code::
-
-      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
-
-CloudBroker-Ping
-~~~~~~~~~~~~~~~~
-This tutorial sets up an infrastructure containing two nodes on the CloudBroker Platform. The ping-sender node will
-ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
-
-**Features**
-
- - creating two nodes with dependencies (i.e. ordering of deployment)
- - querying a node's ip address and passing the address to another
- - using the cloudbroker resource handler
-
-**Prerequisites**
-
- - accessing a CloudBroker Platform instance (URL, username and password)
- - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
-
-**Download**
-
-You can download the example as `tutorial.examples.cloudbroker-ping <../../examples/cloudbroker-ping.tgz>`_ .
-
-**Steps**
-
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``cloudbroker_ping_receiver_node`` and for ``cloudbroker_ping_sender_node`` set the followings in their ``resource`` section:
-
-   - ``endpoint`` is the url of the CloudBroker REST API interface (e.g. `https://cola-prototype.cloudbroker.com`).
-   - ``deployment_id`` is the id of a preregistered deployment in CloudBroker referring to a cloud, image, region, etc. Make sure the image contains a base os (preferably Ubuntu) installation with cloud-init support! The id is the UUID of the deployment which can be seen in the address bar of your browser when inspecting the details of the deployment.
-   - ``instance_type_id`` is the id of a preregistered instance type in CloudBroker referring to the capacity of the virtual machine to be deployed. The id is the UUID of the instance type which can be seen in the address bar of your browser when inspecting the details of the instance type.
-   - ``key_pair_id`` is the id of a preregistered ssh public key in CloudBroker which will be deployed on the virtual machine. The id is the UUID of the key pair which can be seen in the address bar of your browser when inspecting the details of the key pair.
-   - ``opened_port`` is one or more ports to be opened to the world. This is a string containing numbers separated by comma.
-
-   .. important::
-
-      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code::
-
-      'node_def:cloudbroker_ping_receiver_node':
-        -
-          resource:
-            type: cloudbroker
-            endpoint: replace_with_endpoint_of_cloudbroker_interface
-            description:
-              deployment_id: replace_with_deployment_id
-              instance_type_id: replace_with_instance_type_id
-              key_pair_id: replace_with_keypair_id
-              opened_port: replace_with_list_of_ports_separated_with_comma
-          contextualisation:
-            type: cloudinit
-            context_template: !yaml_import
-              url: file://cloud_init_ping_receiver.yaml
-      'node_def:cloudbroker_ping_sender_node':
-        -
-          resource:
-            type: cloudbroker
-            endpoint: replace_with_endpoint_of_cloudbroker_interface
-            description:
-              deployment_id: replace_with_deployment_id
-              instance_type_id: replace_with_instance_type_id
-              key_pair_id: replace_with_keypair_id
-              opened_port: replace_with_list_of_ports_separated_with_comma
-          contextualisation:
-            type: cloudinit
-            context_template: !yaml_import
-              url: file://cloud_init_ping_sender.yaml
-
-#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
-
-#. Load the node definition for ``cloudbroker_ping_receiver_node`` and ``cloudbroker_ping_sender_node`` node into the database.
-
-   .. important::
-
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
-   .. code::
-
-      occopus-import nodes/node_definitions.yaml
-
-#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
-
-   .. code::
-
-      occopus-build infra-cloudbroker-ping.yaml
-
-#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
-
-   .. code::
-
-      List of nodes/ip addresses:
-      ping-receiver:
-        192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping-sender:
-        192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
       30f566d1-9945-42be-b603-795d604b362f
 
 #. Check the result on your virtual machine.
@@ -1316,251 +1155,415 @@ You can download the example as `tutorial.examples.cloudsigma-ping <../../exampl
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
-Azure-Helloworld
+CloudBroker-Helloworld
+~~~~~~~~~~~~~~~~~~~~~~
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+
+**Features**
+
+ - creating a node with basic contextualisation
+ - using the cloudbroker resource handler
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, email and password)
+ - Deployment, Instance type properly registered on the CloudBroker platform
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-helloworld <../../examples/cloudbroker-helloworld.tgz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. For ``cloudbroker_helloworld_node`` set the followings in its ``resource`` section:
+
+   - ``endpoint`` is the url of the CloudBroker REST API interface (e.g. `https://cola-prototype.cloudbroker.com`).
+   - ``deployment_id`` is the id of a preregistered deployment in CloudBroker referring to a cloud, image, region, etc. Make sure the image contains a base os (preferably Ubuntu) installation with cloud-init support! The id is the UUID of the deployment which can be seen in the address bar of your browser when inspecting the details of the deployment.
+   - ``instance_type_id`` is the id of a preregistered instance type in CloudBroker referring to the capacity of the virtual machine to be deployed. The id is the UUID of the instance type which can be seen in the address bar of your browser when inspecting the details of the instance type.
+   - ``key_pair_id`` is the id of a preregistered ssh public key in CloudBroker which will be deployed on the virtual machine. The id is the UUID of the key pair which can be seen in the address bar of your browser when inspecting the details of the key pair.
+   - ``opened_port`` is one or more ports to be opened to the world. This is a string containing numbers separated by comma.
+
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code::
+
+      ...
+      resource:
+	type: cloudbroker
+        endpoint: replace_with_endpoint_of_cloudbroker_interface
+        description:
+          deployment_id: replace_with_deployment_id
+          instance_type_id: replace_with_instance_type_id
+          key_pair_id: replace_with_keypair_id
+          opened_port: replace_with_list_of_ports_separated_with_comma
+      contextualisation:
+      ...
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudbroker_helloworld_node`` node into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudbroker-helloworld.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      helloworld:
+        192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on your virtual machine.
+
+   .. code::
+
+      ssh ...
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+CloudBroker-Ping
+~~~~~~~~~~~~~~~~
+This tutorial sets up an infrastructure containing two nodes on the CloudBroker Platform. The ping-sender node will
+ping the ping-receiver node. The node will store the outcome of ping in ``/tmp`` directory.
+
+**Features**
+
+ - creating two nodes with dependencies (i.e. ordering of deployment)
+ - querying a node's ip address and passing the address to another
+ - using the cloudbroker resource handler
+
+**Prerequisites**
+
+ - accessing a CloudBroker Platform instance (URL, username and password)
+ - Software, Executabe, Resource, Region and Instance type properly registered on the CloudBroker platform
+
+**Download**
+
+You can download the example as `tutorial.examples.cloudbroker-ping <../../examples/cloudbroker-ping.tgz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``cloudbroker_ping_receiver_node`` and for ``cloudbroker_ping_sender_node`` set the followings in their ``resource`` section:
+
+   - ``endpoint`` is the url of the CloudBroker REST API interface (e.g. `https://cola-prototype.cloudbroker.com`).
+   - ``deployment_id`` is the id of a preregistered deployment in CloudBroker referring to a cloud, image, region, etc. Make sure the image contains a base os (preferably Ubuntu) installation with cloud-init support! The id is the UUID of the deployment which can be seen in the address bar of your browser when inspecting the details of the deployment.
+   - ``instance_type_id`` is the id of a preregistered instance type in CloudBroker referring to the capacity of the virtual machine to be deployed. The id is the UUID of the instance type which can be seen in the address bar of your browser when inspecting the details of the instance type.
+   - ``key_pair_id`` is the id of a preregistered ssh public key in CloudBroker which will be deployed on the virtual machine. The id is the UUID of the key pair which can be seen in the address bar of your browser when inspecting the details of the key pair.
+   - ``opened_port`` is one or more ports to be opened to the world. This is a string containing numbers separated by comma.
+
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code::
+
+      'node_def:cloudbroker_ping_receiver_node':
+        -
+          resource:
+            type: cloudbroker
+            endpoint: replace_with_endpoint_of_cloudbroker_interface
+            description:
+              deployment_id: replace_with_deployment_id
+              instance_type_id: replace_with_instance_type_id
+              key_pair_id: replace_with_keypair_id
+              opened_port: replace_with_list_of_ports_separated_with_comma
+          contextualisation:
+            type: cloudinit
+            context_template: !yaml_import
+              url: file://cloud_init_ping_receiver.yaml
+      'node_def:cloudbroker_ping_sender_node':
+        -
+          resource:
+            type: cloudbroker
+            endpoint: replace_with_endpoint_of_cloudbroker_interface
+            description:
+              deployment_id: replace_with_deployment_id
+              instance_type_id: replace_with_instance_type_id
+              key_pair_id: replace_with_keypair_id
+              opened_port: replace_with_list_of_ports_separated_with_comma
+          contextualisation:
+            type: cloudinit
+            context_template: !yaml_import
+              url: file://cloud_init_ping_sender.yaml
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your ``email`` and ``password`` in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``cloudbroker_ping_receiver_node`` and ``cloudbroker_ping_sender_node`` node into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code::
+
+      occopus-build infra-cloudbroker-ping.yaml
+
+#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code::
+
+      List of nodes/ip addresses:
+      ping-receiver:
+        192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping-sender:
+        192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on your virtual machine.
+
+   .. code::
+
+      ssh ...
+      # cat /tmp/message.txt
+      Hello World! I am the sender node created by Occopus.
+      # cat /tmp/ping-result.txt
+      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+
+      --- 192.168.xxx.xxx ping statistics ---
+      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code::
+
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+
+OCCI-Helloworld
 ~~~~~~~~~~~~~~~
 This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
 
 **Features**
 
-- creating a node with basic contextualisation
-- using the azure resource handler
+ - creating a node with basic contextualisation
+ - using the occi resource handler
 
 **Prerequisites**
 
-- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
-- resource group name inside Azure
-- location to use inside Azure
-- virtual machine specifications (size, publisher, offer, sku and version)
+ - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
+ - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
+ - properly installed occi command-line client utility (occi command)
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-helloworld <../../examples/azure-helloworld.tgz>`_ .
+You can download the example as `tutorial.examples.occi-helloworld <../../examples/occi-helloworld.tgz>`_ .
 
 **Steps**
 
-#. Edit ``nodes/node_definitions.yaml``. For ``azure_helloworld_node`` set the followings in its ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. For ``occi_helloworld_node`` set the followings in its ``resource`` section:
 
- - ``resource_group`` must contain the name of the resource group to allocate resources in.
- - ``location`` is the name of the location (region) to use.
- - ``vm_size`` is the size of the VM to allocate.
- - ``publisher`` is the name of the publisher of the image to use.
- - ``offer`` is the offer of the image to use.
- - ``sku`` is the sku of the image to use.
- - ``version`` is the version of the image to use.
- - ``username`` the name of the admin user to create.
- - ``password`` the password to set for thr admin user.
- - ``public_ip_needed`` optional, when set to True, a public IP is allocated for the resource.
+   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
+   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
+   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
+   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
+   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
 
- .. important::
+   .. important::
 
-    You can get help on collecting identifiers for the resources section at `https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate`. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
- .. code::
+   .. code::
 
-   'node_def:azure_helloworld_node':
-       -
-           resource:
-               type: azure
-               endpoint: https://management.azure.com
-               resource_group: replace_with_resource_group_name
-               location : replace_with_location
-               vm_size: replace_with_vm_size
-               publisher : replace_with_publisher_name
-               offer : replace_with_offer
-               sku : replace_with_sku
-               version : replace_with_version
-               username : replace_with_admin_username
-               password : replace_with_admin_password
-               # Optional - Existing VNet's name to use
-               #vnet_name: replace_with_virtual_network_name
-               # Optional - Existing NIC's name to use
-               #nic_name: replace_with_nic_name
-               # Optional - Subnet name
-               #subnet_name: replace_with_subnet_name
-               # Optional - Set to True if public IP is needed
-               #public_ip_needed : True
+     'node_def:occi_helloworld_node':
+         -
+             resource:
+                 type: occi
+                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
+                 os_tpl: replace_with_occi_id_from_egi_appdb
+                 resource_tpl: replace_with_template_id_from_egi_appdb
+                 link:
+                     -
+                         replace_with_public_network_identifier_or_remove
+                 public_key: replace_with_path_to_your_ssh_public_key
 
-#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``azure_helloworld_node`` node into the database.
+#. Load the node definition for ``occi_helloworld_node`` node into the database.
 
- .. important::
+   .. important::
 
-    Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
 
- .. code::
+   .. code::
 
-    occopus-import nodes/node_definitions.yaml
+      occopus-import nodes/node_definitions.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
 
- .. code::
+   .. code::
 
-    occopus-build infra-azure-helloworld.yaml
+      occopus-build infra-occi-helloworld.yaml
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
- .. code::
+   .. code::
 
-    List of nodes/ip addresses:
-    helloworld:
-        aaa.bbb.ccc.ddd (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-    14032858-d628-40a2-b611-71381bd463fa
+      List of nodes/ip addresses:
+      helloworld:
+          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
 
 #. Check the result on your virtual machine.
 
- .. code::
+   .. code::
 
-    ssh ...
-    # cat /tmp/helloworld.txt
-    Hello World! I have been created by Occopus
+      ssh ...
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
- .. code::
+   .. code::
 
-    occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-Azure-Ping
+OCCI-Ping
 ~~~~~~~~~
 This tutorial builds an infrastructure containing two nodes. The ping-sender node will
 ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
 
 **Features**
 
-- creating two nodes with dependencies (i.e. ordering of deployment)
-- querying a node's ip address and passing the address to another
-- using the azure resource handler
+ - creating two nodes with dependencies (i.e. ordering of deployment)
+ - querying a node's ip address and passing the address to another
+ - using the occi resource handler
 
 **Prerequisites**
 
-- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
-- resource group name inside Azure
-- location to use inside Azure
-- virtual machine specifications (size, publisher, offer, sku and version)
+ - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
+ - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
+ - properly installed occi command-line client utility (occi command)
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-ping <../../examples/azure-ping.tgz>`_ .
+You can download the example as `tutorial.examples.occi-ping <../../examples/occi-ping.tgz>`_ .
 
 **Steps**
 
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``azure_ping_receiver_node`` and for ``azure_ping_sender_node`` set the followings in their ``resource`` section:
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in their ``resource`` section:
 
-- ``resource_group`` must contain the name of the resource group to allocate resources in.
-- ``location`` is the name of the location (region) to use.
-- ``vm_size`` is the size of the VM to allocate.
-- ``publisher`` is the name of the publisher of the image to use.
-- ``offer`` is the offer of the image to use.
-- ``sku`` is the sku of the image to use.
-- ``version`` is the version of the image to use.
-- ``username`` the name of the admin user to create.
-- ``password`` the password to set for thr admin user.
-- ``public_ip_needed`` optional, when set to True, a public IP is allocated for the resource.
+   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
+   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
+   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
+   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
+   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
 
- .. important::
+   .. important::
 
-    You can get help on collecting identifiers for the resources section at `https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate`. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`_ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
- .. code::
+   .. code::
 
-   'node_def:azure_ping_receiver_node':
-	 -
-	     resource:
-             type: azure
-             endpoint: https://management.azure.com
-             resource_group: replace_with_resource_group_name
-             location : replace_with_location
-             vm_size: replace_with_vm_size
-             publisher : replace_with_publisher_name
-             offer : replace_with_offer
-             sku : replace_with_sku
-             version : replace_with_version
-             username : replace_with_admin_username
-             password : replace_with_admin_password
-             # Optional - Existing VNet's name to use
-             #vnet_name: replace_with_virtual_network_name
-             # Optional - Existing NIC's name to use
-             #nic_name: replace_with_nic_name
-             # Optional - Subnet name
-             #subnet_name: replace_with_subnet_name
-             # Optional - Set to True if public IP is needed
-             #public_ip_needed : True
-           ...
-   'node_def:azure_ping_sender_node':
-	 -
-	     resource:
-             type: azure
-             endpoint: https://management.azure.com
-             resource_group: replace_with_resource_group_name
-             location : replace_with_location
-             vm_size: replace_with_vm_size
-             publisher : replace_with_publisher_name
-             offer : replace_with_offer
-             sku : replace_with_sku
-             version : replace_with_version
-             username : replace_with_admin_username
-             password : replace_with_admin_password
-             # Optional - Existing VNet's name to use
-             #vnet_name: replace_with_virtual_network_name
-             # Optional - Existing NIC's name to use
-             #nic_name: replace_with_nic_name
-             # Optional - Subnet name
-             #subnet_name: replace_with_subnet_name
-             # Optional - Set to True if public IP is needed
-             #public_ip_needed : True
+     'node_def:occi_ping_receiver_node':
+         -
+             resource:
+                 type: occi
+                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
+                 os_tpl: replace_with_occi_id_from_egi_appdb
+                 resource_tpl: replace_with_template_id_from_egi_appdb
+                 link:
+                     -
+                         replace_with_public_network_identifier_or_remove
+                 public_key: replace_with_path_to_your_ssh_public_key
+             ...
+     'node_def:occi_ping_sender_node':
+         -
+             resource:
+                 type: occi
+                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
+                 os_tpl: replace_with_occi_id_from_egi_appdb
+                 resource_tpl: replace_with_template_id_from_egi_appdb
+                 link:
+                     -
+                         replace_with_public_network_identifier_or_remove
+                 public_key: replace_with_path_to_your_ssh_public_key
+             ...
 
-#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
+#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``azure_ping_receiver_node`` and ``azure_ping_sender_node`` nodes into the database.
 
- .. important::
+#. Load the node definition for ``occi_ping_receiver_node`` and ``occi_ping_sender_node`` nodes into the database.
 
-    Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+   .. important::
 
- .. code::
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
 
-    occopus-import nodes/node_definitions.yaml
+   .. code::
+
+      occopus-import nodes/node_definitions.yaml
 
 #. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
 
- .. code::
+   .. code::
 
-    occopus-build infra-azure-ping.yaml
+      occopus-build infra-occi-ping.yaml
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
- .. code::
+   .. code::
 
-    List of ip addresses:
-    ping-receiver:
-        192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-    ping-sender:
-        192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+      List of ip addresses:
+      ping-receiver:
+          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      ping-sender:
+          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
 
-    30f566d1-9945-42be-b603-795d604b362f
+      30f566d1-9945-42be-b603-795d604b362f
 
 #. Check the result on your virtual machine.
 
- .. code::
+   .. code::
 
-    ssh ...
-    # cat /tmp/message.txt
-    Hello World! I am the sender node created by Occopus.
-    # cat /tmp/ping-result.txt
-    PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
-    64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
-    64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
-    64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
-    64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
-    64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
+      ssh ...
+      # cat /tmp/message.txt
+      Hello World! I am the sender node created by Occopus.
+      # cat /tmp/ping-result.txt
+      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
+      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
+      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
 
-    --- 192.168.xxx.xxx ping statistics ---
-    5 packets transmitted, 5 received, 0% packet loss, time 4003ms
-    rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
+      --- 192.168.xxx.xxx ping statistics ---
+      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
+      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
 
- .. code::
+   .. code::
 
-    occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+
