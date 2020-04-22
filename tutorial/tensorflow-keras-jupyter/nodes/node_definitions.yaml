@@ -2,24 +2,25 @@
   -
     resource:
       type: nova
-      endpoint: https://keystone.cloud.garr.it:5000/v3
-      project_id: 126704f687b9473982a77ce411d9bc46
+      endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+      project_id: replace_with_projectid_to_use
       user_domain_name: Default
-      #image_id: c2fb68ba-d9a0-4416-b0bb-38fbe1fdaa82
-      #image_id: 690fae2c-2b7c-4a5b-aefc-d7176141d082
-      image_id: 00f6041f-d6d2-41e4-bb12-e83fd0bddae3
-      network_id: fe0de0e1-cf81-4d6f-b1f1-f1ecc42d07bb
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      network_id: replace_with_id_of_network_on_your_target_cloud
       server_name: occo-jupyter-ML-{{cut(infra_id,0,4)}}
-      flavor_name: 3
-      key_name: jozsefkovacs
-      security_groups: [ ssh, jupyter ]
-      floating_ip: yes
+      flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+      key_name: replace_with_name_of_keypair_or_remove
+      security_groups:
+        -
+          replace_with_security_group_to_add_or_remove_section 
+      floating_ip: add_yes_if_you_need_floating_ip_or_remove
+      floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
       type: cloudinit
       context_template: !yaml_import
         url: file://cloud_init_jupyter_server.yaml
-#    health_check:
-#      ports:
-#        - 8888
-#      timeout: 1200
+    health_check:
+      ports:
+        - 8888
+      timeout: 1200
 

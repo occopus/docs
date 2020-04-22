@@ -44,6 +44,16 @@ write_files:
     echo "==> Configure JUPYTER NOTEBOOK finished."
   permissions: '755'
 
+- path: /bin/jupyter-copy-examples.sh
+  content: |
+    #!/bin/bash
+    echo "==> Copy Jupyter EXAMPLES starts."
+    mkdir -p ~/workspace
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorial/tensorflow-keras-jupyter/examples/TF-MNIST-example.ipynb -o ~/workspace/TF-MNIST-example.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorial/tensorflow-keras-jupyter/examples/packages.ipynb -o ~/workspace/packages.ipynb
+    echo "==> Copy Jupyter EXAMPLES finished."
+  permissions: '755'
+
 - path: /bin/jupyter-launch.sh
   content: |
     #!/bin/bash
@@ -61,5 +71,6 @@ runcmd:
 - /bin/jupyter-add-base-tools.sh
 - su - {{variables.username_os}} -c /bin/jupyter-install.sh
 - su - {{variables.username_os}} -c /bin/jupyter-configure.sh
+- su - {{variables.username_os}} -c /bin/jupyter-copy-examples.sh
 - su - {{variables.username_os}} -c /bin/jupyter-launch.sh
 - echo "==> DEPLOYMENT finished."
