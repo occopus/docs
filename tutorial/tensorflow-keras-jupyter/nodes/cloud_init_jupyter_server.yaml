@@ -1,77 +1,65 @@
 #cloud-config
 
 write_files:
-
-############################
-# SCRIPT TO CREATE OCCOUSER
-############################
-- path: /bin/create-user.sh
+- path: /bin/jupyter-add-user.sh
   content: |
     #!/bin/bash
-    echo "Creating OCCOUSER starts."
-    adduser --disabled-password --gecos "" occouser
-    echo "Creating OCCOUSER finished."
+    export USR='{{variables.username_os}}'
+    echo "==> Creating user \"$USR\" starts."
+    adduser --disabled-password --gecos "" $USR
+    echo "==> Creating user \"$USR\" finished."
   permissions: '755'
 
-############################
-# SCRIPT TO INSTALL ANACONDA
-############################
-- path: /bin/install-anaconda.sh
+- path: /bin/jupyter-add-base-tools.sh
   content: |
     #!/bin/bash
-    echo "Install ANACONDA starts."
-    wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh  -O /home/occouser/Anaconda3-5.0.1-Linux-x86_64.sh
-    su - occouser -c "bash /home/occouser/Anaconda3-5.0.1-Linux-x86_64.sh -b"
-
-    su - occouser -c "echo export PATH="/home/occouser/anaconda3/bin:$PATH" >> /home/occouser/.profile"
-    #source activate profile
-
-    su - occouser -c "conda update conda -y"
-    su - occouser -c "conda update anaconda -y"
-
-    su - occouser -c "conda install -c conda-forge jupyter_contrib_nbextensions -y"
-    su - occouser -c "jupyter contrib nbextension install --user"
-
-    su - occouser -c "conda install tensorflow -y"
-    su - occouser -c "conda install gensim -y"
-    su - occouser -c "conda install keras -y"
-    #conda activate envname
-    echo "Install ANACONDA starts."
+    echo "==> Installing base tools (pip,venv) starts."
+    apt-get -y update
+    apt-get -y upgrade
+    apt-get install -y python3-pip
+    apt-get install -y python3-venv
+    echo "==> Installing base tools (pip,venv) finished."
   permissions: '755'
 
-##################################
-# SCRIPT TO SETUP JUPYTER NOTEBOOK
-##################################
-- path: /bin/jupyter-config.sh
+- path: /bin/jupyter-install.sh
   content: |
     #!/bin/bash
-    echo "Configure JUPYTER NOTEBOOK starts."
-    su - occouser -c "~/anaconda3/bin/jupyter notebook --generate-config"
-    echo "c = get_config()" >> /home/occouser/.jupyter/jupyter_notebook_config.py
-    echo "c.NotebookApp.password = u'sha1:3ba4370be377:24644d24dcb81bcbd346114fcf9095ad7c1dd0ad'"  >> /home/occouser/.jupyter/jupyter_notebook_config.py
-    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
- 
-    su - occouser -c "mkdir tensorflow-demo"   
-    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/mnist1.png -O /home/occouser/tensorflow-demo/mnist1.png "
-    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/mnist3.png -O /home/occouser/tensorflow-demo/mnist3.png "
-    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/mnist4.png -O /home/occouser/tensorflow-demo/mnist4.png "
-    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/sztaki_logo_angol_kek.png -O /home/occouser/tensorflow-demo/sztaki_logo_angol_kek.png"
-    su - occouser -c "wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/requirements.txt -O /home/occouser/tensorflow-demo/requirements.txt"
-    su - occouser -c " wget https://gitlab.com/lpds-public/occopus-ml/raw/master/python-keras-tensorflow-stack/TensorFlowDemoWithPictures.ipynb -O /home/occouser/tensorflow-demo/TensorFlowDemoWithPictures.ipynb"
-    su - occouser -c "/home/occouser/anaconda3/bin/conda config --add channels conda-forge "
-    su - occouser -c "/home/occouser/anaconda3/bin/conda create -n tensorflow --file /home/occouser/tensorflow-demo/requirements.txt -y"
-    su - occouser -c "/home/occouser/anaconda3/bin/conda init bash"
-    su - occouser -c "/home/occouser/anaconda3/bin/conda activate tensorflow"
-    su - occouser -c "~/anaconda3/bin/jupyter notebook --ip=$masterip --port=8888 >> /home/occouser/jupyter.log &"
-    echo "Configure JUPYTER NOTEBOOK finished."
+    echo "==> Install Jupyter, Tensorflow, Keras and MP lib components starts."
+    python3 -m venv jupyter-virtenv
+    source jupyter-virtenv/bin/activate
+    pip install --upgrade pip
+    pip install wheel
+    pip install tensorflow numpy matplotlib Dask scikit-image keras Imgaug sklearn astropy xarray rasterio geopandas pyproj jupyterlab
+    echo "==> Install Jupyter, Tensorflow, Keras and MP lib components finished."
   permissions: '755'
 
+- path: /bin/jupyter-configure.sh
+  content: |
+    #!/bin/bash
+    echo "==> Configure JUPYTER NOTEBOOK starts."
+    mkdir -p ~/.jupyter
+    echo "c.NotebookApp.quit_button = False" >> ~/.jupyter/jupyter_notebook_config.py 
+    echo "c.NotebookApp.token = ''" >> ~/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.password = '{{variables.pwd_jupyter}}'" >> ~/.jupyter/jupyter_notebook_config.py 
+    echo "==> Configure JUPYTER NOTEBOOK finished."
+  permissions: '755'
+
+- path: /bin/jupyter-launch.sh
+  content: |
+    #!/bin/bash
+    echo "==> Launching jupyter starts."
+    mkdir -p ~/workspace
+    cd ~/workspace
+    source ~/jupyter-virtenv/bin/activate
+    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --config=~/.jupyter/jupyter_notebook_config.py --no-browser 1>~/jupyter.log 2>&1 &
+    echo "==> Launching jupyter finished."
+  permissions: '755'
 
 runcmd:
-#Create USER
-- /bin/create-user.sh
-#Install ANACONDA
-- /bin/install-anaconda.sh
-#Install JUPYTER NOTEBOOK
-- /bin/jupyter-config.sh
-- echo "DEPLOYMENT DONE."
+- echo "==> DEPLOYMENT starts."
+- /bin/jupyter-add-user.sh
+- /bin/jupyter-add-base-tools.sh
+- su - {{variables.username_os}} -c /bin/jupyter-install.sh
+- su - {{variables.username_os}} -c /bin/jupyter-configure.sh
+- su - {{variables.username_os}} -c /bin/jupyter-launch.sh
+- echo "==> DEPLOYMENT finished."

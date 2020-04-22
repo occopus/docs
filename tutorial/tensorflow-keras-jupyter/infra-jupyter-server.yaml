@@ -1,6 +1,10 @@
 infra_name: jupyter-server
 user_id: somebody@somewhere
 
+variables:
+  username_os: jupyter-user 
+  pwd_jupyter: sha1:7ced6bd8578a:81d7f97c216ee57234ecfe5e8aac6c38cbb5da0f
+
 nodes:
   - &M
     name: jupyter-server
