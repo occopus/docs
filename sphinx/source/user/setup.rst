@@ -11,64 +11,31 @@ Installation
 
    We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 18.04** version.
  
-
-The steps required to deploy Occopus and its dependencies are described below. Alternatively, 
-
-- you can watch a `video on installing Occopus v1.2 <http://smith.s3.lpds.sztaki.hu/Occopus/occopus_v1.2_installation.mp4>`_ .
-
-- you can execute the commands below by using our installer script (requires sudo privileges!):
-
-  .. code::
-
-     curl -s https://raw.githubusercontent.com/occopus/util/devel/installer.sh | sh 
-
 #. Install a few system-wide packages
 
-   Python version ``2.7`` and two devel libs for dependencies
+   Python ``3.x``, Virtualenv, Redis server for data storage and  SSL devel lib for Chef to work
 
    .. code:: yaml
          
-    sudo apt-get install python python-dev libffi-dev
-
-   Virtualenv version ``12.0.7`` or later. Make *sure* that it is at least version 12. 
-
-   .. code:: yaml
-
-    sudo apt-get install python-virtualenv
-
-   Redis server for Occopus to store persistent data
-
-   .. code:: yaml
-
-    sudo apt-get install redis-server
-
-   SSL development libraries for the Chef connection to work
-
-   .. code:: yaml
-
-    sudo apt-get install libssl-dev
-
-   Mysql client for PyMySQL to work
-
-   .. code:: yaml
-
-    sudo apt-get install mysql-client
+      sudo apt install -y python3-pip
+      sudo apt install -y virtualenv
+      sudo apt install -y redis-server
+      sudo apt install -y libssl-dev
 
 #. Prepare the environment (you may skip this part to have a system-wide installation, not recommended)
 
    .. code:: yaml
 
-    virtualenv occopus          # to create virtualenv called 'occopus'
-    source occopus/bin/activate # to activate virtualenv
-    pip install --upgrade pip   # to make sure the latest pip version
+      virtualenv -p python3 $HOME/occopus
+      source $HOME/occopus/bin/activate
 
 #. Deploy all Occopus packages
 
    .. code:: yaml
+      
+      pip install --no-index --find-links https://pip3.lpds.sztaki.hu/packages OCCO_API
 
-    pip install --find-links http://pip.lpds.sztaki.hu/packages --no-index --trusted-host pip.lpds.sztaki.hu OCCO-API
-
-   Now, all Occopus packages are deployed under your virtualenv ``occopus``. 
+   Now, all Occopus packages are deployed under your virtualenv ``occopus``.
 
 #. Optionally, copy your certs under Occopus if you plan to use VOMS authentication against OCCI or Nova resources
 
