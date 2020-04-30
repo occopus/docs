@@ -21,65 +21,29 @@ Build environment
 Creating the build environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. important::
+
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 18.04** version.
+
 The OCCO packages are intended to be used in ``virtualenv`` under all
 circumstances. This implies that:
 
-    #. There are only a few system-wide packages needed:
+There are only a few system-wide packages needed:
 
-        If you experience any obscure problem during deployment, make sure that
-        these versions are okay:
-        
-         * ``pip`` version ``6.0.8`` or later. Make *sure* that it is at least
-           version 6. Older versions may complain about packages not being Zip
-           files.
-
-           Version ``7`` will complain about ``pip.lpds.sztaki.hu`` not being a
-           trusted host. You can use the ``--trusted-host
-           pip.lpds.sztaki.hu`` switch with ``pip``.
-
-         * ``virtualenv`` version ``12.0.7`` or later. Make *sure* that it is
-           at least version 12. One can use any one of these methods:
-
-            * ``sudo apt-get install python-virtualenv``
-            * ``sudo easy_install virtualenv``
-            * ``sudo pip install --upgrade virtualenv``
-
-         * git
-
-         * Python **2.7**
-
-         These are required for testing, and may be required for deployment
-         too:
-
-         * ``sudo apt-get install redis-server``
-         * ``sudo apt-get install rabbitmq-server``
-
-    #. The following are required *globally* for the MySQL-Wordpress demo to work:
-
-        * ``sudo apt-get install libssl-dev``   # For the Chef connection to work.
-        * ``sudo apt-get install mysql-client`` # For PyMySQL
-
-    #. For the *tests* to work, you need to configure RabbitMQ
-
-        .. code:: bash
-            
-            rabbitmqctl add_user test test
-            rabbitmqctl add_vhost test
-            rabbitmqctl set_permissions -p test test .\* .\* .\*
-
-    #. All packages must declare all of their dependencies explicitly, without
-       relying on implicit dependencies thought to be ubiquitous (e.g.
-       argparse). (Because virtualenv-s are almost empty by default, containing
-       only ``python`` and ``pip``.) Use ``pip freeze`` to make sure that
-       everything is in order.
-
+.. code:: bash
+  
+   sudo apt install -y python3-pip
+   sudo apt install -y virtualenv
+   sudo apt install -y redis-server
+   sudo apt install -y libssl-dev
+     
 Git submodules can be used to clone and manage all repositories at once:
 
 .. code:: bash
 
-    git clone https://github.com/occopus/master.git my-occo-dir --recursive
-    cd my-occo-dir
-    git submodule foreach git checkout devel
+   git clone https://github.com/occopus/master.git github-occo --recursive
+   cd github-occo
+   git submodule foreach git checkout devel
 
 Most scripts included in these components rely on **this exact directory
 structure** (especially testing and documentation dependencies).
@@ -94,14 +58,9 @@ and work correctly.
 
 .. code:: bash
 
-    cd my-occo-dir
+    cd github-occo
     cd api
-
-    # Use this convenience script
     ./reset-env.sh
-    
-    #
-    # This will print the path of the virtualenv; e.g.:
     source env/occo/bin/activate
 
 To try the ``occo-`` commands, go to the Tutorial section of the Users' Guide
@@ -196,11 +155,11 @@ to the index thus:
 
 .. code:: bash
 
-    ssh -lroot c155-10.localcloud
+    ssh ubuntu@192.168.155.11
 
-    cd /opt/pypi-server/packages/
+    cd /opt/packages/
 
-    pip wheel pymongo==2.8        # For example
+    pip download pymongo==2.8        # For example
 
 This will download the new dependency from the community servers and installs
 (caches) it on the internal PyPI server. Locally mirroring and maintaining all
@@ -328,11 +287,11 @@ are omitted.
                  | :mod:`occo.infraprocessor`.
     ===========  =========================================================================
 
-.. table:: **OCCO-CloudHandler**
+.. table:: **OCCO-ResourceHandler**
 
     ===========  ==============================================================
     Depends      OCCO-Util, OCCO-InfoBroker
-    Repository   https://github.com/occopus/cloud-handler.git
+    Repository   https://github.com/occopus/resource-handler.git
     Description  | Backend component of the OCCO system, responsible for
                  | handling specific kinds of clouds. This includes the
                  | generic plugin system, a dummy cloud handler for testing,
@@ -340,11 +299,11 @@ are omitted.
                  | :mod:`occo.cloudhandler`.
     ===========  ==============================================================
 
-.. table:: **OCCO-ServiceComposer**
+.. table:: **OCCO-ConfigManager**
 
     ===========  =================================================================
     Depends      OCCO-Util, OCCO-InfoBroker
-    Repository   https://github.com/occopus/service-composer.git
+    Repository   https://github.com/occopus/config-manager.git
     Description  | Responsible for provisioning, setting up, configuring, etc.
                  | the nodes instantiated by the cloud handler.
     ===========  =================================================================
