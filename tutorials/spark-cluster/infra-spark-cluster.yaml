@@ -1,0 +1,18 @@
+infra_name: spark-cluster
+user_id: somebody@somewhere
+
+nodes:
+  - &M
+    name: spark-master
+    type: spark_master_node
+  - &W
+    name: spark-worker
+    type: spark_worker_node
+    scaling: 
+      min: 2
+      max: 10
+
+dependencies:
+  -
+    connection: [ *W, *M ]
+

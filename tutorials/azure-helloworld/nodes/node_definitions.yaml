@@ -1,0 +1,26 @@
+'node_def:azure_helloworld_node':
+  -
+    resource:
+      type: azure
+      endpoint: https://management.azure.com
+      resource_group: replace_with_resource_group_name
+      location : replace_with_location
+      vm_size: replace_with_vm_size
+      publisher : replace_with_publisher_name
+      offer : replace_with_offer
+      sku : replace_with_sku
+      version : replace_with_version
+      username : replace_with_admin_username
+      password : replace_with_admin_password
+      # Optional - Existing VNet's name to use
+      #vnet_name: replace_with_virtual_network_name
+      # Optional - Existing NIC's name to use
+      #nic_name: replace_with_nic_name
+      # Optional - Subnet name
+      #subnet_name: replace_with_subnet_name
+      # Optional - Set to True if public IP is needed
+      #public_ip_needed : True
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_helloworld.yaml

@@ -1,0 +1,266 @@
+#cloud-config
+
+write_files:
+
+############################
+# SCRIPT TO CREATE SPARKUSER
+############################
+- path: /bin/create-user.sh
+  content: |
+    #!/bin/bash
+    echo "Creating SPARKUSER starts."
+    adduser --disabled-password --gecos "" sparkuser
+    echo "Creating SPARKUSER finished."
+  permissions: '755'
+
+########################
+# SCRIPT TO INSTALL JAVA
+########################
+- path: /bin/spark-install-java.sh
+  content: |
+    #!/bin/bash
+    echo "Install JAVA starts."
+    sudo apt-get update
+    sudo apt-get install default-jdk -y
+    echo "Install JAVA finished."
+  permissions: '755'
+
+############################
+# SCRIPT TO INSTALL ANACONDA
+############################
+- path: /bin/install-anaconda.sh
+  content: |
+    #!/bin/bash
+    echo "Install ANACONDA starts."
+    wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh  -O /home/sparkuser/Anaconda3-5.0.1-Linux-x86_64.sh
+    su - sparkuser -c "bash /home/sparkuser/Anaconda3-5.0.1-Linux-x86_64.sh -b"
+    su - sparkuser -c "echo export PATH=/home/sparkuser/anaconda3/bin:$PATH >> /home/sparkuser/.profile"
+    su - sparkuser -c "echo export PYSPARK_PYTHON=python3 >> /home/sparkuser/.profile"
+    su - sparkuser -c "echo export PYSPARK_DRIVER_PYTHON=ipython3 >> /home/sparkuser/.profile"
+
+    su - sparkuser -c "/home/sparkuser/anaconda3/bin/conda update conda -y"
+    su - sparkuser -c "/home/sparkuser/anaconda3/bin/conda update anaconda -y"
+    su - sparkuser -c "/home/sparkuser/anaconda3/bin/conda install pyspark -y"
+    su - sparkuser -c "/home/sparkuser/anaconda3/bin/conda install -c conda-forge jupyter_contrib_nbextensions -y"
+    su - sparkuser -c "/home/sparkuser/anaconda3/bin/jupyter contrib nbextension install --user"
+    echo "Install ANACONDA finshed."
+  permissions: '755'
+
+##################################
+# SCRIPT TO SETUP JUPYTER NOTEBOOK
+##################################
+- path: /bin/jupyter-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure JUPYTER NOTEBOOK starts."
+    su - sparkuser -c "~/anaconda3/bin/jupyter notebook --generate-config"
+    echo "c = get_config()" >> /home/sparkuser/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.password = u'sha1:3ba4370be377:24644d24dcb81bcbd346114fcf9095ad7c1dd0ad'"  >> /home/sparkuser/.jupyter/jupyter_notebook_config.py
+    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    su - sparkuser -c "~/anaconda3/bin/jupyter notebook --ip=$masterip --port=8888 >> /home/sparkuser/jupyter.log &"
+    echo "Configure JUPYTER NOTEBOOK finished."
+  permissions: '755'
+
+##########################
+# SCRIPT TO INSTALL HADOOP
+##########################
+- path: /bin/hadoop-install-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Install HADOOP starts."
+    wget -nc http://xenia.sote.hu/ftp/mirrors/www.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz -O /home/sparkuser/hadoop-2.9.2.tar.gz
+    tar -xvf /home/sparkuser/hadoop-2.9.2.tar.gz --directory /home/sparkuser
+    mv /home/sparkuser/hadoop-2.9.2 /home/sparkuser/hadoop
+    rm /home/sparkuser/hadoop-2.9.2.tar.gz
+    echo "Install HADOOP finished."
+  permissions: '755'
+
+################################
+# HADOOP CONFIGURATION FILES
+################################
+
+- path: /tmp/hadoop/configs/hdfs-site.xml
+  content: |
+   <configuration>
+    <property>
+     <name>dfs.namenode.http-address</name>
+      <value>HadoopMaster:50070</value>
+    </property>
+    <property>
+      <name>dfs.name.dir</name>
+      <value>/tmp</value>
+      <final>true</final>
+    </property>
+    <property>
+       <name>dfs.permissions</name>
+       <value>false</value>
+    </property>
+    <property>
+      <name>dfs.datanode.du.reserved</name>
+      <value>500000000</value>
+    </property>
+    <property>
+      <name>dfs.hosts.exclude</name>
+      <value>/etc/hadoop/conf/dfs.exclude</value>
+    </property>
+   </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/core-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>fs.default.name</name>
+        <value>hdfs://HadoopMaster:9000</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/webconfigs/web.xml
+  content: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
+      <security-constraint>
+          <web-resource-collection>
+              <web-resource-name>Protected</web-resource-name>
+              <url-pattern>/*</url-pattern>
+          </web-resource-collection>
+          <auth-constraint>
+              <role-name>admin</role-name>
+          </auth-constraint>
+      </security-constraint>
+      <login-config>
+          <auth-method>BASIC</auth-method>
+          <realm-name>realm</realm-name>
+      </login-config>
+    </web-app>
+  permissions: '644'
+
+- path: /tmp/hadoop/webconfigs/jetty-web.xml
+  content: |
+    <Configure class="org.mortbay.jetty.webapp.WebAppContext">
+     <Get name="securityHandler">
+      <Set name="userRealm">
+        <New class="org.mortbay.jetty.security.HashUserRealm">
+          <Set name="name">realm</Set>
+          <Set name="config">/home/sparkuser/hadoop/etc/hadoop/realm.properties</Set>
+        </New>
+      </Set>
+     </Get>
+    </Configure>
+  permissions: '644'
+
+
+################################
+# SCRIPT TO SETUP HADOOP CONFIG
+################################
+- path: /bin/hadoop-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure HADOOP starts."
+    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
+    mv /tmp/hadoop/webconfigs/* /home/sparkuser/hadoop/share/hadoop/hdfs/webapps/hdfs/WEB-INF/.
+    echo "spark: lpds, admin" >> /home/sparkuser/hadoop/etc/hadoop/realm.properties
+    
+    #set JAVA HOME in hadoop env
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >>/home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop-2.9.2" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop-2.9.2/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    
+    #SET HOSTS FILE
+    privateip=`hostname -i`
+    hostname=`hostname -s`
+    echo "$privateip $hostname" >> /etc/hosts
+    
+    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    sed -i 's/HadoopMaster/'$masterip'/g' /home/sparkuser/hadoop/etc/hadoop/core-site.xml
+    sed -i 's/HadoopMaster/'$masterip'/g' /home/sparkuser/hadoop/etc/hadoop/hdfs-site.xml
+    chown -R sparkuser:sparkuser /home/sparkuser/hadoop
+    echo "Configure HADOOP finished."
+  permissions: '755'
+
+
+#######################
+# SCRIPT TO LAUNCH HDFS
+#######################
+- path: /bin/launch-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Launch HADOOP starts."
+    su - sparkuser -c "echo 'Y' | /home/sparkuser/hadoop/bin/hdfs namenode -format hdfs_cluster"
+    su - sparkuser -c "/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode"
+    echo "Launch HADOOP finished."
+  permissions: '755'
+
+
+################################
+# SCRIPT TO INSTALL APACHE SPARK
+################################
+- path: /bin/spark-install-spark.sh
+  content: |
+    echo "Install SPARK starts."
+    wget https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
+    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
+    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    echo "Install SPARK finished."
+  permissions: '755'
+
+
+##############################
+# SCRIPT TO SETUP SPARK CONFIG
+##############################
+- path: /bin/spark-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
+    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    echo "SPARK_MASTER_HOST='$masterip'" >> /home/sparkuser/spark/conf/spark-env.sh
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
+    echo "Configure SPARK ends."
+  permissions: '755'
+
+########################################
+# SCRIPT TO SETUP SECURITY FOR SPARK GUI
+########################################
+- path: /bin/spark-gui-sec.sh
+  content: |
+    #!/bin/bash
+    set -x 
+    echo "Configure SPARK GUI SECURITY starts."
+    wget https://gitlab.com/lpds-public/occopus-ml/raw/master/tutorials/ext_dep/spark-gui-sec.tgz?inline=false -O /home/sparkuser/spark-gui-sec.tgz
+    tar zxvf /home/sparkuser/spark-gui-sec.tgz --directory /home/sparkuser
+    cp /home/sparkuser/spark-gui-sec/basicAuthenticationFilter-0.0.1-SNAPSHOT.jar /home/sparkuser/spark/jars/.
+    rm -r /home/sparkuser/spark-gui-sec*
+    echo "spark.master.rest.enabled    false" >>/home/sparkuser/spark/conf/spark-defaults.conf
+    echo "spark.ui.filters hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter" >> /home/sparkuser/spark/conf/spark-defaults.conf
+    echo "spark.hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter.params username=spark,password=lpds,realm=realm" >> /home/sparkuser/spark/conf/spark-defaults.conf
+    echo "Configure SPARK GUI SECURITY ends."
+  permissions: '755'
+
+  
+runcmd:
+#Create USER
+- /bin/create-user.sh
+#Install JAVA
+- /bin/spark-install-java.sh
+#Install HADOOP
+- /bin/hadoop-install-hadoop.sh
+#Configure HADOOP
+- /bin/hadoop-setup-config.sh
+#Launch HDFS
+- /bin/launch-hadoop.sh
+#Install ANACONDA
+- /bin/install-anaconda.sh
+#Setup JUPYTER NOTEBOOK
+- /bin/jupyter-config.sh
+#Install SPARK
+- /bin/spark-install-spark.sh
+#Setup SPARK
+- /bin/spark-setup-config.sh
+#Setup SPARK GUI SECURITY
+- /bin/spark-gui-sec.sh
+#Launch SPARK
+- su - sparkuser -c /home/sparkuser/spark/sbin/start-master.sh
+- echo "SPARK DEPLOYMENT DONE."

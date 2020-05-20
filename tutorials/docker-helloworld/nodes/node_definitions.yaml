@@ -1,0 +1,14 @@
+'node_def:docker_helloworld_node':
+  -
+    resource:
+      type: docker
+      endpoint: replace_with_your_docker_endpoint
+      origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
+      image: busybox_helloworld
+      tag: latest
+    contextualisation:
+      type: docker
+      env: ["message={{variables.message}}"]
+      command: "sh -c /root/start.sh"
+    health_check:
+      ping: False

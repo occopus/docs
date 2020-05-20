@@ -1,0 +1,366 @@
+#cloud-config
+
+write_files:
+################################
+# HDUSER KEYS
+################################
+- path: /tmp/hduser/id_rsa
+  content: |
+    {{variables.hduser_private_key}}
+  permissions: '600'
+- path: /tmp/hduser/authorized_keys
+  content: |
+    {{variables.hduser_public_key}}
+  permissions: '600'
+
+################################
+# CONSUL FILES
+################################
+- path: /opt/consul/service.json
+  content: |
+    {"service": {"name": "hadoop"}}
+  permissions: '644'
+
+- path: /tmp/consul/consul.service
+  content: |
+    [Unit]
+    Description=consul agent
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul agent -retry-join {{ getip('hadoop-master') }} -data-dir=/tmp/consul -config-file=/opt/consul/service.json -bind=$(hostname --ip-address) -client=$(hostname --ip-address) >>/var/log/consul.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
+- path: /tmp/consul/consul-template-hosts.service
+  content: |
+    [Unit]
+    Description=consul for hosts file
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/usr/local/bin/consul-template -consul $(hostname --ip-address):8500 -template \"/etc/hosts.ctmpl:/etc/hosts\" >>/var/log/consul-template-hosts.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
+
+- path: /etc/hosts.ctmpl
+  content: |
+     127.0.0.1       localhost
+
+     # The following lines are desirable for IPv6 capable hosts
+     ::1     localhost ip6-localhost ip6-loopback
+     ff02::1 ip6-allnodes
+     ff02::2 ip6-allrouters
+
+     # Consul nodes
+     {% raw %}
+     {{range service "hadoop"}}
+     {{.Address}} {{.Node}}{{end}}
+     {% endraw %}
+  permissions: '644'
+
+################################
+# HADOOP FILES
+################################
+- path: /tmp/hadoop/configs/core-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>fs.default.name</name>
+        <value>hdfs://HadoopMaster:9000</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/hdfs-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+      </property>
+      <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:/usr/local/hadoop_tmp/hdfs/namenode</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/yarn-site.xml
+  content: |
+      <configuration>
+      <!-- Site specific YARN configuration properties -->
+      <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>HadoopMaster:8025</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>HadoopMaster:8035</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>HadoopMaster:8050</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/mapred-site.xml
+  content: |
+      <configuration>
+      <property>
+        <name>mapreduce.job.tracker</name>
+        <value>HadoopMaster:5431</value>
+      </property>
+      <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+      </property>
+      </configuration>
+  permissions: '644'
+
+- path: /tmp/hadoop/configs/hadoop-env.sh
+  content: |
+      export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+      export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"/etc/hadoop"}
+      # Extra Java CLASSPATH elements.  Automatically insert capacity-scheduler.
+      for f in $HADOOP_HOME/contrib/capacity-scheduler/*.jar; do
+        if [ "$HADOOP_CLASSPATH" ]; then
+             export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$f
+        else
+             export HADOOP_CLASSPATH=$f
+        fi
+      done
+
+      export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
+      export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
+      export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS $HADOOP_DATANODE_OPTS"
+      export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
+      export HADOOP_NFS3_OPTS="$HADOOP_NFS3_OPTS"
+      export HADOOP_PORTMAP_OPTS="-Xmx512m $HADOOP_PORTMAP_OPTS"
+      export HADOOP_CLIENT_OPTS="-Xmx512m $HADOOP_CLIENT_OPTS"
+      export HADOOP_SECURE_DN_USER=${HADOOP_SECURE_DN_USER}
+      export HADOOP_SECURE_DN_LOG_DIR=${HADOOP_LOG_DIR}/${HADOOP_HDFS_USER}
+      export HADOOP_PID_DIR=${HADOOP_PID_DIR}
+      export HADOOP_SECURE_DN_PID_DIR=${HADOOP_PID_DIR}
+      export HADOOP_IDENT_STRING=$USER
+  permissions: '644'
+
+- path: /tmp/hduser/.bash_profile
+  content: |
+      # -- HADOOP ENVIRONMENT VARIABLES START -- #
+      export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+      export HADOOP_HOME=/usr/local/hadoop
+      export PATH=$PATH:$HADOOP_HOME/bin
+      export PATH=$PATH:$HADOOP_HOME/sbin
+      export HADOOP_MAPRED_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_HOME=$HADOOP_HOME
+      export HADOOP_HDFS_HOME=$HADOOP_HOME
+      export YARN_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+      # -- HADOOP ENVIRONMENT VARIABLES END -- #
+  permissions: '644'
+
+- path: /etc/hosts
+  content: |
+    {{getip('hadoop-master')}} HadoopMaster
+  permissions: '644'
+
+##################################
+# SCRIPT TO SETUP NETWORK AND KEYS
+##################################
+- path: /bin/hadoop-set-network-and-keys.sh
+  content: |
+    #!/bin/bash
+    echo "Setup NETWORK and KEYS starts."
+    slavename=`hostname`
+    slaveip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    cp /etc/hosts /etc/hosts.old
+    grep -v "$slavename" /etc/hosts.old > /etc/hosts
+
+    echo "$slaveip $slavename" >> /etc/hosts
+   
+    adduser --disabled-password --gecos "" hduser
+    usermod -aG sudo hduser
+    echo "hduser ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
+ 
+    mkdir -p /home/hduser/.ssh
+    chmod 700 /home/hduser/.ssh
+    chown hduser:hduser /home/hduser/.ssh
+
+    mv /tmp/hduser/id_rsa /home/hduser/.ssh
+    chmod 600 /home/hduser/.ssh/id_rsa
+    chown hduser:hduser /home/hduser/.ssh/id_rsa
+  
+    mv /tmp/hduser/authorized_keys /home/hduser/.ssh
+    chmod 600 /home/hduser/.ssh/authorized_keys
+    chown hduser:hduser /home/hduser/.ssh/authorized_keys
+ 
+    su - hduser -c "ssh-keyscan $slaveip > /home/hduser/.ssh/known_hosts"
+    su - hduser -c 'ssh-keyscan `hostname` >> /home/hduser/.ssh/known_hosts'
+    su - hduser -c 'ssh-keyscan localhost >> /home/hduser/.ssh/known_hosts'
+    su - hduser -c 'ssh-keyscan 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
+
+    masterpubip="{{getip('hadoop-master')}}"
+    su - hduser -c "ssh-keyscan $masterpubip >> /home/hduser/.ssh/known_hosts"
+    masteripret=`su - hduser -c "ssh hduser@$masterpubip hostname -i"`
+    masterip=`echo $masteripret | rev | cut -f1 -d " " | rev`
+    su - hduser -c "ssh-keyscan $masterip >> /home/hduser/.ssh/known_hosts"
+    mastername=`su - hduser -c "ssh hduser@$masterip hostname"`
+
+    echo $mastername > /etc/hadoop-master.name
+    echo "$masterip $mastername" >> /etc/hosts
+
+    su - hduser -c "ssh-keyscan $masterip >> /home/hduser/.ssh/known_hosts"
+    su - hduser -c "ssh-keyscan $mastername >> /home/hduser/.ssh/known_hosts"
+    su - hduser -c "ssh hduser@$mastername echo"
+    
+    rm -rf /etc/resolvconf/*
+
+    echo "Slave : $slaveip $slavename"
+    echo "Master: $masterip $mastername"
+    
+    echo "Setup NETWORK and KEYS finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL JAVA
+################################
+- path: /bin/hadoop-install-java.sh
+  content: |
+    #!/bin/bash
+    echo "Install JAVA starts."
+    add-apt-repository -y ppa:webupd8team/java
+    apt-get update
+    echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+    apt-get install -y oracle-java8-installer
+    #You can use the following 4 lines instead of the above as an alternate solution
+    #- wget http://mail-tp.fareoffice.com/java/jdk-8u111-linux-x64.tar.gz -P /tmp
+    #- mkdir -p /usr/lib/jvm
+    #- tar zxvf /tmp/jdk-8u111-linux-x64.tar.gz --directory=/usr/lib/jvm
+    #- mv /usr/lib/jvm/jdk1.8.0_111 /usr/lib/jvm/java-8-oracle
+    echo "Install JAVA finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL HADOOP
+################################
+- path: /bin/hadoop-install-hadoop.sh
+  content: |
+    #!/bin/bash
+    echo "Install HADOOP starts."
+    echo "  Copying hadoop package from master..."
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/usr/local/hadoop-2.8.4.tar.gz /tmp"
+    echo "  Extracting hadoop package..."
+    tar zxf /tmp/hadoop-2.8.4.tar.gz --directory /usr/local
+    mv /usr/local/hadoop-2.8.4 /usr/local/hadoop
+    chown -R hduser:hduser /usr/local/hadoop
+    echo "Install HADOOP finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL CONSUL
+################################
+- path: /bin/hadoop-install-consul.sh
+  content: |
+    #!/bin/bash
+    echo "Install CONSUL starts."
+    echo "  Copying consul packages from master..."
+    mkdir -p /tmp/consulpackage
+    chown hduser:hduser /tmp/consulpackage
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul_0.7.0_linux_amd64.zip /tmp/consulpackage"
+    su - hduser -c "scp -C hduser@{{getip('hadoop-master')}}:/tmp/consulpackage/consul-template_0.15.0_linux_amd64.zip /tmp/consulpackage"
+    #wget -nc https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip
+    #wget -nc https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip
+    echo "  Extracting consul packages..."
+    cd /tmp/consulpackage
+    unzip -n consul_0.7.0_linux_amd64.zip
+    unzip -n consul-template_0.15.0_linux_amd64.zip
+    mv consul /usr/local/bin/
+    mv consul-template /usr/local/bin/
+    cd -
+    echo "Install CONSUL finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO SETUP HADOOP CONFIG
+################################
+- path: /bin/hadoop-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure HADOOP starts."
+    mv /tmp/hduser/.bash_profile /home/hduser/.bash_profile
+    chown hduser:hduser /home/hduser/.bash_profile
+
+    masterhostname=`cat /etc/hadoop-master.name`
+    echo $masterhostname > /usr/local/hadoop/masters
+  
+    chown hduser:hduser /tmp/hadoop/configs/* 
+    mv /tmp/hadoop/configs/* /usr/local/hadoop/etc/hadoop 
+    sed -i 's/HadoopMaster/'$masterhostname'/g' /usr/local/hadoop/etc/hadoop/core-site.xml
+    sed -i 's/HadoopMaster/'$masterhostname'/g' /usr/local/hadoop/etc/hadoop/yarn-site.xml
+    sed -i 's/HadoopMaster/'$masterhostname'/g' /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+    #Hadoop tmp
+    mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+    mkdir -p /usr/local/hadoop_tmp/hdfs/datanode
+    chown hduser:hduser -R /usr/local/hadoop_tmp/
+
+    #Make sure all files belong to hduser
+    chown hduser:hduser -R /usr/local/hadoop
+
+    echo "Configure HADOOP finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO LAUNCH CONSUL
+################################
+- path: /bin/hadoop-launch-consul.sh
+  content: |
+    #!/bin/bash
+    echo "Launch CONSUL starts."
+    cp /tmp/consul/*.service /etc/systemd/system
+    systemctl daemon-reload
+    systemctl start consul.service
+    systemctl start consul-template-hosts.service
+    echo "Launch CONSUL finished."
+  permissions: '0755'
+
+packages:
+- openssh-server
+- unzip
+- python-software-properties
+- debconf-utils
+
+runcmd:
+#Setup NETWORK and HDUSER KEYS
+- /bin/hadoop-set-network-and-keys.sh
+#Install JAVA
+- /bin/hadoop-install-java.sh
+#Install HADOOP
+- /bin/hadoop-install-hadoop.sh
+#Install CONSUL
+- /bin/hadoop-install-consul.sh
+#Configure HADOOP
+- /bin/hadoop-setup-config.sh
+#Launch CONSUL
+- /bin/hadoop-launch-consul.sh
+- echo "HADOOP DEPLOYMENT DONE."

@@ -1,7 +1,0 @@
-infra_name: ec2-chef-apache2-infra
-user_id: somebody@somewhere.com
-
-nodes:
-  - 
-    name: apache2
-    type: ec2_chef_apache2_node

@@ -1,0 +1,29 @@
+'node_def:docker_ping_receiver_node':
+  -
+    resource:
+      type: docker
+      endpoint: replace_with_your_docker_endpoint
+      origin: https://s3.lpds.sztaki.hu/docker/busybox_helloworld.tar
+      image: busybox_helloworld
+      tag: latest
+    contextualisation:
+      type: docker
+      env: ["message={{variables.message}}"]
+      command: "sh -c /root/start.sh"
+    health_check:
+      ping: False
+
+'node_def:docker_ping_sender_node':
+  -
+    resource:
+      type: docker
+      endpoint: replace_with_your_docker_endpoint
+      origin: https://s3.lpds.sztaki.hu/docker/busybox_ping.tar
+      image: busybox_ping
+      tag: latest
+    contextualisation:
+      type: docker
+      env: ["target_ip={{getip('ping-receiver')}}"]
+      command: "sh -c /root/start.sh"
+    health_check:
+      ping: False

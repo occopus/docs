@@ -1,0 +1,19 @@
+infra_name: cloudsigma-ping-infra
+user_id: somebody@somewhere.com
+
+nodes:
+  - &R
+    name: ping-receiver
+    type: cloudsigma_ping_receiver_node
+    variables:
+      message: "Hello World! I am the receiver node created by Occopus."
+  - &S
+    name: ping-sender
+    type: cloudsigma_ping_sender_node
+    variables:
+      message: "Hello World! I am the sender node created by Occopus."
+
+dependencies:
+  -
+    connection: [ *S, *R ]
+
