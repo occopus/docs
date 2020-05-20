@@ -1,7 +1,0 @@
-
-v0.2.0 - November 2015
-- Developers guide
-- User guide
-- Tutorials
-- Utilise autodoc and sphinx
-

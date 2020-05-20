@@ -1,0 +1,6 @@
+#cloud-config
+write_files:
+- content: "{{variables.message}}\n"
+  path: /tmp/helloworld.txt
+  permissions: '0644'
+

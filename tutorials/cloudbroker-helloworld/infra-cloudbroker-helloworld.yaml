@@ -1,0 +1,11 @@
+infra_name: cloudbroker-helloworld-infra
+user_id: somebody@somewhere.com
+
+nodes:
+  - 
+    name: helloworld
+    type: cloudbroker_helloworld_node
+    variables:
+      message: "Hello World! I have been created by Occopus"
+
+

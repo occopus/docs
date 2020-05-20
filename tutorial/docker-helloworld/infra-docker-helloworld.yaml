@@ -1,9 +1,0 @@
-infra_name: docker-helloworld-infra
-user_id: somebody@somewhere.com
-
-nodes:
-  - 
-    name: helloworld
-    type: docker_helloworld_node
-    variables:
-      message: "Hello World! I have been created by Occopus."

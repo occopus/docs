@@ -1,0 +1,76 @@
+#cloud-config
+
+write_files:
+- path: /bin/jupyter-add-user.sh
+  content: |
+    #!/bin/bash
+    export USR='{{variables.username_os}}'
+    echo "==> Creating user \"$USR\" starts."
+    adduser --disabled-password --gecos "" $USR
+    echo "==> Creating user \"$USR\" finished."
+  permissions: '755'
+
+- path: /bin/jupyter-add-base-tools.sh
+  content: |
+    #!/bin/bash
+    echo "==> Installing base tools (pip,venv) starts."
+    apt-get -y update
+    apt-get -y upgrade
+    apt-get install -y python3-pip
+    apt-get install -y python3-venv
+    echo "==> Installing base tools (pip,venv) finished."
+  permissions: '755'
+
+- path: /bin/jupyter-install.sh
+  content: |
+    #!/bin/bash
+    echo "==> Install Jupyter, Tensorflow, Keras and MP lib components starts."
+    python3 -m venv jupyter-virtenv
+    source jupyter-virtenv/bin/activate
+    pip install --upgrade pip
+    pip install wheel
+    pip install tensorflow numpy matplotlib Dask scikit-image keras Imgaug sklearn astropy xarray rasterio geopandas pyproj jupyterlab
+    echo "==> Install Jupyter, Tensorflow, Keras and MP lib components finished."
+  permissions: '755'
+
+- path: /bin/jupyter-configure.sh
+  content: |
+    #!/bin/bash
+    echo "==> Configure JUPYTER NOTEBOOK starts."
+    mkdir -p ~/.jupyter
+    echo "c.NotebookApp.quit_button = False" >> ~/.jupyter/jupyter_notebook_config.py 
+    echo "c.NotebookApp.token = ''" >> ~/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.password = '{{variables.pwd_jupyter}}'" >> ~/.jupyter/jupyter_notebook_config.py 
+    echo "==> Configure JUPYTER NOTEBOOK finished."
+  permissions: '755'
+
+- path: /bin/jupyter-copy-examples.sh
+  content: |
+    #!/bin/bash
+    echo "==> Copy Jupyter EXAMPLES starts."
+    mkdir -p ~/workspace
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter/examples/TF-MNIST-example.ipynb -o ~/workspace/TF-MNIST-example.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter/examples/packages.ipynb -o ~/workspace/packages.ipynb
+    echo "==> Copy Jupyter EXAMPLES finished."
+  permissions: '755'
+
+- path: /bin/jupyter-launch.sh
+  content: |
+    #!/bin/bash
+    echo "==> Launching jupyter starts."
+    mkdir -p ~/workspace
+    cd ~/workspace
+    source ~/jupyter-virtenv/bin/activate
+    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --config=~/.jupyter/jupyter_notebook_config.py --no-browser 1>~/jupyter.log 2>&1 &
+    echo "==> Launching jupyter finished."
+  permissions: '755'
+
+runcmd:
+- echo "==> DEPLOYMENT starts."
+- /bin/jupyter-add-user.sh
+- /bin/jupyter-add-base-tools.sh
+- su - {{variables.username_os}} -c /bin/jupyter-install.sh
+- su - {{variables.username_os}} -c /bin/jupyter-configure.sh
+- su - {{variables.username_os}} -c /bin/jupyter-copy-examples.sh
+- su - {{variables.username_os}} -c /bin/jupyter-launch.sh
+- echo "==> DEPLOYMENT finished."
