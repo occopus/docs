@@ -1,8 +1,0 @@
-#cloud-config
-runcmd:
-    - ping {{getip(variables.targetnode)}} -c 5 > /tmp/ping-result.txt 2>&1
-write_files:
-- content: "{{variables.message}}\n"
-  path: /tmp/message.txt
-  permissions: '0644'
-

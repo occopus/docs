@@ -1,0 +1,15 @@
+infra_name: dockerswarm-infra
+user_id: somebody@somewhere.com
+
+nodes:
+  - &M
+    name: master
+    type: dockerswarm_master_node
+  - &W
+    name: worker
+    type: dockerswarm_worker_node
+    scaling:
+      min: 2
+
+dependencies:
+  - [ *W, *M ]

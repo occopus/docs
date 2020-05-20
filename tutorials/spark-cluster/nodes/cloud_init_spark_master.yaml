@@ -1,0 +1,53 @@
+#cloud-config
+
+write_files:
+
+################################
+# SCRIPT TO INSTALL JAVA
+################################
+- path: /bin/spark-install-java.sh
+  content: |
+    #!/bin/bash
+    echo "Install JAVA starts."
+    sudo apt-get update
+    sudo apt-get install default-jdk -y
+    echo "Install JAVA finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO INSTALL APACHE SPARK
+################################
+- path: /bin/spark-install-spark.sh
+  content: |
+    echo "Install SPARK starts."
+    wget https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
+    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
+    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
+    echo "Install SPARK finished."
+  permissions: '755'
+
+################################
+# SCRIPT TO SETUP SPARK CONFIG
+################################
+- path: /bin/spark-setup-config.sh
+  content: |
+    #!/bin/bash
+    echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
+    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
+    echo "SPARK_MASTER_HOST='$masterip'" >> /home/sparkuser/spark/conf/spark-env.sh
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
+    echo "Configure SPARK ends."
+  permissions: '755'
+  
+runcmd:
+#Install JAVA
+- /bin/spark-install-java.sh
+#Install SPARK
+- /bin/spark-install-spark.sh
+#Setup SPARK
+- /bin/spark-setup-config.sh
+#Launch SPARK
+- su - sparkuser -c /home/sparkuser/spark/sbin/start-master.sh
+- echo "SPARK DEPLOYMENT DONE."

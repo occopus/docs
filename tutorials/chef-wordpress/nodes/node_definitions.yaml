@@ -1,0 +1,71 @@
+'node_def:chef_mysql_server_node':
+  -
+    resource:
+      type: ec2
+      endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+      regionname: replace_with_regionname_of_your_ec2_interface
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+      key_name: replace_with_key_name_on_your_target_cloud
+      security_group_ids:
+        -
+          replace_with_security_group_id1_on_your_target_cloud
+        -
+          replace_with_security_group_id2_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_chef.yaml
+      attributes:
+        mysql:
+          server_root_password: '{{ variables.mysql_root_password }}'
+        database_management:
+          database_name: '{{ variables.mysql_database_name }}'
+          dbuser_username: '{{ variables.mysql_dbuser_username }}'
+          dbuser_password: '{{ variables.mysql_dbuser_password }}'
+    config_management:
+      type: chef
+      endpoint: replace_with_url_of_chef_server
+      run_list: 
+        - recipe[database-setup::db]
+    health_check: 
+      mysqldbs:
+      - {name: '{{ variables.mysql_database_name }}',
+         user: '{{ variables.mysql_dbuser_username }}',
+         pass: '{{ variables.mysql_dbuser_password }}'}
+
+'node_def:chef_wordpress_node':
+  -
+    resource:
+      type: ec2
+      endpoint: replace_with_endpoint_of_ec2_interface_of_your_cloud
+      regionname: replace_with_regionname_of_your_ec2_interface
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      instance_type: replace_with_instance_type_of_your_image_on_your_target_cloud
+      key_name: replace_with_key_name_on_your_target_cloud
+      security_group_ids:
+        -
+          replace_with_security_group_id1_on_your_target_cloud
+        -
+          replace_with_security_group_id2_on_your_target_cloud
+      subnet_id: replace_with_subnet_id_on_your_target_cloud
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_chef.yaml
+      attributes:
+        wordpress:
+          db:
+            name: '{{ variables.mysql_database_name }}'
+            user: '{{ variables.mysql_dbuser_username }}'
+            pass: '{{ variables.mysql_dbuser_password }}'
+    config_management:
+      type: chef
+      endpoint: replace_with_url_of_chef_server
+      run_list:
+        - recipe[wordpress]
+    health_check:
+      ping: true
+      urls:
+        - http://{{ip}}/wordpress
