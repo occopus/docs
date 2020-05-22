@@ -3,12 +3,10 @@
 Concept
 #######
 
-Occopus is a framework that provides automatic features for configuring and
-orchestrating distributed applications on single or multi cloud systems. Occopus
-can be used by application developers and application controllers to manage
-services/infrastructures at deployment time and at runtime as well as to create
-and provide complex services/infrastructures to be built even by
-novice cloud users.
+Occopus is an easy-to-use hybrid cloud orchestration tool. It is a framework that provides features
+for configuring and orchestrating distributed applications (so called virtual infrastructures) on
+single or multi cloud systems. Occopus can be used by application developers and devops to create
+and deploy complex virtual infrastructures as well as to manage them at deployment time and at runtime.
 
 It has many similarities with HEAT, Juju, etc. Its main advantage that it is
 cloud technology neutral, open source and easily extendable. Occopus works based
