@@ -13,12 +13,10 @@ infrastructures and services in a single or multi cloud system.
 What is Occopus?
 ****************
 
-Occopus is a hybrid cloud orchestration tool. It is a framework that provides automatic
-features for configuring and orchestrating distributed applications (so called virtual
-infrastructures) on single or multi cloud systems. Occopus can be used by application
-developers and application controllers to manage virtual infrastructures at deployment
-time and at runtime as well as to create and provide complex virtual infrastructures to
-be built by one click even by novice cloud users.
+Occopus is an easy-to-use hybrid cloud orchestration tool. It is a framework that provides features
+for configuring and orchestrating distributed applications (so called virtual infrastructures) on
+single or multi cloud systems. Occopus can be used by application developers and devops to create
+and deploy complex virtual infrastructures as well as to manage them at deployment time and at runtime.
 
 
 .. toctree::
