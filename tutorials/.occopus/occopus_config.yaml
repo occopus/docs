@@ -4,7 +4,7 @@ plugins: !python_import
     - occo.infobroker.uds
     - occo.infobroker.rediskvstore
     - occo.resourcehandler
-    - occo.plugins.resourcehandler.azure
+    - occo.plugins.resourcehandler.azure_vm
     - occo.plugins.resourcehandler.ec2
     - occo.plugins.resourcehandler.nova
     - occo.plugins.resourcehandler.azure
