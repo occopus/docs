@@ -231,6 +231,35 @@ Azure
   ``public_ip_needed``
     Optional. If specified with the value True, the Azure resource plugin will allocate a public IP address for the VM.
 
+Azure ACI
+^^^^^^^^^
+  ``type: azure_aci``
+    Selects the Azure ACI (Azure Container Instances) resource handler.
+  ``endpoint``
+    The endpoint (url) of the Azure interface, e.g. https://management.azure.com
+  ``resource_group``
+    The resource group to allocate Azure resources in.
+  ``location``
+    The location where the resources should be allocated, e.g. francecentral.
+  ``image``
+    The public image to be used from Docker Hub, e.g. bde2020/spark-worker:2.4.5-hadoop2.7.
+  ``network_type``
+    The the of network to be used. Value "public" allocates a public address for the container, whereas value "private" uses a private network.
+  ``memory``
+    The memory in GB to allocate for the container, e.g. 2.
+  ``cpu_cores``
+    The number of vCPU cores to allocate for the container, e.g. 4.
+  ``os_type``
+    The operating system type required by the container. Possible values are "linux" and "windows".
+  ``gpu_type``
+    Optional. Specifies the GPU type to be allocated for the container. Currently usable values are "K80", "P100" and "V100".
+  ``gpu_count``
+    Optional when GPU type is set. Specifies the number of GPUs to allocate for the container.
+  ``vnet_name``
+    Optional in case the network type is "private". Name of the virtual network to use for the container. If not specified, the Azure ACI resource plugin will allocate a virtual network.
+  ``subnet_name``
+    Optional in case the network type is "private". The name of the subnet to use for the container. If not specified, the Azure ACI resource plugin will allocate a subnet.
+
 OCCI
 ^^^^
   ``type: occi``

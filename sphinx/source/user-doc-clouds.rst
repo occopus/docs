@@ -21,7 +21,7 @@ Occopus has a resource plugin to interface with `NOVA API
 Azure
 -----
 
-The Azure resource plugin of Occopus enables the usage of `Azure <https://azure.microsoft.com//>`_ resources.
+The Azure and Azure ACI resource plugins of Occopus enables the usage of `Azure <https://azure.microsoft.com//>`_ resources.
 
 OCCI
 ----
