@@ -17,7 +17,7 @@ This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Had
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
  - generated ssh key-pair (or for testing purposes one is attached)
 
@@ -146,7 +146,7 @@ This tutorial sets up a complete Apache Spark infrastructure. It contains a Spar
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
@@ -271,7 +271,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
@@ -482,7 +482,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
@@ -619,7 +619,7 @@ The complete machine learning environment consists of the following components: 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
@@ -729,7 +729,7 @@ The complete machine learning environment consists of the following components: 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 

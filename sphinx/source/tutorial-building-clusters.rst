@@ -12,7 +12,7 @@ This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Co
 
  - creating two types of nodes through contextualisation
  - passing ip address of a node to another node
- - using the occi resource handler
+ - using the cloudsigma resource handler
  - utilising health check against a predefined port
  - using parameters to scale up worker nodes
 

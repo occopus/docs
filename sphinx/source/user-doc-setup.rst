@@ -37,7 +37,7 @@ Installation
 
    Now, all Occopus packages are deployed under your virtualenv ``occopus``.
 
-#. Optionally, copy your certs under Occopus if you plan to use VOMS authentication against OCCI or Nova resources
+#. Optionally, copy your certs under Occopus if you plan to use VOMS authentication against Nova resources
 
    .. code:: bash
 
@@ -159,15 +159,18 @@ For ``azure`` resources:
                 client_secret: your_client_secret
                 subscription_id: your_subscription_id
 
-For ``occi`` resources:
+For ``azure_aci`` resources:
 
 .. code:: yaml
 
     resource:
         -
-            type: occi
+            type: azure_aci
             auth_data:
-                proxy: path_to_your_voms_proxy_file
+                tenant_id: your_tenant_id
+                client_id: your_client_id
+                client_secret: your_client_secret
+                subscription_id: your_subscription_id
 
 For ``cloudbroker`` resources:
 

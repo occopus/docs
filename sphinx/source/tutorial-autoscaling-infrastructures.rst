@@ -40,7 +40,7 @@ In case, this architecture fits to your need, you may replace the Data Avenue (w
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, Azure, Nova, etc.)
  - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
  - start Occopus in Rest-API mode ( occopus-rest-service )
 
@@ -228,7 +228,7 @@ The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occ
  - using Consul as a DNS service discovery agent
 
 **Prerequisites**
- - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, Azure, Nova, etc.)
  - target cloud contains a base 14.04 ubuntu OS image with cloud-init support (image id, instance type)
  - generated ssh key-pair (or for testing purposes one is attached)
  - start Occopus in Rest-API mode ( occopus-rest-service )

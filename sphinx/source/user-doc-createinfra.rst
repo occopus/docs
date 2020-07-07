@@ -260,23 +260,6 @@ Azure ACI
   ``subnet_name``
     Optional in case the network type is "private". The name of the subnet to use for the container. If not specified, the Azure ACI resource plugin will allocate a subnet.
 
-OCCI
-^^^^
-  ``type: occi``
-    Selects the occi resource handler. It requires the occi client to be installed locally.
-  ``endpoint``
-    The endpoint (url) of the occi cloud interface.
-  ``os_tpl``
-    The identifier of the VM image on the cloud.
-  ``resource_tpl``
-    The identifier of the instance type to be used to instantiate the VM image on the target cloud.
-  ``public_key``
-    Optional. The public ssh key to be deployed on the target virtual machine.
-  ``link``
-    Optional. List of compute or network resources to be attached to the VM. Using this option enables one to attach additional disk images or public networks to the VM.
-  ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
-
 CloudBroker
 ^^^^^^^^^^^
   ``type: cloudbroker``
@@ -395,7 +378,7 @@ In this section, the attributes (keywords) are listed and explained which can be
 Cloudinit
 ^^^^^^^^^
   ``type: cloudinit``
-    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma, azure.
+    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, cloudsigma, azure.
   ``context_template``
     This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <https://cloudinit.readthedocs.org/en/latest>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``
@@ -404,7 +387,7 @@ Cloudinit
 Docker
 ^^^^^^
   ``type: docker``
-    Selects the docker contextualisation plugin. Can be used with the following resource handlers: docker.
+    Selects the docker contextualisation plugin. Can be used with the following resource handlers: docker, azure_aci.
   ``env``
     Environment variables to be passed to containers.
   ``command``

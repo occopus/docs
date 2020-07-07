@@ -10,7 +10,6 @@ plugins: !python_import
     - occo.plugins.resourcehandler.nova
     - occo.plugins.resourcehandler.azure
     - occo.plugins.resourcehandler.cloudbroker
-    - occo.plugins.resourcehandler.occi
     - occo.plugins.resourcehandler.docker
     - occo.plugins.resourcehandler.cloudsigma
     - occo.plugins.infraprocessor.basic_infraprocessor
