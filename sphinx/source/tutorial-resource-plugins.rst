@@ -923,6 +923,7 @@ You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.
 From there, you can navigate to the connect panel of the nginx-client container, and can use /bin/sh to gain root shell access inside the running container:
 
    .. code:: bash
+
       / # ls -1 /tmp
       message.txt
       nginx_content.html
