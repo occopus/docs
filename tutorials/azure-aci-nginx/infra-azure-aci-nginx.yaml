@@ -1,0 +1,17 @@
+infra_name: azure-aci-nginx-infra
+user_id: somebody@somewhere.com
+
+nodes:
+  - &R
+    name: nginx-server
+    type: azure_aci_nginx_node
+  - &S
+    name: nginx-client
+    type: azure_aci_client_node
+    variables:
+      message: "Hello World! I am the client node created by Occopus."
+      targetnode: nginx-server
+
+dependencies:
+  -
+    connection: [ *S, *R ]

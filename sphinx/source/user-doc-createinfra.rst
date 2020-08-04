@@ -259,6 +259,8 @@ Azure ACI
     Optional in case the network type is "private". Name of the virtual network to use for the container. If not specified, the Azure ACI resource plugin will allocate a virtual network.
   ``subnet_name``
     Optional in case the network type is "private". The name of the subnet to use for the container. If not specified, the Azure ACI resource plugin will allocate a subnet.
+  ``ports``
+    The list of ports to be exposed from the container. This is required to have at least one element defined (e.g. 8080).
 
 CloudBroker
 ^^^^^^^^^^^
@@ -391,7 +393,7 @@ Docker
   ``env``
     Environment variables to be passed to containers.
   ``command``
-    Command to be executed inside the container once the container come to life.
+    Command to be executed inside the container once the container come to life. In case of the azure_aci resource handler, this is required to be a list.
 
 .. _userdefinitioncontextualisationvariablesandmethodssection:
 

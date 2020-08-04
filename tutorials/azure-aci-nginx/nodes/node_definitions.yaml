@@ -1,0 +1,38 @@
+'node_def:azure_aci_nginx_node':
+  -
+    resource:
+      type: azure_aci
+      endpoint: https://management.azure.com
+      resource_group: replace_with_resource_group_name
+      location: replace_with_location
+      memory: replace_with_memory
+      cpu_cores: replace_with_cpu_cores
+      os_type: linux
+      image: nginx:alpine
+      network_type: Public
+      ports:
+        - 80
+    health_check:
+      ping: False
+      ports:
+        - 80
+'node_def:azure_aci_client_node':
+  -
+    resource:
+      type: azure_aci
+      endpoint: https://management.azure.com
+      resource_group: replace_with_resource_group_name
+      location: replace_with_location
+      memory: replace_with_memory
+      cpu_cores: replace_with_cpu_cores
+      os_type: linux
+      image: alpine
+      network_type: Public
+      ports:
+        - 8080
+    contextualisation:
+      type: docker
+      env: ["message={{variables.message}}"]
+      command: ["sh", "-c", "echo \"$message\" > /tmp/message.txt; wget -O /tmp/nginx_content.html {{getip(variables.targetnode)}}; while true; do sleep 1000; done"]
+    health_check:
+      ping: False

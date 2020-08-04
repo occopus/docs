@@ -1,0 +1,20 @@
+'node_def:azure_aci_helloworld_node':
+  -
+    resource:
+      type: azure_aci
+      endpoint: https://management.azure.com
+      resource_group: replace_with_resource_group_name
+      location: replace_with_location
+      memory: replace_with_memory
+      cpu_cores: replace_with_cpu_cores
+      os_type: linux
+      image: alpine
+      network_type: Private
+      ports:
+        - 8080
+    contextualisation:
+      type: docker
+      env: ["message={{variables.message}}"]
+      command: ["sh", "-c", "echo \"$message\" > /tmp/message.txt; while true; do sleep 1000; done"]
+    health_check:
+      ping: False
