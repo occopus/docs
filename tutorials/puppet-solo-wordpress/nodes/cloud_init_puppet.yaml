@@ -11,7 +11,7 @@ write_files:
     {{puppet.attributes}}
   path: /etc/puppetlabs/code/environments/production/hieradata/common.yaml
 - content: |
-    wget -O - https://raw.githubusercontent.com/occopus/docs/devel/tutorials/puppet-solo-wordpress/manifests/install_puppet_agent.sh | sh
+    wget -O - https://raw.githubusercontent.com/occopus/docs/master/tutorials/puppet-solo-wordpress/manifests/install_puppet_agent.sh | sh
     for i in `cat /var/lib/puppet/occopus.puppet.modules`; do /opt/puppetlabs/bin/puppet module install $i; done
     for i in `cat /var/lib/puppet/occopus.puppet.manifests`; do wget -P /var/lib/puppet/manifests/ --no-check-certificate --content-disposition $i; done
     sed -i -e "s/{'//g" -e "s/':/:/g" -e "s/} /\n/g" -e "s/}//g" /etc/puppetlabs/code/environments/production/hieradata/common.yaml

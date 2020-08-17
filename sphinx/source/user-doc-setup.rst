@@ -13,7 +13,7 @@ Installation
 
 #. Install a few system-wide packages
 
-   Python ``3.x``, Virtualenv, Redis server for data storage and  SSL devel lib for Chef to work
+   Python ``3.x``, Virtualenv, Redis server for data storage and  SSL master lib for Chef to work
 
    .. code:: bash
 
@@ -63,7 +63,7 @@ Please, download and save your configuration file:
 .. code:: bash
 
    mkdir -p $HOME/.occopus
-   curl https://raw.githubusercontent.com/occopus/docs/devel/tutorials/.occopus/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
+   curl https://raw.githubusercontent.com/occopus/docs/master/tutorials/.occopus/occopus_config.yaml -o $HOME/.occopus/occopus_config.yaml
 
 Occopus uses YAML as a configuration language, mainly for its dynamic properties, and its human readability. The parsed configuration is a dictionary, containing both static parameters and objects instantiated by the YAML parser.
 
@@ -91,7 +91,7 @@ You can download and save your initial authentication file:
 .. code:: bash
 
     mkdir -p $HOME/.occopus
-    curl https://raw.githubusercontent.com/occopus/docs/devel/tutorials/.occopus/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
+    curl https://raw.githubusercontent.com/occopus/docs/master/tutorials/.occopus/auth_data.yaml -o $HOME/.occopus/auth_data.yaml
 
 Once you have your initial authentication file, edit and insert your credentials to the appropriate section.
 

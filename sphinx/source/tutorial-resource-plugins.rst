@@ -35,7 +35,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/ec2-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.ec2-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/ec2-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -127,7 +127,7 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/ec2-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.ec2-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/ec2-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -255,7 +255,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/nova-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/nova-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -359,7 +359,7 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/nova-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.nova-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/nova-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -492,7 +492,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -511,7 +511,7 @@ You can download the example as `tutorial.examples.azure-helloworld <https://raw
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -600,7 +600,7 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -619,7 +619,7 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -742,7 +742,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-aci-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-aci-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-aci-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-aci-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -755,7 +755,7 @@ You can download the example as `tutorial.examples.azure-aci-helloworld <https:/
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -842,7 +842,7 @@ the Docker hub.
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-aci-nginx.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-aci-nginx.tar.gz>`_ .
 
 **Steps**
 
@@ -855,7 +855,7 @@ You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -957,7 +957,7 @@ This tutorial builds an infrastructure containing a single node implemented by a
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/docker-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.docker-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/docker-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -1046,7 +1046,7 @@ This tutorial builds an infrastructure containing a two nodes implemented by Doc
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/docker-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.docker-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/docker-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -1151,7 +1151,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudsigma-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudsigma-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudsigma-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -1248,7 +1248,7 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudsigma-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudsigma-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudsigma-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -1386,7 +1386,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudbroker-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudbroker-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudbroker-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -1475,7 +1475,7 @@ ping the ping-receiver node. The node will store the outcome of ping in ``/tmp``
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudbroker-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudbroker-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudbroker-ping.tar.gz>`_ .
 
 **Steps**
 

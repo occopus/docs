@@ -23,7 +23,7 @@ This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Had
 
 **Download**
 
-You can download the example as `tutorial.examples.hadoop-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/hadoop-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.hadoop-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/hadoop-cluster.tar.gz>`_ .
 
 .. note::
 
@@ -105,7 +105,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
    .. code:: bash
 
       List of nodes/ip addresses:
-      hadoop-devel:
+      hadoop-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       hadoop-slave:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -152,7 +152,7 @@ This tutorial sets up a complete Apache Spark infrastructure. It contains a Spar
 
 **Download**
 
-You can download the example as `tutorial.examples.spark-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.spark-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster.tar.gz>`_ .
 
 .. note::
 
@@ -230,7 +230,7 @@ You can download the example as `tutorial.examples.spark-cluster <https://raw.gi
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -277,7 +277,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Download**
 
-You can download the example as `tutorial.examples.spark-cluster-with-r <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-r.tar.gz>`_ .
+You can download the example as `tutorial.examples.spark-cluster-with-r <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-r.tar.gz>`_ .
 
 .. note::
 
@@ -359,7 +359,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -398,7 +398,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(devel = "local")
+     sc <- spark_connect(master = "local")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -424,7 +424,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(devel = "spark://<SparkMasterIP>:7077")
+     sc <- spark_connect(master = "spark://<SparkMasterIP>:7077")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -470,7 +470,7 @@ Apache Spark cluster with Python Stack
 Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
-Spark also provides a special library called “Spark MLlib” for supporting machine learning applications. Similarly, to the R-oriented Spark environment, we have developed the infrastructure descriptors for the creation of a machine learning environment in the cloud. Here, the programming language is Python and the user programming environment is Jupyter. The complete machine learning environment consists of the following components: Jupyter, Python, Spark and HDFS. Deploying this machine learning environment is also automatically done by Occopus and the number of Spark workers can be defined by the user.
+Spark also provides a special library called “Spark MLlib” for supporting machine learning applications. Similarly, to the R-oriented Spark environment, we have masteroped the infrastructure descriptors for the creation of a machine learning environment in the cloud. Here, the programming language is Python and the user programming environment is Jupyter. The complete machine learning environment consists of the following components: Jupyter, Python, Spark and HDFS. Deploying this machine learning environment is also automatically done by Occopus and the number of Spark workers can be defined by the user.
 
 This tutorial sets up a complete Apache Spark infrastructure integrated with HDFS, Python and Jupyter Notebook. It contains a Spark Master node and Spark Worker nodes, which can be scaled up or down.
 
@@ -488,7 +488,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Download**
 
- You can download the example as `tutorial.examples.spark-cluster-with-python <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-python.tar.gz>`_ .
+ You can download the example as `tutorial.examples.spark-cluster-with-python <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-python.tar.gz>`_ .
 
 .. note::
 
@@ -570,7 +570,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -605,9 +605,9 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 TensorFlow and Keras with Jupyter Notebook Stack
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
+TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and masteropers easily build and deploy ML powered applications. TensorFlow was masteroped by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
 
-Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
+Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was masteroped with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
 
 The complete machine learning environment consists of the following components: Jupyter, Keras (version 2.2.4) and TensorFlow (version 1.13.1).
 
@@ -625,7 +625,7 @@ The complete machine learning environment consists of the following components: 
 
 **Download**
 
- You can download the example as `tutorial.examples.tensorflow-keras-jupyter <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter.tar.gz>`_ .
+ You can download the example as `tutorial.examples.tensorflow-keras-jupyter <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter.tar.gz>`_ .
 
 .. note::
 
@@ -711,9 +711,9 @@ The complete machine learning environment consists of the following components: 
 TensorFlow and Keras with Jupyter Notebook Stack using NVIDIA GPU card
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
+TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and masteropers easily build and deploy ML powered applications. TensorFlow was masteroped by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
 
-Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
+Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was masteroped with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
 
 The complete machine learning environment consists of the following components: Jupyter, Keras and TensorFlow utilizing the power of a GPU card.
 
@@ -735,7 +735,7 @@ The complete machine learning environment consists of the following components: 
 
 **Download**
 
- You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter-gpu.tar.gz>`_ .
+ You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter-gpu.tar.gz>`_ .
 
 .. note::
 
@@ -811,7 +811,7 @@ The complete machine learning environment consists of the following components: 
 
      The webUIs are protected, the access needs a login. The default password is "lpds", which can be changed before deployment.
 
-#. Run a demo ML application. In this short demo application we can test our Anaconda development environment. We are building a convolutional neural network (_CNN_ or _ConvNet_) which is able to classify animals into 4 categories (dog, cat, bird and fish). Classification is a type of supervised learning - this means we need to provide labels for all the training data. We are going to utilize _Keras_ with _Tensorflow backend\_ for achieving this goal, more precisely for creating and compiling model, training and testing. Keras enables fast experimentation with deep neural networks, and it focuses on being user-friendly and modular, so it's a natural choice for this task, while Tensorflow is responsible for managing the underlying structures and calculations.
+#. Run a demo ML application. In this short demo application we can test our Anaconda masteropment environment. We are building a convolutional neural network (_CNN_ or _ConvNet_) which is able to classify animals into 4 categories (dog, cat, bird and fish). Classification is a type of supervised learning - this means we need to provide labels for all the training data. We are going to utilize _Keras_ with _Tensorflow backend\_ for achieving this goal, more precisely for creating and compiling model, training and testing. Keras enables fast experimentation with deep neural networks, and it focuses on being user-friendly and modular, so it's a natural choice for this task, while Tensorflow is responsible for managing the underlying structures and calculations.
 
    Select keras-gpu-demo/Simple_image_classifier.ipynb file (see Figure 1) within the Jupyter notebook interface, and select Cells/Run All to run all of the commands below, or use shift+enter within a cell to run the cells one-by-one.
 
