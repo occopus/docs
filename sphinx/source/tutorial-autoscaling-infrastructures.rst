@@ -46,7 +46,7 @@ In case, this architecture fits to your need, you may replace the Data Avenue (w
 
 **Download**
 
-You can download the example as `tutorial.examples.autoscaling-dataavenue <https://raw.githubusercontent.com/occopus/docs/master/tutorials/autoscaling-dataavenue.tar.gz>`_ .
+You can download the example as `tutorial.examples.autoscaling-dataavenue <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/autoscaling-dataavenue.tar.gz>`_ .
 
 **Steps**
 
@@ -235,7 +235,7 @@ The tutorial builds a scalable Apache Hadoop infrastructure with the help of Occ
 
 **Download**
 
-You can download the example as `tutorial.examples.autoscaling-hadoop <https://raw.githubusercontent.com/occopus/docs/master/tutorials/autoscaling-hadoop.tar.gz>`_.
+You can download the example as `tutorial.examples.autoscaling-hadoop <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/autoscaling-hadoop.tar.gz>`_.
 
 **Steps**
 
@@ -260,7 +260,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <https://r
 
      If you want Occopus to monitor (health_check) your Hadoop Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
 
-#. Optionally, edit the ``nodes/cloud_init_hadoop_master.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
+#. Optionally, edit the ``nodes/cloud_init_hadoop_devel.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
 
         - ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
 

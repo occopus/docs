@@ -26,7 +26,7 @@ This tutorial uses Chef as a configuration management tool to deploy a one-node 
 
 **Download**
 
-You can download the example as `tutorial.examples.chef-apache2 <https://raw.githubusercontent.com/occopus/docs/master/tutorials/chef-apache2.tar.gz>`_ .
+You can download the example as `tutorial.examples.chef-apache2 <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/chef-apache2.tar.gz>`_ .
 
 **Steps**
 
@@ -160,7 +160,7 @@ This tutorial uses Chef as a configuration management tool to deploy a two-node 
 
 **Download**
 
-You can download the example as `tutorial.examples.chef-wordpress <https://raw.githubusercontent.com/occopus/docs/master/tutorials/chef-wordpress.tar.gz>`_ .
+You can download the example as `tutorial.examples.chef-wordpress <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/chef-wordpress.tar.gz>`_ .
 
 **Steps**
 
@@ -314,7 +314,7 @@ This tutorial uses Puppet as a configuration management tool in a server-free mo
 
 **Download**
 
-You can download the example as `tutorial.examples.puppet-solo-wordpress <https://raw.githubusercontent.com/occopus/docs/master/tutorials/puppet-solo-wordpress.tar.gz>`_ .
+You can download the example as `tutorial.examples.puppet-solo-wordpress <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/puppet-solo-wordpress.tar.gz>`_ .
 
 **Steps**
 

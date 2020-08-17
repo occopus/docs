@@ -20,7 +20,7 @@
     config_management:
       type: puppet_solo
       manifests:
-        - https://raw.githubusercontent.com/occopus/docs/master/tutorials/puppet-solo-wordpress/manifests/mysql-init.pp
+        - https://raw.githubusercontent.com/occopus/docs/devel/tutorials/puppet-solo-wordpress/manifests/mysql-init.pp
       modules:
         - puppetlabs-mysql
       attributes:
@@ -55,7 +55,7 @@
     config_management:
       type: puppet_solo
       manifests:
-        - https://raw.githubusercontent.com/occopus/docs/master/tutorials/puppet-solo-wordpress/manifests/wordpress-init.pp
+        - https://raw.githubusercontent.com/occopus/docs/devel/tutorials/puppet-solo-wordpress/manifests/wordpress-init.pp
       modules:
         - example42-apache
         - example42-php

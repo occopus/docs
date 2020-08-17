@@ -34,7 +34,7 @@ For running the experiment, we selected a molecule set of 60 molecules. This set
 
 **Download**
 
-You can download the example as `tutorial.examples.flowbster-autodock-vina <https://raw.githubusercontent.com/occopus/docs/master/tutorials/flowbster-autodock-vina.tar.gz>`_ .
+You can download the example as `tutorial.examples.flowbster-autodock-vina <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/flowbster-autodock-vina.tar.gz>`_ .
 
 **Steps**
 
@@ -177,7 +177,7 @@ The following steps are suggested to be performed:
                     app:
                         exe:
                             filename: execute.bin
-                            tgzurl: https://github.com/occopus/flowbster/raw/master/examples/vina/bin/generator_exe.tgz
+                            tgzurl: https://github.com/occopus/flowbster/raw/devel/examples/vina/bin/generator_exe.tgz
                         args: '240'
 
 

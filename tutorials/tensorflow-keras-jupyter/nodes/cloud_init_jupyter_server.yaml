@@ -49,8 +49,8 @@ write_files:
     #!/bin/bash
     echo "==> Copy Jupyter EXAMPLES starts."
     mkdir -p ~/workspace
-    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter/examples/TF-MNIST-example.ipynb -o ~/workspace/TF-MNIST-example.ipynb
-    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter/examples/packages.ipynb -o ~/workspace/packages.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter/examples/TF-MNIST-example.ipynb -o ~/workspace/TF-MNIST-example.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter/examples/packages.ipynb -o ~/workspace/packages.ipynb
     echo "==> Copy Jupyter EXAMPLES finished."
   permissions: '755'
 
