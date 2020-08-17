@@ -1,7 +1,7 @@
 'node_def:azure_helloworld_node':
   -
     resource:
-      type: azure
+      type: azure_vm
       endpoint: https://management.azure.com
       resource_group: replace_with_resource_group_name
       location : replace_with_location
