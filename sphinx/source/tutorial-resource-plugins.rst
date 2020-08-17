@@ -35,7 +35,7 @@ In this example, the following feature(s) will be demonstrated:
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/ec2-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.ec2-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/ec2-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -127,7 +127,7 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 
 **Download**
 
-You can download the example as `tutorial.examples.ec2-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/ec2-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.ec2-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/ec2-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -255,7 +255,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/nova-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.nova-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/nova-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -359,7 +359,7 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Download**
 
-You can download the example as `tutorial.examples.nova-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/nova-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.nova-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/nova-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -492,7 +492,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -511,7 +511,7 @@ You can download the example as `tutorial.examples.azure-helloworld <https://raw
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -600,7 +600,7 @@ ping the ping-receiver node. The sender node will store the outcome of ping in `
 
 **Download**
 
-You can download the example as `tutorial.examples.azure-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/azure-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.azure-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -619,7 +619,7 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -724,6 +724,218 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
 
+Azure-ACI-Helloworld
+~~~~~~~~~~~~~~~~~~~~
+
+This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
+
+**Features**
+
+- creating a node with basic contextualisation
+- using the azure_aci resource handler
+
+**Prerequisites**
+
+- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
+- resource group name inside Azure
+- location to use inside Azure
+
+**Download**
+
+You can download the example as `tutorial.examples.azure-aci-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-aci-helloworld.tar.gz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. For ``azure_aci_helloworld_node`` set the followings in its ``resource`` section:
+
+   - ``resource_group`` must contain the name of the resource group to allocate resources in.
+   - ``location`` is the name of the location (region) to use.
+   - ``memory`` must contain the amount of memory to allocate for the container in GB (e.g. 1).
+   - ``cpu_cores`` must contain the amount of CPU cures to allocate for the container in GB (e.g. 1).
+
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code:: yaml
+
+     'node_def:azure_aci_helloworld_node':
+         -
+            resource:
+               type: azure_aci
+               endpoint: https://management.azure.com
+               resource_group: replace_with_resource_group_name
+               location: replace_with_location
+               memory: replace_with_memory
+               cpu_cores: replace_with_cpu_cores
+               os_type: linux
+               image: alpine
+               network_type: Private
+               ports:
+                  - 8080
+            contextualisation:
+               type: docker
+               env: ["message={{variables.message}}"]
+               command: ["sh", "-c", "echo \"$message\" > /tmp/message.txt; while true; do sleep 1000; done"]
+            health_check:
+               ping: False
+
+#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``azure_aci_helloworld_node`` node into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code:: bash
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code:: bash
+
+      occopus-build infra-azure-aci-helloworld.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code:: bash
+
+      List of nodes/ip addresses:
+      helloworld:
+          aaa.bbb.ccc.ddd (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. Check the result on the Azure portal. When you open the Azure portal, you can find your container instance inside all resources. From there, you can navigate to the connect panel of the container, and can use /bin/sh to gain root shell access inside the running container:
+
+   .. code:: bash
+
+      # cat /tmp/helloworld.txt
+      Hello World! I have been created by Occopus
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code:: bash
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+Azure-ACI-Nginx
+~~~~~~~~~~~~~~~
+
+This tutorial builds an infrastructure containing two nodes. The nginx-client node will
+fetch the HTML content served by the nginx-server node, and store the outcome in the ``/tmp`` directory. The nginx-server node uses the
+Alpine Linux-based Nginx image from the Docker hub, whereas the nginx-client node is run on top of a stock Alpine Linux image, also from
+the Docker hub.
+
+**Features**
+
+- creating two nodes with dependencies (i.e. ordering of deployment)
+- querying a node's ip address and passing the address to another
+- using the azure_aci resource handler
+
+**Prerequisites**
+
+- accessing Microsoft Azure interface (Tenant ID, Client ID, Client Secret, Subscription ID)
+- resource group name inside Azure
+- location to use inside Azure
+
+**Download**
+
+You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/azure-aci-nginx.tar.gz>`_ .
+
+**Steps**
+
+#. Edit ``nodes/node_definitions.yaml``. Both, for ``azure_aci_nginx_node`` and for ``azure_aci_client_node`` set the followings in their ``resource`` section:
+
+   - ``resource_group`` must contain the name of the resource group to allocate resources in.
+   - ``location`` is the name of the location (region) to use.
+   - ``memory`` must contain the amount of memory to allocate for the container in GB (e.g. 1).
+   - ``cpu_cores`` must contain the amount of CPU cures to allocate for the container in GB (e.g. 1).
+
+   .. important::
+
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+
+   .. code:: yaml
+
+     'node_def:azure_aci_nginx_node':
+	 -
+	     resource:
+             type: azure_aci
+             endpoint: https://management.azure.com
+               resource_group: replace_with_resource_group_name
+               location: replace_with_location
+               memory: replace_with_memory
+               cpu_cores: replace_with_cpu_cores
+               os_type: linux
+               image: nginx:alpine
+               network_type: Public
+               ports:
+                  - 80
+           ...
+     'node_def:azure_aci_client_node':
+	 -
+	     resource:
+             type: azure_aci
+             endpoint: https://management.azure.com
+               resource_group: replace_with_resource_group_name
+               location: replace_with_location
+               memory: replace_with_memory
+               cpu_cores: replace_with_cpu_cores
+               os_type: linux
+               image: alpine
+               network_type: Public
+               ports:
+                  - 8080
+
+#. Make sure your authentication information is set correctly in your authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``azure_aci_nginx_node`` and ``azure_aci_client_node`` nodes into the database.
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code:: bash
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
+
+   .. code:: bash
+
+      occopus-build infra-azure-aci-nginx.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code:: bash
+
+      List of ip addresses:
+      nginx-server:
+          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
+      nginx-client:
+          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
+
+      30f566d1-9945-42be-b603-795d604b362f
+
+#. Check the result on the Azure portal. When you open the Azure portal, you can find your container instances inside all resources.
+From there, you can navigate to the connect panel of the nginx-client container, and can use /bin/sh to gain root shell access inside the running container:
+
+   .. code:: bash
+
+      / # ls -1 /tmp
+      message.txt
+      nginx_content.html
+      / # cat /tmp/message.txt
+      Hello World! I am the client node created by Occopus.
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
+
+   .. code:: bash
+
+      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
+
 Docker-Helloworld
 ~~~~~~~~~~~~~~~~~
 This tutorial builds an infrastructure containing a single node implemented by a Docker container. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/root/message.txt`` file.
@@ -745,7 +957,7 @@ This tutorial builds an infrastructure containing a single node implemented by a
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/docker-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.docker-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/docker-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -834,7 +1046,7 @@ This tutorial builds an infrastructure containing a two nodes implemented by Doc
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/docker-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.docker-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/docker-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -939,7 +1151,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudsigma-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudsigma-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudsigma-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -1036,7 +1248,7 @@ This tutorial builds an infrastructure containing two nodes. The ping-sender nod
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudsigma-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudsigma-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudsigma-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudsigma-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -1174,7 +1386,7 @@ This tutorial builds an infrastructure containing a single node. The node will r
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudbroker-helloworld.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudbroker-helloworld <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudbroker-helloworld.tar.gz>`_ .
 
 **Steps**
 
@@ -1263,7 +1475,7 @@ ping the ping-receiver node. The node will store the outcome of ping in ``/tmp``
 
 **Download**
 
-You can download the example as `tutorial.examples.cloudbroker-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cloudbroker-ping.tar.gz>`_ .
+You can download the example as `tutorial.examples.cloudbroker-ping <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cloudbroker-ping.tar.gz>`_ .
 
 **Steps**
 
@@ -1363,210 +1575,3 @@ You can download the example as `tutorial.examples.cloudbroker-ping <https://raw
    .. code:: bash
 
       occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
-
-OCCI-Helloworld
-~~~~~~~~~~~~~~~
-This tutorial builds an infrastructure containing a single node. The node will receive information (i.e. a message string) through contextualisation. The node will store this information in ``/tmp`` directory.
-
-**Features**
-
- - creating a node with basic contextualisation
- - using the occi resource handler
-
-**Prerequisites**
-
- - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
- - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
- - properly installed occi command-line client utility (occi command)
-
-**Download**
-
-You can download the example as `tutorial.examples.occi-helloworld <https://raw.githubusercontent.com/occopus/docs/master/tutorials/occi-helloworld.tar.gz>`_ .
-
-**Steps**
-
-#. Edit ``nodes/node_definitions.yaml``. For ``occi_helloworld_node`` set the followings in its ``resource`` section:
-
-   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
-   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
-   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
-   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
-   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
-
-   .. important::
-
-      You can get help on collecting identifiers for the resources section at :ref:`this page <collect_amazon>` ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code:: yaml
-
-     'node_def:occi_helloworld_node':
-         -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
-
-#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
-
-#. Load the node definition for ``occi_helloworld_node`` node into the database.
-
-   .. important::
-
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
-   .. code:: bash
-
-      occopus-import nodes/node_definitions.yaml
-
-#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
-
-   .. code:: bash
-
-      occopus-build infra-occi-helloworld.yaml
-
-#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
-
-   .. code:: bash
-
-      List of nodes/ip addresses:
-      helloworld:
-          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-      14032858-d628-40a2-b611-71381bd463fa
-
-#. Check the result on your virtual machine.
-
-   .. code:: bash
-
-      ssh ...
-      # cat /tmp/helloworld.txt
-      Hello World! I have been created by Occopus
-
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
-
-   .. code:: bash
-
-      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
-
-OCCI-Ping
-~~~~~~~~~
-This tutorial builds an infrastructure containing two nodes. The ping-sender node will
-ping the ping-receiver node. The sender node will store the outcome of ping in ``/tmp`` directory.
-
-**Features**
-
- - creating two nodes with dependencies (i.e. ordering of deployment)
- - querying a node's ip address and passing the address to another
- - using the occi resource handler
-
-**Prerequisites**
-
- - accessing an OCCI cloud through its OCCI interface (endpoint, X.509 VOMS proxy)
- - target cloud contains a base OS image with cloud-init support (os_tpl, resource_tpl)
- - properly installed occi command-line client utility (occi command)
-
-**Download**
-
-You can download the example as `tutorial.examples.occi-ping <https://raw.githubusercontent.com/occopus/docs/master/tutorials/occi-ping.tar.gz>`_ .
-
-**Steps**
-
-#. Edit ``nodes/node_definitions.yaml``. Both, for ``occi_ping_receiver_node`` and for ``occi_ping_sender_node`` set the followings in their ``resource`` section:
-
-   - ``endpoint`` is an url of an Occi interface of a cloud (e.g. `https://carach5.ics.muni.cz:11443`) stored in the EGI AppDB.
-   - ``os_tpl`` is an image identifier for Occi (e.g. `os_tpl#uuid_egi_ubuntu_server_14_04_lts_fedcloud_warg_131`) stored in the EGI AppDB. Select an image containing a base os installation with cloud-init support!
-   - ``resource_tpl`` is the instance type in Occi (e.g. `http://fedcloud.egi.eu/occi/compute/flavour/1.0#medium`) stored in the EGI AppDB.
-   - ``link``  specifies the network (e.g. `https://carach5.ics.muni.cz:11443/network/24` and/or storage resources to be attached to the VM.
-   - ``public_key`` specifies the path to your ssh public key (e.g. `/home/user/.ssh/authorized_keys`) to be deployed on the target VM.
-
-   .. important::
-
-      You can get help on collecting identifiers for the resources section at :ref:`this page <collect_amazon>` ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
-
-   .. code:: yaml
-
-     'node_def:occi_ping_receiver_node':
-         -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
-             ...
-     'node_def:occi_ping_sender_node':
-         -
-             resource:
-                 type: occi
-                 endpoint: replace_with_endpoint_of_occi_interface_from_egi_appdb
-                 os_tpl: replace_with_occi_id_from_egi_appdb
-                 resource_tpl: replace_with_template_id_from_egi_appdb
-                 link:
-                     -
-                         replace_with_public_network_identifier_or_remove
-                 public_key: replace_with_path_to_your_ssh_public_key
-             ...
-
-#. Make sure your authentication information is set correctly in your authentication file. You must set the path of your VOMS proxy in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
-
-
-#. Load the node definition for ``occi_ping_receiver_node`` and ``occi_ping_sender_node`` nodes into the database.
-
-   .. important::
-
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
-   .. code:: bash
-
-      occopus-import nodes/node_definitions.yaml
-
-#. Start deploying the infrastructure. Make sure the proper virtualenv is activated!
-
-   .. code:: bash
-
-      occopus-build infra-occi-ping.yaml
-
-#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
-
-   .. code:: bash
-
-      List of ip addresses:
-      ping-receiver:
-          192.168.xxx.xxx (f639a4ad-e9cb-478d-8208-9700415b95a4)
-      ping-sender:
-          192.168.yyy.yyy (99bdeb76-2295-4be7-8f14-969ab9d222b8)
-
-      30f566d1-9945-42be-b603-795d604b362f
-
-#. Check the result on your virtual machine.
-
-   .. code:: bash
-
-      ssh ...
-      # cat /tmp/message.txt
-      Hello World! I am the sender node created by Occopus.
-      # cat /tmp/ping-result.txt
-      PING 192.168.xxx.xxx (192.168.xxx.xxx) 56(84) bytes of data.
-      64 bytes from 192.168.xxx.xxx: icmp_seq=1 ttl=64 time=2.74 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=2 ttl=64 time=0.793 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=3 ttl=64 time=0.865 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=4 ttl=64 time=0.882 ms
-      64 bytes from 192.168.xxx.xxx: icmp_seq=5 ttl=64 time=0.786 ms
-
-      --- 192.168.xxx.xxx ping statistics ---
-      5 packets transmitted, 5 received, 0% packet loss, time 4003ms
-      rtt min/avg/max/mdev = 0.786/1.215/2.749/0.767 ms
-
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``.
-
-   .. code:: bash
-
-      occopus-destroy -i 30f566d1-9945-42be-b603-795d604b362f
-

@@ -7,7 +7,7 @@ Features
 
 | Occopus supports a wide variety of interfaces for allocating cloud
   or container resources. Some of the most widespread supported interfaces are
-  ec2, nova, docker and occi. The list of supported interfaces is growing
+  ec2, nova, docker and Azure. The list of supported interfaces is growing
   due to the modular and extensible feature of Occopus.
 | :ref:`List of supported technologies <user-doc-clouds>`
 

@@ -231,22 +231,36 @@ Azure
   ``public_ip_needed``
     Optional. If specified with the value True, the Azure resource plugin will allocate a public IP address for the VM.
 
-OCCI
-^^^^
-  ``type: occi``
-    Selects the occi resource handler. It requires the occi client to be installed locally.
+Azure ACI
+^^^^^^^^^
+  ``type: azure_aci``
+    Selects the Azure ACI (Azure Container Instances) resource handler.
   ``endpoint``
-    The endpoint (url) of the occi cloud interface.
-  ``os_tpl``
-    The identifier of the VM image on the cloud.
-  ``resource_tpl``
-    The identifier of the instance type to be used to instantiate the VM image on the target cloud.
-  ``public_key``
-    Optional. The public ssh key to be deployed on the target virtual machine.
-  ``link``
-    Optional. List of compute or network resources to be attached to the VM. Using this option enables one to attach additional disk images or public networks to the VM.
-  ``name``
-    Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
+    The endpoint (url) of the Azure interface, e.g. https://management.azure.com
+  ``resource_group``
+    The resource group to allocate Azure resources in.
+  ``location``
+    The location where the resources should be allocated, e.g. francecentral.
+  ``image``
+    The public image to be used from Docker Hub, e.g. bde2020/spark-worker:2.4.5-hadoop2.7.
+  ``network_type``
+    The the of network to be used. Value "public" allocates a public address for the container, whereas value "private" uses a private network.
+  ``memory``
+    The memory in GB to allocate for the container, e.g. 2.
+  ``cpu_cores``
+    The number of vCPU cores to allocate for the container, e.g. 4.
+  ``os_type``
+    The operating system type required by the container. Possible values are "linux" and "windows".
+  ``gpu_type``
+    Optional. Specifies the GPU type to be allocated for the container. Currently usable values are "K80", "P100" and "V100".
+  ``gpu_count``
+    Optional when GPU type is set. Specifies the number of GPUs to allocate for the container.
+  ``vnet_name``
+    Optional in case the network type is "private". Name of the virtual network to use for the container. If not specified, the Azure ACI resource plugin will allocate a virtual network.
+  ``subnet_name``
+    Optional in case the network type is "private". The name of the subnet to use for the container. If not specified, the Azure ACI resource plugin will allocate a subnet.
+  ``ports``
+    The list of ports to be exposed from the container. This is required to have at least one element defined (e.g. 8080).
 
 CloudBroker
 ^^^^^^^^^^^
@@ -366,7 +380,7 @@ In this section, the attributes (keywords) are listed and explained which can be
 Cloudinit
 ^^^^^^^^^
   ``type: cloudinit``
-    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, occi, cloudsigma, azure.
+    Selects the cloudinit contextualisation plugin. Can be used with the following resource handlers: ec2, nova, cloudsigma, azure.
   ``context_template``
     This section can contain a cloud init configuration template. It must follow the syntax of cloud-init. See the `Cloud-init website <https://cloudinit.readthedocs.org/en/latest>`_ for examples and details. Please note that Amazon AWS currently limits the length of this data in 16384 bytes.
   ``attributes``
@@ -375,11 +389,11 @@ Cloudinit
 Docker
 ^^^^^^
   ``type: docker``
-    Selects the docker contextualisation plugin. Can be used with the following resource handlers: docker.
+    Selects the docker contextualisation plugin. Can be used with the following resource handlers: docker, azure_aci.
   ``env``
     Environment variables to be passed to containers.
   ``command``
-    Command to be executed inside the container once the container come to life.
+    Command to be executed inside the container once the container come to life. In case of the azure_aci resource handler, this is required to be a list.
 
 .. _userdefinitioncontextualisationvariablesandmethodssection:
 

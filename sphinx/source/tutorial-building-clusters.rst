@@ -6,13 +6,13 @@ Building clusters
 Docker-Swarm cluster
 ~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a master node and predefined number of worker nodes. The worker nodes receive the ip of the master node and attach to the master node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port ``2375``).
+This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Consul software components. It contains a devel node and predefined number of worker nodes. The worker nodes receive the ip of the devel node and attach to the devel node to form a cluster. Finally, the docker cluster can be used with any standard tool talking the docker protocol (on port ``2375``).
 
 **Features**
 
  - creating two types of nodes through contextualisation
  - passing ip address of a node to another node
- - using the occi resource handler
+ - using the cloudsigma resource handler
  - utilising health check against a predefined port
  - using parameters to scale up worker nodes
 
@@ -23,7 +23,7 @@ This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Co
 
 **Download**
 
-You can download the example as `tutorial.examples.docker-swarm <https://raw.githubusercontent.com/occopus/docs/master/tutorials/docker-swarm.tar.gz>`_ .
+You can download the example as `tutorial.examples.docker-swarm <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/docker-swarm.tar.gz>`_ .
 
 **Steps**
 
@@ -53,7 +53,7 @@ The following steps are suggested to be performed:
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Load the node definition for ``dockerswarm_master_node`` and ``dockerswarm_worker_node`` nodes into the database.
+#. Load the node definition for ``dockerswarm_devel_node`` and ``dockerswarm_worker_node`` nodes into the database.
 
    .. important::
 
@@ -81,21 +81,21 @@ The following steps are suggested to be performed:
 
    .. note::
 
-      It may take a few minutes until the services on the master node come to live. Please, be patient!
+      It may take a few minutes until the services on the devel node come to live. Please, be patient!
 
 #. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
    .. code:: bash
 
      List of nodes/ip addresses:
-     master:
+     devel:
        <ip-address> (dfa5f4f5-7d69-432e-87f9-a37cd6376f7a)
      worker:
        <ip-address> (cae40ed8-c4f3-49cd-bc73-92a8c027ff2c)
        <ip-address> (8e255594-5d9a-4106-920c-62591aabd899)
      77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
-#. Check the result by submitting docker commands to the docker master node!
+#. Check the result by submitting docker commands to the docker devel node!
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
@@ -123,7 +123,7 @@ In this tutorial we establish a cluster with two nodes types. On the DataAvenue 
 
 **Download**
 
-You can download the example as `tutorial.examples.dataavenue-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/dataavenue-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.dataavenue-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/dataavenue-cluster.tar.gz>`_ .
 
 **Steps**
 
@@ -349,7 +349,7 @@ In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (se
 
 **Download**
 
-You can download the example as `tutorial.examples.cqueue-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/cqueue-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.cqueue-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/cqueue-cluster.tar.gz>`_ .
 
 **Steps**
 
@@ -416,18 +416,18 @@ The following steps are suggested to be performed:
       List of nodes/ip addresses:
       cqueue-worker:
           192.168.xxx.xxx (34b07a23-a26a-4a42-a5f4-73966b8ed23f)
-      cqueue-master:
+      cqueue-devel:
           192.168.xxx.xxx (29b98290-c6f4-4ae7-95ca-b91a9baf2ea8)
 
       db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
 
-#. After a successful built, tasks can be sent to the CQueue master. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue master receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue master and execute them. One worker process one task at a time.
+#. After a successful built, tasks can be sent to the CQueue devel. The framework is built for executing Docker containers with their speciﬁc inputs. Also, environment variables and other input parameters can be speciﬁed for each container. The CQueue devel receives the tasks via a REST API and the CQueue workers pull the tasks from the CQueue devel and execute them. One worker process one task at a time.
 
    Push 'hello world' task (available parameters: image string, env []string, cmd []string, container_name string):
 
    .. code:: bash
 
-     curl -H 'Content-Type: application/json' -X POST -d'{"image":"ubuntu", "cmd":["echo", "hello Docker"]}' http://<masterip>:8080/task
+     curl -H 'Content-Type: application/json' -X POST -d'{"image":"ubuntu", "cmd":["echo", "hello Docker"]}' http://<develip>:8080/task
 
 
    The result should be: ``{"id":"task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9"}``
@@ -437,13 +437,13 @@ The following steps are suggested to be performed:
      This id (task_324c5ec3-56b0-4ff3-ab5c-66e5e47c30e9) will be used later, in order to query its status and result.
 
 
-#. The worker continuously updates the status (pending, received, started, retry, success, failure) of the task with the task’s ID. After the task is completed, the workers send a notiﬁcation to the CQueue master, and this task will be removed from the queue. The status of a task and the result can be queried from the key-value store through the CQueue master.
+#. The worker continuously updates the status (pending, received, started, retry, success, failure) of the task with the task’s ID. After the task is completed, the workers send a notiﬁcation to the CQueue devel, and this task will be removed from the queue. The status of a task and the result can be queried from the key-value store through the CQueue devel.
 
    Check the result of the push command by querying the ``task_id`` returned by the push command:
 
    .. code:: bash
 
-     curl -X GET http://<masterip>:8080/task/$task_id
+     curl -X GET http://<develip>:8080/task/$task_id
 
    The result should be: ``{"status":"SUCCESS"}``
 
@@ -451,7 +451,7 @@ The following steps are suggested to be performed:
 
    .. code:: bash
 
-     curl -X GET http://<masterip>:8080/task/$task_id/result
+     curl -X GET http://<develip>:8080/task/$task_id/result
 
    The result should be: ``hello Docker``
 
@@ -459,7 +459,7 @@ The following steps are suggested to be performed:
 
    .. code:: bash
 
-     curl -X DELETE http://<masterip>:8080/task/$task_id
+     curl -X DELETE http://<develip>:8080/task/$task_id
 
 #. For debugging, check the logs of the container at the CQueue worker node.
 
@@ -475,4 +475,4 @@ The following steps are suggested to be performed:
 
    .. note::
 
-      The CQueue master and the worker components are written in golang, and they have a shared code-base. The open-source code is available `at GitLab <https://gitlab.com/lpds-public/cqueue/-/tree/master>`_ .
+      The CQueue devel and the worker components are written in golang, and they have a shared code-base. The open-source code is available `at GitLab <https://gitlab.com/lpds-public/cqueue/-/tree/devel>`_ .

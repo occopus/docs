@@ -21,13 +21,7 @@ Occopus has a resource plugin to interface with `NOVA API
 Azure
 -----
 
-The Azure resource plugin of Occopus enables the usage of `Azure <https://azure.microsoft.com//>`_ resources.
-
-OCCI
-----
-
-Occopus can use OCCI-enabled cloud providers of the `EGI Federated Cloud
-<https://www.egi.eu/infrastructure/cloud/>`_. For this, one must possess an X.509 certificate accepted within the FedCloud VO.
+The Azure and Azure ACI resource plugins of Occopus enables the usage of `Azure <https://azure.microsoft.com//>`_ resources.
 
 CloudBroker
 -----------

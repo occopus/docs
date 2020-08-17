@@ -3,6 +3,12 @@
 Release Notes
 *************
 
+v1.8 (17 Aug 2020)
+==================
+
+- Add Azure ACI (container) plugin
+- Remove OCCI plugin
+
 v1.7 (30 Apr 2020)
 ==================
 

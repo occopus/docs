@@ -17,10 +17,6 @@ resource:
             client_secret: your_client_secret
             subscription_id: your_subscription_id
     -
-        type: occi
-        auth_data:
-            proxy: path_to_your_voms_proxy_file
-    -
         type: cloudbroker
         auth_data:
             email: your@email.com

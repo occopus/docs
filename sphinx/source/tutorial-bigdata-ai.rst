@@ -17,13 +17,13 @@ This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Had
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
  - generated ssh key-pair (or for testing purposes one is attached)
 
 **Download**
 
-You can download the example as `tutorial.examples.hadoop-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/hadoop-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.hadoop-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/hadoop-cluster.tar.gz>`_ .
 
 .. note::
 
@@ -105,7 +105,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
    .. code:: bash
 
       List of nodes/ip addresses:
-      hadoop-master:
+      hadoop-devel:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       hadoop-slave:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -146,13 +146,13 @@ This tutorial sets up a complete Apache Spark infrastructure. It contains a Spar
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
 **Download**
 
-You can download the example as `tutorial.examples.spark-cluster <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.spark-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster.tar.gz>`_ .
 
 .. note::
 
@@ -230,7 +230,7 @@ You can download the example as `tutorial.examples.spark-cluster <https://raw.gi
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-master:
+      spark-devel:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -271,13 +271,13 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
 **Download**
 
-You can download the example as `tutorial.examples.spark-cluster-with-r <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-r.tar.gz>`_ .
+You can download the example as `tutorial.examples.spark-cluster-with-r <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-r.tar.gz>`_ .
 
 .. note::
 
@@ -359,7 +359,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-master:
+      spark-devel:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -398,7 +398,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(master = "local")
+     sc <- spark_connect(devel = "local")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -424,7 +424,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(master = "spark://<SparkMasterIP>:7077")
+     sc <- spark_connect(devel = "spark://<SparkMasterIP>:7077")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -482,13 +482,13 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
 **Download**
 
- You can download the example as `tutorial.examples.spark-cluster-with-python <https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-python.tar.gz>`_ .
+ You can download the example as `tutorial.examples.spark-cluster-with-python <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-python.tar.gz>`_ .
 
 .. note::
 
@@ -570,7 +570,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-master:
+      spark-devel:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -619,13 +619,13 @@ The complete machine learning environment consists of the following components: 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
 **Download**
 
- You can download the example as `tutorial.examples.tensorflow-keras-jupyter <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter.tar.gz>`_ .
+ You can download the example as `tutorial.examples.tensorflow-keras-jupyter <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter.tar.gz>`_ .
 
 .. note::
 
@@ -729,13 +729,13 @@ The complete machine learning environment consists of the following components: 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, OCCI, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
 
 
 **Download**
 
- You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter-gpu.tar.gz>`_ .
+ You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/tensorflow-keras-jupyter-gpu.tar.gz>`_ .
 
 .. note::
 

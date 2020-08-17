@@ -18,7 +18,7 @@ This tutorial uses Chef as a configuration management tool to deploy a one-node 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, Azure, Nova, etc.)
  - target cloud contains a base OS image with cloud-init support (image id, instance type)
  - accessing the Chef server as user by Occopus (user name, user key)
  - accessing the Chef server as client by the nodes (validator client name, validator client key)
@@ -26,7 +26,7 @@ This tutorial uses Chef as a configuration management tool to deploy a one-node 
 
 **Download**
 
-You can download the example as `tutorial.examples.chef-apache2 <https://raw.githubusercontent.com/occopus/docs/master/tutorials/chef-apache2.tar.gz>`_ .
+You can download the example as `tutorial.examples.chef-apache2 <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/chef-apache2.tar.gz>`_ .
 
 **Steps**
 
@@ -151,7 +151,7 @@ This tutorial uses Chef as a configuration management tool to deploy a two-node 
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, Azure, Nova, etc.)
  - target cloud contains a base OS image with cloud-init support (image id, instance type)
  - accessing the Chef server as user by Occopus (user name, user key)
  - accessing the Chef server as client by the nodes (validator client name, validator client key)
@@ -160,7 +160,7 @@ This tutorial uses Chef as a configuration management tool to deploy a two-node 
 
 **Download**
 
-You can download the example as `tutorial.examples.chef-wordpress <https://raw.githubusercontent.com/occopus/docs/master/tutorials/chef-wordpress.tar.gz>`_ .
+You can download the example as `tutorial.examples.chef-wordpress <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/chef-wordpress.tar.gz>`_ .
 
 **Steps**
 
@@ -307,14 +307,14 @@ This tutorial uses Puppet as a configuration management tool in a server-free mo
 
 **Prerequisites**
 
- - accessing a cloud through an Occopus-compatible interface (e.g. EC2, OCCI, Nova, etc.)
+ - accessing a cloud through an Occopus-compatible interface (e.g. EC2, Azure, Nova, etc.)
  - target cloud contains a base OS image with cloud-init support (image id, instance type)
  - ``wordpress-init`` puppet recipe (provided in example package at Download)
  - ``mysql-init`` puppet recipe (provided in example package at Download)
 
 **Download**
 
-You can download the example as `tutorial.examples.puppet-solo-wordpress <https://raw.githubusercontent.com/occopus/docs/master/tutorials/puppet-solo-wordpress.tar.gz>`_ .
+You can download the example as `tutorial.examples.puppet-solo-wordpress <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/puppet-solo-wordpress.tar.gz>`_ .
 
 **Steps**
 
