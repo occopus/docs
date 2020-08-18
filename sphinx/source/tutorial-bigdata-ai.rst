@@ -105,7 +105,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
    .. code:: bash
 
       List of nodes/ip addresses:
-      hadoop-devel:
+      hadoop-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       hadoop-slave:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -230,7 +230,7 @@ You can download the example as `tutorial.examples.spark-cluster <https://raw.gi
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -359,7 +359,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
@@ -398,7 +398,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(devel = "local")
+     sc <- spark_connect(master = "local")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -424,7 +424,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      install.packages("sparklyr")
      library(sparklyr)
      Sys.setenv(SPARK_HOME = '/home/sparkuser/spark')
-     sc <- spark_connect(devel = "spark://<SparkMasterIP>:7077")
+     sc <- spark_connect(master = "spark://<SparkMasterIP>:7077")
      sdf_len(sc, 5, repartition = 1) %>%
      spark_apply(function(e) I(e))
      spark_disconnect_all()
@@ -570,7 +570,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
    .. code:: bash
 
       List of nodes/ip addresses:
-      spark-devel:
+      spark-master:
           192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
       spark-worker:
           192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)

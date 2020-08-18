@@ -260,7 +260,7 @@ You can download the example as `tutorial.examples.autoscaling-hadoop <https://r
 
      If you want Occopus to monitor (health_check) your Hadoop Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
 
-#. Optionally, edit the ``nodes/cloud_init_hadoop_devel.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
+#. Optionally, edit the ``nodes/cloud_init_hadoop_master.yaml`` node descriptor file's "Prometheus rules" section in case you want to implement new scaling rules. The actually implemented rules are working well and can be seen below.
 
         - ``{infra_id}`` is a built in Occopus variable and every alert has to implement it in their Labels!
 
