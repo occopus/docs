@@ -511,7 +511,7 @@ You can download the example as `tutorial.examples.azure-helloworld <https://raw
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -619,7 +619,7 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -755,7 +755,7 @@ You can download the example as `tutorial.examples.azure-aci-helloworld <https:/
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -855,7 +855,7 @@ You can download the example as `tutorial.examples.azure-aci-nginx <https://raw.
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/masteroper/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at https://docs.microsoft.com/hu-hu/azure/developer/python/azure-sdk-authenticate. Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
