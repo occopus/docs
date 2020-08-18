@@ -8,11 +8,10 @@ nodes:
   - &W
     name: spark-worker
     type: spark_worker_node
-    scaling: 
+    scaling:
       min: 1
       max: 10
 
 dependencies:
   -
     connection: [ *W, *M ]
-
