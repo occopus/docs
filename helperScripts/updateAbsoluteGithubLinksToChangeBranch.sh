@@ -71,7 +71,7 @@ echo ''
 function proceed (){
     echo ''
     for t in ${files[@]}; do
-        sed -i "s/$1/$2/g" $t
+        sed -i "s/https:\/\/raw.githubusercontent.com\/occopus\/docs\/$1\/tutorials\//https:\/\/raw.githubusercontent.com\/occopus\/docs\/$2\/tutorials\//g" $t
         echo -e "\e[92m $t Done"
     done
 
