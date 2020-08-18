@@ -131,127 +131,6 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
 
-Apache Spark cluster
-~~~~~~~~~~~~~~~~~~~~
-
-Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
-
-This tutorial sets up a complete Apache Spark infrastructure. It contains a Spark Master node and Spark Worker nodes, which can be scaled up or down.
-
-**Features**
-
- - creating two types of nodes through contextualisation
- - utilising health check against a predefined port
- - using scaling parameters to limit the number of Spark Worker nodes
-
-**Prerequisites**
-
- - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
- - target cloud contains a base Ubuntu OS image with cloud-init support
-
-
-**Download**
-
-You can download the example as `tutorial.examples.spark-cluster <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster.tar.gz>`_ .
-
-.. note::
-
-   In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
-
-**Steps**
-
-#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
-
-   - you must select an :ref:`Occopus compatible resource plugin <user-doc-clouds>`
-   - you can find and specify the relevant :ref:`list of attributes for the plugin <userdefinitionresourcesection>`
-   - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
-   - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
-
-   The downloadable package for this example contains a resource template for the Nova plugin.
-
-   .. important::
-
-     Do not modify the values of the contextualisation and the health_check section’s attributes!
-
-   .. important::
-
-     Do not specify the server_name attribute for workers so they are named automatically by Occopus to make sure node names are unique!
-
-   .. note::
-
-     If you want Occopus to monitor (health_check) your Spark Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
-
-
-#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
-
-   ===========     =============  ====================
-   Protocol        Port(s)        Service
-   ===========     =============  ====================
-   TCP             22             SSH
-   TCP             4040           Web UI
-   TCP             8080           Web UI (Standalone mode)
-   ===========     =============  ====================
-
-#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
-
-#. Update the number of Spark Worker nodes if necessary. For this, edit the ``infra-occopus-spark.yaml`` file and modifiy the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup), and the maximum is set to 10.
-
-   .. code:: yaml
-
-     - &W
-        name: spark-worker
-        type: spark_worker_node
-        scaling:
-                min: 2
-                max: 10
-
-   .. important::
-
-     Important: Keep in mind that Occopus has to start at least one node from each node type to work properly and scaling can be applied only for Spark Worker nodes in this example!
-
-#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
-
-   .. important::
-
-      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
-
-   .. code:: bash
-
-      occopus-import nodes/node_definitions.yaml
-
-#. Start deploying the infrastructure.
-
-   .. code:: bash
-
-      occopus-build infra-spark-cluster.yaml
-
-#. After successful finish, the nodes with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
-
-   .. code:: bash
-
-      List of nodes/ip addresses:
-      spark-master:
-          192.168.xxx.xxx (3116eaf5-89e7-405f-ab94-9550ba1d0a7c)
-      spark-worker:
-          192.168.xxx.xxx (23f13bd1-25e7-30a1-c1b4-39c3da15a456)
-          192.168.xxx.xxx (7b387348-b3a3-5556-83c3-26c43d498f39)
-
-      14032858-d628-40a2-b611-71381bd463fa
-
-#. You can check the  health and statistics of the cluster through the following web pages:
-
-   - Spark UI: ``http://<SparkMasterIP>:8080``
-   - Application UI: ``http://<SparkMasterIP>:4040``
-
-#. You can find examples to test your cluster by submitting an aplication on the Apache Spark cluster `at this site <https://spark.apache.org/docs/latest/submitting-applications.html>`_ .
-
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
-
-   .. code:: bash
-
-      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
-
-
 Apache Spark cluster with RStudio Stack
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -464,14 +343,13 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-Apache Spark cluster with Python Stack
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Apache Spark cluster with Jupyter notebook and PySpark
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
 Spark also provides a special library called “Spark MLlib” for supporting machine learning applications. Similarly, to the R-oriented Spark environment, we have developed the infrastructure descriptors for the creation of a machine learning environment in the cloud. Here, the programming language is Python and the user programming environment is Jupyter. The complete machine learning environment consists of the following components: Jupyter, Python, Spark and HDFS. Deploying this machine learning environment is also automatically done by Occopus and the number of Spark workers can be defined by the user.
-
 This tutorial sets up a complete Apache Spark infrastructure integrated with HDFS, Python and Jupyter Notebook. It contains a Spark Master node and Spark Worker nodes, which can be scaled up or down.
 
 **Features**
@@ -519,17 +397,26 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
      If you want Occopus to monitor (health_check) your Spark Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
 
 
-#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+#. Generally speaking, a Spark cluster and its services are not deployed on the public internet. They are generally private services, and should only be accessible within the network of the organization that deploys Spark. Access to the hosts and ports used by Spark services should be limited to origin hosts that need to access the services.
+This means that you need to create a firewall rule to allow **all traffic between Spark nodes** and the **required ports** [web UI and job submission port(s)] should be allowed **only from your IP address**.
 
-   ===========     =============  ====================
-   Protocol        Port(s)        Service
-   ===========     =============  ====================
-   TCP             22             SSH
-   TCP             4040           Web UI
-   TCP             8080           Web UI (Standalone mode)
-   TCP             8888           Jupyter Notebook
-   TCP             50070
-   ===========     =============  ====================
+   **Main UI port list:**
+
+   +-------+------------------------------------------------------------------+
+   |  Port | Description                                                      |
+   +=======+==================================================================+
+   | 4040  | Application port (active only if a Spark application is running) |
+   +-------+------------------------------------------------------------------+
+   | 6066  | Submit job to cluster via REST API                               |
+   +-------+------------------------------------------------------------------+
+   | 7077  | Submit job to cluster/Join to the cluster                        |
+   +-------+------------------------------------------------------------------+
+   | 8080  | Master UI                                                        |
+   +-------+------------------------------------------------------------------+
+   | 8081  | Worker UI                                                        |
+   +-------+------------------------------------------------------------------+
+   | 50070 | HDFS NameNode UI                                                 |
+   +-------+------------------------------------------------------------------+
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
@@ -578,6 +465,10 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
       14032858-d628-40a2-b611-71381bd463fa
 
+   .. note::
+
+      After Occopus finished the infrastructure, the Worker instance takes some time to finish the deployment process via cloud-init.
+
 #. You can check the  health and statistics of the cluster through the following web pages:
 
    - HDFS NameNode UI: ``http://<SparkMasterIP>:50070``
@@ -590,7 +481,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 #. Testing with Jupyter Notebook
 
-   The Jupyter notebook's web interface can be access via "http://<SparkMasterIP>:8888". Here, you can upload and run Jupyter notebooks.
+   The Jupyter notebook's web interface can be access via ``http://<SparkMasterIP>:8888``. Here, you can upload and run Jupyter notebooks.
 
    .. note::
 
