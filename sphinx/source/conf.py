@@ -19,10 +19,10 @@
 
 project = 'Occopus'
 copyright = '2020, SZTAKI'
-author = 'Márk Emődi'
+author = 'József Kovács, Zoltán Farkas, Márk Emődi'
 
 # The full version, including alpha/beta/rc tags
-release = 'v1.7'
+release = 'v1.8'
 
 
 # -- General configuration ---------------------------------------------------
