@@ -187,17 +187,26 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      If you want Occopus to monitor (health_check) your Spark Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
 
 
-#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+#. Generally speaking, a Spark cluster and its services are not deployed on the public internet. They are generally private services, and should only be accessible within the network of the organization that deploys Spark. Access to the hosts and ports used by Spark services should be limited to origin hosts that need to access the services.
+This means that you need to create a firewall rule to allow **all traffic between Spark nodes** and the **required ports** [web UI and job submission port(s)] should be allowed **only from your IP address**.
 
-   ===========     =============  ====================
-   Protocol        Port(s)        Service
-   ===========     =============  ====================
-   TCP             22             SSH
-   TCP             4040           Web UI
-   TCP             8080           Web UI (Standalone mode)
-   TCP             8787
-   TCP             50070
-   ===========     =============  ====================
+   **Main UI port list:**
+
+   +-------+------------------------------------------------------------------+
+   |  Port | Description                                                      |
+   +=======+==================================================================+
+   | 4040  | Application port (active only if a Spark application is running) |
+   +-------+------------------------------------------------------------------+
+   | 6066  | Submit job to cluster via REST API                               |
+   +-------+------------------------------------------------------------------+
+   | 7077  | Submit job to cluster/Join to the cluster                        |
+   +-------+------------------------------------------------------------------+
+   | 8080  | Master UI                                                        |
+   +-------+------------------------------------------------------------------+
+   | 8081  | Worker UI                                                        |
+   +-------+------------------------------------------------------------------+
+   | 50070 | HDFS NameNode UI                                                 |
+   +-------+------------------------------------------------------------------+
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
