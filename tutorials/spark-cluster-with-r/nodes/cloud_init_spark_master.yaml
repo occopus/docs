@@ -1,64 +1,184 @@
 #cloud-config
+package_upgrade: false
+
 
 write_files:
 
-############################
-# SCRIPT TO CREATE SPARKUSER
-############################
-- path: /bin/create-user.sh
+- path: /tmp/installation.sh
   content: |
     #!/bin/bash
+
+    set -ex
+    HADOOP_VERSION=2.10.0
+    SPARK_VERSION=2.4.6
+    SPAR_HADOOP_VERSION=2.7
+    CONSUL_VERSION=1.8.0
+    CONSUL_TEMPLATE_VERSION=0.25.0
+    RSTUDIO_VERSION=1.3.1073-amd64
+
+
     echo "Creating SPARKUSER starts."
     adduser --disabled-password --gecos "" sparkuser
+    chown -R sparkuser:sparkuser /home/sparkuser
     echo "sparkuser:lpds" | chpasswd
     echo "Creating SPARKUSER finished."
-  permissions: '755'
-
-###########################
-# SCRIPT TO INSTALL RSTUDIO
-###########################
-- path: /bin/install-studio.sh
-  content: |
-    #!/bin/bash
-    echo "Install RSTUDIO starts."
-    #Install R
-    sudo apt-get update
-    sudo apt-get install r-base -y
-
-    #Install RStudio Server
-    sudo apt-key adv –keyserver keyserver.ubuntu.com –recv-keys E084DAB9
-    sudo add-apt-repository 'deb https://ftp.ussg.iu.edu/CRAN/bin/linux/ubuntu xenial/'
-    sudo apt-get update
-    sudo apt-get install r-base
-    sudo apt-get install r-base-dev
-    sudo apt-get install gdebi-core
-    wget https://download2.rstudio.org/rstudio-server-1.1.463-amd64.deb
-    sudo gdebi rstudio-server-1.1.463-amd64.deb -n
-    sudo apt-get -y install libpango1.0-dev
-    sudo apt-get -y install libcurl4-gnutls-dev
-    sudo apt-get -y install libssl-dev
-    sudo apt-get -y install libxml2-dev
-    echo "Install RSTUDIO finished."
-  permissions: '755'
 
 
-################################
-# SCRIPT TO INSTALL HADOOP
-################################
-- path: /bin/hadoop-install-hadoop.sh
-  content: |
-    #!/bin/bash
+    hostnamectl set-hostname spark-master
+
+
+    # Turn off unattended upgrade
+    sed -i 's/APT::Periodic::Unattended-Upgrade "1";/APT::Periodic::Unattended-Upgrade "0";/g' /etc/apt/apt.conf.d/20auto-upgrades
+
+
+    echo "Install requirement packages starts."
+    # Wait for unattended upgrade
+    while [[ `ps aufx | grep -v "grep" | grep "apt.systemd.daily" | wc -l` -gt 0 ]]; do
+      echo "The unattended-upgrades are running..."
+      sleep 1
+    done
+
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y openjdk-8-jdk openjdk-8-jre unzip r-base gdebi-core libpango1.0-dev libcurl4-gnutls-dev libssl-dev libxml2-dev
+    echo "Install requirement packages starts."
+
+
     echo "Install HADOOP starts."
-    wget -nc http://xenia.sote.hu/ftp/mirrors/www.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz -O /home/sparkuser/hadoop-2.9.2.tar.gz
-    tar -xvf /home/sparkuser/hadoop-2.9.2.tar.gz --directory /home/sparkuser
-    mv /home/sparkuser/hadoop-2.9.2 /home/sparkuser/hadoop
-    rm /home/sparkuser/hadoop-2.9.2.tar.gz
+    wget -nc https://downloads.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz -O /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz
+    tar -xzf /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz --directory /home/sparkuser
+    mkdir /home/sparkuser/hadoop
+    mv /home/sparkuser/hadoop-$HADOOP_VERSION/* /home/sparkuser/hadoop
+    rm -r /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz /home/sparkuser/hadoop-$HADOOP_VERSION
     echo "Install HADOOP finished."
+
+
+    echo "Install SPARK starts."
+    wget -nc https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz -O /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz
+    tar -zxf /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz  --directory /home/sparkuser
+    mkdir /home/sparkuser/spark
+    mv /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION/* /home/sparkuser/spark
+    rm -r /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION
+    echo "Install SPARK finished."
+
+
+    echo "Install CONSUL starts."
+    wget -nc "https://releases.hashicorp.com/consul/"$CONSUL_VERSION"/consul_"$CONSUL_VERSION"_linux_amd64.zip" -O /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip
+    unzip -q /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip -d /home/sparkuser/consul/
+    wget -nc "https://releases.hashicorp.com/consul-template/"$CONSUL_TEMPLATE_VERSION"/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip" -O /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip
+    unzip -q /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip -d /home/sparkuser/consul/
+    rm /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip
+    echo "Install CONSUL finished."
+
+
+    echo "Install RSTUDIO starts."
+    wget -nc "https://download2.rstudio.org/server/xenial/amd64/rstudio-server-$RSTUDIO_VERSION.deb" -O "/home/sparkuser/rstudio-server-$RSTUDIO_VERSION.deb"
+    gdebi -n /home/sparkuser/rstudio-server-$RSTUDIO_VERSION.deb
+    echo "Install RSTUDIO finished."
+
+
+    echo -e "####################
+    \e[92mInstallation DONE!!!\e[39m
+    ####################"
   permissions: '755'
 
-################################
-# HADOOP CONFIGURATION FILES
-################################
+- path: /tmp/configuration.sh
+  content: |
+    #!/bin/bash
+
+    set -ex
+    MASTERIP=`hostname -I | col1`
+    HOSTNAME=`hostname -s`
+
+
+    echo "Configure HADOOP starts."
+    touch /home/sparkuser/.bashrc
+    chown sparkuser:sparkuser /home/sparkuser/.bashrc
+    echo export PATH="/home/sparkuser/hadoop/bin:$PATH" >> /home/sparkuser/.bashrc
+    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
+    mv /tmp/hadoop/webconfigs/* /home/sparkuser/hadoop/share/hadoop/hdfs/webapps/hdfs/WEB-INF/
+    echo "spark: lpds, admin" >> /home/sparkuser/hadoop/etc/hadoop/realm.properties
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    mkdir /home/sparkuser/hadoop/logs
+    sed -i 's/HadoopMaster/'$MASTERIP'/g' /home/sparkuser/hadoop/etc/hadoop/core-site.xml
+    sed -i 's/HadoopMaster/'$MASTERIP'/g' /home/sparkuser/hadoop/etc/hadoop/hdfs-site.xml
+    touch /home/sparkuser/hadoop/etc/hadoop/dfs.exclude
+    echo "$MASTERIP $HOSTNAME" >> /etc/hosts
+    chown -R sparkuser:sparkuser /home/sparkuser/hadoop
+    echo "Configure HADOOP finished."
+
+
+    echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
+    echo export SPARK_HOME=/home/sparkuser/spark >> /home/sparkuser/.bashrc
+    echo "SPARK_MASTER_HOST=$MASTERIP >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "SPARK_LOCAL_IP=$MASTERIP >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "SPARK_PUBLIC_DNS=$MASTERIP >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "Configure SPARK ends."
+
+
+    echo "Configure SPARK GUI SECURITY starts."
+    wget https://gitlab.com/lpds-public/occopus-ml/raw/master/tutorials/ext_dep/spark-gui-sec.tgz?inline=false -O /home/sparkuser/spark-gui-sec.tgz
+    tar -zxf /home/sparkuser/spark-gui-sec.tgz --directory /home/sparkuser
+    cp /home/sparkuser/spark-gui-sec/basicAuthenticationFilter-0.0.1-SNAPSHOT.jar /home/sparkuser/spark/jars/.
+    rm -r /home/sparkuser/spark-gui-sec*
+    echo "spark.master.rest.enabled    false" >>/home/sparkuser/spark/conf/spark-defaults.conf
+    echo "spark.ui.filters hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter" >> /home/sparkuser/spark/conf/spark-defaults.conf
+    echo "spark.hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter.params username=spark,password=lpds,realm=realm" >> /home/sparkuser/spark/conf/spark-defaults.conf
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
+    echo "Configure SPARK GUI SECURITY ends."
+
+
+    su - sparkuser -c 'mkdir /home/sparkuser/consul/logs'
+    su - sparkuser -c 'mkdir /home/sparkuser/consul/data'
+    touch /home/sparkuser/downscale.log
+    chown sparkuser:sparkuser /home/sparkuser/downscale.log
+
+
+    echo "Launch CONSUL starts."
+    systemctl start consul.service
+    systemctl start consul-template-hosts.service
+    echo "Launch CONSUL finished."
+
+
+    chmod +x /tmp/downscale.sh
+    while [[ `cat /etc/hosts | grep 'Consul' | wc -l` -eq 0 ]]; do
+      echo "Waiting for /etc/host modification..."
+      sleep 1
+    done
+
+
+    echo -e "#####################
+    \e[92mConfiguration DONE!!!\e[39m
+    #####################"
+  permissions: '755'
+
+- path: /tmp/start-services.sh
+  content: |
+    #!/bin/bash
+
+    set -ex
+    MASTERIP=`hostname -I | col1`
+
+
+    echo "Launch HADOOP starts."
+    echo 'Y' | /home/sparkuser/hadoop/bin/hdfs namenode -format hdfs_cluster
+    /home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode
+    echo "Launch HADOOP finished."
+
+
+    echo "Launch Spark starts."
+    export SPARK_HOME=/home/sparkuser/spark
+    /home/sparkuser/spark/sbin/start-master.sh
+    echo "Launch Spark finished."
+
+
+    echo -e "###################
+    \e[92mServices STARTED!!!\e[39m
+    ###################"
+  permissions: '755'
 
 - path: /tmp/hadoop/configs/hdfs-site.xml
   content: |
@@ -82,7 +202,19 @@ write_files:
     </property>
     <property>
       <name>dfs.hosts.exclude</name>
-      <value>/etc/hadoop/conf/dfs.exclude</value>
+      <value>/home/sparkuser/hadoop/etc/hadoop/dfs.exclude</value>
+    </property>
+    <property>
+      <name>dfs.client.use.datanode.hostname</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>dfs.datanode.use.datanode.hostname</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+      <value>false</value>
     </property>
    </configuration>
   permissions: '644'
@@ -131,127 +263,91 @@ write_files:
     </Configure>
   permissions: '644'
 
+- path: /home/sparkuser/consul/hosts.ctmpl
+  content: |
+    127.0.0.1       localhost
 
-################################
-# SCRIPT TO SETUP HADOOP CONFIG
-################################
-- path: /bin/hadoop-setup-config.sh
+    # The following lines are desirable for IPv6 capable hosts
+    ::1     localhost ip6-localhost ip6-loopback
+    ff02::1 ip6-allnodes
+    ff02::2 ip6-allrouters
+
+    # Consul managed
+    {% raw %}
+    {{range service "hadoop"}}
+    {{.Address}} {{.Node}}{{end}}
+    {% endraw %}
+  permissions: '644'
+
+- path: /home/sparkuser/consul/service.json
+  content: |
+    {"service": {"name": "hadoop"}}
+  permissions: '644'
+
+- path: /etc/systemd/system/consul.service
+  content: |
+    [Unit]
+    Description=consul agent
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/home/sparkuser/consul/consul agent -server -ui -bootstrap-expect 1 -data-dir=/home/sparkuser/consul/data -config-file=/home/sparkuser/consul/service.json -bind=$(hostname -I | col1) -client=$(hostname -I | col1) >> /home/sparkuser/consul/logs/consul.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
+- path: /etc/systemd/system/consul-template-hosts.service
+  content: |
+    [Unit]
+    Description=consul for hosts file
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/home/sparkuser/consul/consul-template -consul-addr $(hostname -I | col1):8500 -template \"/home/sparkuser/consul/hosts.ctmpl:/etc/hosts:/tmp/downscale.sh\" >> /home/sparkuser/consul/logs/consul-template-hosts.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
+- path: /tmp/downscale.sh
   content: |
     #!/bin/bash
-    echo "Configure HADOOP starts."
-    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
-    mv /tmp/hadoop/webconfigs/* /home/sparkuser/hadoop/share/hadoop/hdfs/webapps/hdfs/WEB-INF/.
-    echo "spark: lpds, admin" >> /home/sparkuser/hadoop/etc/hadoop/realm.properties
 
-    #set JAVA HOME in hadoop env
-    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >>/home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
-    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop-2.9.2" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
-    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop-2.9.2/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    set -e
+    FILE_LOCATION=/home/sparkuser/hosts
+    LOG_LOCATION=/home/sparkuser/downscale.log
 
-    #SET HOSTS FILE
-    privateip=`hostname -i`
-    hostname=`hostname -s`
-    echo "$privateip $hostname" >> /etc/hosts
+    exec 3>&1 4>&2
+    trap 'exec 2>&4 1>&3' 0 1 2 3
+    exec 1>>$LOG_LOCATION 2>&1
 
-    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
-    sed -i 's/HadoopMaster/'$masterip'/g' /home/sparkuser/hadoop/etc/hadoop/core-site.xml
-    sed -i 's/HadoopMaster/'$masterip'/g' /home/sparkuser/hadoop/etc/hadoop/hdfs-site.xml
-    chown -R sparkuser:sparkuser /home/sparkuser/hadoop
-    echo "Configure HADOOP finished."
-  permissions: '755'
+    if [ ! -f $FILE_LOCATION ]; then
+        echo -e `date +%Y-%m-%d` `date +"%T"` "$FILE_LOCATION File does not exist... Creating.."
+        cp /etc/hosts $FILE_LOCATION
+        echo -e `date +%Y-%m-%d` `date +"%T"` "$FILE_LOCATION File created!"
+    fi
 
-
-################################
-# SCRIPT TO LAUNCH HDFS
-################################
-- path: /bin/launch-hadoop.sh
-  content: |
-    #!/bin/bash
-    echo "Launch HADOOP starts."
-    su - sparkuser -c "echo 'Y' | /home/sparkuser/hadoop/bin/hdfs namenode -format hdfs_cluster"
-    su - sparkuser -c "/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode"
-    #mkdir /home/hdfs
-    #chown sparkuser:sparkuser /home/hdfs
-    echo "Launch HADOOP finished."
-  permissions: '755'
+    if [ `diff /etc/hosts $FILE_LOCATION | grep '>' | wc -l` -gt 0 ]; then
+        echo -e `date +%Y-%m-%d` `date +"%T"` "Downscale detected. Restarting name node service..."
+        su - sparkuser -c '/home/sparkuser/hadoop/sbin/hadoop-daemon.sh stop namenode'
+        su - sparkuser -c '/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode'
+        echo -e `date +%Y-%m-%d` `date +"%T"` "Namenode restarted!"
+        cp /etc/hosts $FILE_LOCATION
+    else [ `diff /etc/hosts $FILE_LOCATION | grep '<' | wc -l` -gt 0 ]
+        echo -e `date +%Y-%m-%d` `date +"%T"` "Upscaling detected. Copy template file..."
+        cp /etc/hosts $FILE_LOCATION
+    fi
+  permissions: '644'
 
 
-################################
-# SCRIPT TO INSTALL JAVA
-################################
-- path: /bin/spark-install-java.sh
-  content: |
-    #!/bin/bash
-    echo "Install JAVA starts."
-    sudo apt-get update
-    sudo apt-get install default-jdk -y    
-    echo "Install JAVA finished."
-  permissions: '755'
-
-
-################################
-# SCRIPT TO INSTALL APACHE SPARK
-################################
-- path: /bin/spark-install-spark.sh
-  content: |
-    echo "Install SPARK starts."
-    wget https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
-    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
-    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
-    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
-    echo "Install SPARK finished."
-  permissions: '755'
-
-################################
-# SCRIPT TO SETUP SPARK CONFIG
-################################
-- path: /bin/spark-setup-config.sh
-  content: |
-    #!/bin/bash
-    echo "Configure SPARK starts."
-    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
-    masterip=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v 127.0.0.1 | head -n 1`
-    echo "SPARK_MASTER_HOST='$masterip'" >> /home/sparkuser/spark/conf/spark-env.sh
-    chown -R sparkuser:sparkuser /home/sparkuser/spark
-    echo "Configure SPARK ends."
-  permissions: '755'
-
-########################################
-# SCRIPT TO SETUP SECURITY FOR SPARK GUI
-########################################
-- path: /bin/spark-gui-sec.sh
-  content: |
-    #!/bin/bash
-    echo "Configure GUI SECURITY starts."
-    wget https://gitlab.com/lpds-public/occopus-ml/raw/master/tutorials/ext_dep/spark-gui-sec.tgz?inline=false -O /home/sparkuser/spark-gui-sec.tgz
-    tar zxvf /home/sparkuser/spark-gui-sec.tgz --directory /home/sparkuser
-    cp /home/sparkuser/spark-gui-sec/basicAuthenticationFilter-0.0.1-SNAPSHOT.jar /home/sparkuser/spark/jars/.
-    rm -r /home/sparkuser/spark-gui-sec*
-    echo "spark.master.rest.enabled    false" >>/home/sparkuser/spark/conf/spark-defaults.conf
-    echo "spark.ui.filters hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter" >> /home/sparkuser/spark/conf/spark-defaults.conf
-    echo "spark.hu.sztaki.lpds.spark.authentication.BasicAuthenticationFilter.params username=spark,password=lpds,realm=realm" >> /home/sparkuser/spark/conf/spark-defaults.conf
-    echo "Configure GUI SECURITY ends."
-  permissions: '755'
-  
 runcmd:
-#Create USER
-- /bin/create-user.sh
-#Launch RSTUDIO
-- /bin/install-studio.sh
-#Install JAVA
-- /bin/spark-install-java.sh
-#Install HADOOP
-- /bin/hadoop-install-hadoop.sh
-#Configure HADOOP
-- /bin/hadoop-setup-config.sh
-#Launch HDFS
-- /bin/launch-hadoop.sh
-#Install SPARK
-- /bin/spark-install-spark.sh
-#Setup SPARK
-- /bin/spark-setup-config.sh
-#Setup GUI SECURITY
-- /bin/spark-gui-sec.sh
-#Launch SPARK
-- su - sparkuser -c /home/sparkuser/spark/sbin/start-master.sh
-- echo "SPARK DEPLOYMENT DONE."
+- /tmp/installation.sh && /tmp/configuration.sh && su - sparkuser -c '/tmp/start-services.sh' && echo "SPARK MASTER DEPLOYMENT DONE." || echo -e "\e[91mPROBLEM OCCURED WITH THE INSTALLATION\e[39m"
