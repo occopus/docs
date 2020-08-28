@@ -1,49 +1,154 @@
 #cloud-config
+package_upgrade: false
+
 
 write_files:
 
-############################
-# SCRIPT TO CREATE SPARKUSER
-############################
-- path: /bin/create-user.sh
+- path: /tmp/installation.sh
   content: |
     #!/bin/bash
+
+    set -ex
+    HADOOP_VERSION=2.10.0
+    SPARK_VERSION=2.4.6
+    SPAR_HADOOP_VERSION=2.7
+    CONSUL_VERSION=1.8.0
+    CONSUL_TEMPLATE_VERSION=0.25.0
+
     echo "Creating SPARKUSER starts."
     adduser --disabled-password --gecos "" sparkuser
-    echo "sparkuser:lpds" | chpasswd
+    chown -R sparkuser:sparkuser /home/sparkuser
     echo "Creating SPARKUSER finished."
-  permissions: '755'
-
-###########################
-# SCRIPT TO INSTALL RSTUDIO
-###########################
-- path: /bin/install-studio.sh
-  content: |
-    #!/bin/bash
-    echo "Install RSTUDIO starts."
-    sudo apt-get update
-    sudo apt-get install r-base -y
-    echo "Install RSTUDIO finished."
-  permissions: '755'
 
 
-##########################
-# SCRIPT TO INSTALL HADOOP
-##########################
-- path: /bin/hadoop-install-hadoop.sh
-  content: |
-    #!/bin/bash
+    # Turn off unattended upgrade
+    sed -i 's/APT::Periodic::Unattended-Upgrade "1";/APT::Periodic::Unattended-Upgrade "0";/g' /etc/apt/apt.conf.d/20auto-upgrades
+
+
+    echo "Install requirement packages starts."
+    # Wait for unattended upgrade
+    while [[ `ps aufx | grep -v "grep" | grep "apt.systemd.daily" | wc -l` -gt 0 ]]; do
+      echo "The unattended-upgrades are running..."
+      sleep 1
+    done
+
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y openjdk-8-jdk openjdk-8-jre unzip r-base
+    echo "Install requirement packages starts."
+
+
     echo "Install HADOOP starts."
-    wget -nc http://xenia.sote.hu/ftp/mirrors/www.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz -O /home/sparkuser/hadoop-2.9.2.tar.gz
-    tar -xvf /home/sparkuser/hadoop-2.9.2.tar.gz --directory /home/sparkuser
-    mv /home/sparkuser/hadoop-2.9.2 /home/sparkuser/hadoop
-    rm /home/sparkuser/hadoop-2.9.2.tar.gz
-    echo "Install HADOOP finished"
+    wget -nc https://downloads.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz -O /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz
+    tar -xzf /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz --directory /home/sparkuser
+    mkdir /home/sparkuser/hadoop
+    mv /home/sparkuser/hadoop-$HADOOP_VERSION/* /home/sparkuser/hadoop
+    rm -r /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz /home/sparkuser/hadoop-$HADOOP_VERSION
+    echo "Install HADOOP finished."
+
+
+    echo "Install SPARK starts."
+    wget -nc https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz -O /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz
+    tar -zxf /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz  --directory /home/sparkuser
+    mkdir /home/sparkuser/spark
+    mv /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION/* /home/sparkuser/spark
+    rm -r /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION
+    echo "Install SPARK finished."
+
+
+    echo "Install CONSUL starts."
+    wget -nc "https://releases.hashicorp.com/consul/"$CONSUL_VERSION"/consul_"$CONSUL_VERSION"_linux_amd64.zip" -O /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip
+    unzip -q /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip -d /home/sparkuser/consul/
+    wget -nc "https://releases.hashicorp.com/consul-template/"$CONSUL_TEMPLATE_VERSION"/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip" -O /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip
+    unzip -q /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip -d /home/sparkuser/consul/
+    rm /home/sparkuser/consul_"$CONSUL_VERSION"_linux_amd64.zip /home/sparkuser/consul-template_"$CONSUL_TEMPLATE_VERSION"_linux_amd64.zip
+    echo "Install CONSUL finished."
+
+
+    echo -e "####################
+    \e[92mInstallation DONE!!!\e[39m
+    ####################"
   permissions: '755'
 
-############################
-# HADOOP CONFIGURATION FILES
-############################
+- path: /tmp/configuration.sh
+  content: |
+    #!/bin/bash
+
+    set -ex
+    MASTERIP=`hostname -I | col1`
+    HOSTNAME=`hostname -s`
+
+
+    echo "Configure HADOOP starts."
+    touch /home/sparkuser/.bashrc
+    chown sparkuser:sparkuser /home/sparkuser/.bashrc
+    chown sparkuser:sparkuser /home/sparkuser/.bashrc
+    echo export PATH="/home/sparkuser/hadoop/bin:$PATH" >> /home/sparkuser/.bashrc
+    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
+    mkdir /home/sparkuser/hadoop/logs
+    echo "spark: lpds, admin" >> /home/sparkuser/hadoop/etc/hadoop/realm.properties
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    echo "{{getprivip('spark-master')}} spark-master" >> /etc/hosts
+    chown -R sparkuser:sparkuser /home/sparkuser/hadoop
+    echo "Configure HADOOP finished."
+
+
+    echo "Configure SPARK starts."
+    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
+    echo export SPARK_HOME=/home/sparkuser/spark >> /home/sparkuser/.bashrc
+    chown -R sparkuser:sparkuser /home/sparkuser/spark
+    echo "SPARK_MASTER_HOST={{getprivip('spark-master')}} >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "SPARK_LOCAL_IP=$MASTERIP >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "SPARK_PUBLIC_DNS=$MASTERIP >> /home/sparkuser/spark/conf/spark-env.sh"
+    echo "Configure SPARK ends."
+
+
+    su - sparkuser -c 'mkdir /home/sparkuser/consul/logs'
+    su - sparkuser -c 'mkdir /home/sparkuser/consul/data'
+
+
+    echo "Launch CONSUL starts."
+    systemctl start consul.service
+    systemctl start consul-template-hosts.service
+    echo "Launch CONSUL finished."
+
+
+    while [[ `cat /etc/hosts | grep 'Consul' | wc -l` -eq 0 ]]; do
+      echo "Waiting for /etc/host modification..."
+      sleep 1
+    done
+
+
+    echo -e "#####################
+    \e[92mConfiguration DONE!!!\e[39m
+    #####################"
+  permissions: '755'
+
+- path: /tmp/start-services.sh
+  content: |
+    #!/bin/bash
+
+    set -ex
+    MASTERIP=`hostname -I | col1`
+
+
+    echo "Launch HADOOP starts."
+    /home/sparkuser/hadoop/sbin/hadoop-daemon.sh start datanode
+    echo "Launch HADOOP finished."
+
+
+    echo "Launch Spark starts."
+    export SPARK_HOME=/home/sparkuser/spark
+    /home/sparkuser/spark/sbin/start-slave.sh spark://{{getprivip('spark-master')}}:7077
+    echo "Launch Spark finished."
+
+
+    echo -e "###################
+    \e[92mServices STARTED!!!\e[39m
+    ###################"
+  permissions: '755'
 
 - path: /tmp/hadoop/configs/hdfs-site.xml
   content: |
@@ -65,6 +170,18 @@ write_files:
       <name>dfs.datanode.du.reserved</name>
       <value>500000000</value>
     </property>
+    <property>
+      <name>dfs.client.use.datanode.hostname</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>dfs.datanode.use.datanode.hostname</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+      <value>false</value>
+    </property>
    </configuration>
   permissions: '644'
 
@@ -78,102 +195,68 @@ write_files:
       </configuration>
   permissions: '644'
 
-
-###############################
-# SCRIPT TO SETUP HADOOP CONFIG
-###############################
-- path: /bin/hadoop-setup-config.sh
+- path: /home/sparkuser/consul/hosts.ctmpl
   content: |
-    #!/bin/bash
-    echo "Configure HADOOP starts."
-    mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
-    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
-    echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop-2.9.2" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
-    echo "export HADOOP_LOG_DIR=/home/sparkuser/hadoop-2.9.2/logs" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
+    127.0.0.1       localhost
 
-    #SET HOSTS FILE
-    privateip=`hostname -i`
-    hostname=`hostname -s`
-    echo "$privateip $hostname" >> /etc/hosts
+    # The following lines are desirable for IPv6 capable hosts
+    ::1     localhost ip6-localhost ip6-loopback
+    ff02::1 ip6-allnodes
+    ff02::2 ip6-allrouters
 
-    chown -R sparkuser:sparkuser /home/sparkuser/hadoop/etc/hadoop
-    echo "Configure HADOOP finished."
-  permissions: '755'
+    # Consul managed
+    {% raw %}
+    {{range service "hadoop"}}
+    {{.Address}} {{.Node}}{{end}}
+    {% endraw %}
+  permissions: '644'
 
-
-#######################
-# SCRIPT TO LAUNCH HDFS
-#######################
-- path: /bin/launch-hadoop.sh
+- path: /home/sparkuser/consul/hadoop-slaves.ctmpl
   content: |
-    #!/bin/bash
-    echo "Launch HADOOP starts."
-    #mkdir /home/hdfs
-    #chown sparkuser:sparkuser /home/hdfs
-    su - sparkuser -c "/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start datanode"
-    echo "Launch HADOOP finished."
-  permissions: '755'
+    {% raw %}
+    {{range service "hadoop"}}
+    {{.Node}}{{end}}
+    {% endraw %}
+  permissions: '644'
 
-########################
-# SCRIPT TO INSTALL JAVA
-########################
-- path: /bin/spark-install-java.sh
+- path: /home/sparkuser/consul/service.json
   content: |
-    #!/bin/bash
-    echo "Install JAVA starts."
-    sudo apt-get update
-    sudo apt-get install default-jdk -y
-    echo "Install JAVA finished."
-  permissions: '755'
+    {"service": {"name": "hadoop"}}
+  permissions: '644'
 
-
-################################
-# SCRIPT TO INSTALL APACHE SPARK
-################################
-- path: /bin/spark-install-spark.sh
+- path: /etc/systemd/system/consul.service
   content: |
-    echo "Install SPARK starts."
-    wget https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz -O /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
-    tar zxvf /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz  --directory /home/sparkuser
-    mv /home/sparkuser/spark-2.4.1-bin-hadoop2.7 /home/sparkuser/spark
-    rm /home/sparkuser/spark-2.4.1-bin-hadoop2.7.tgz
-    echo "Install SPARK finished."
-  permissions: '755'
+    [Unit]
+    Description=consul agent
+    Requires=network-online.target
+    After=network-online.target
 
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/home/sparkuser/consul/consul agent -retry-join {{ getprivip('spark-master') }} -data-dir=/home/sparkuser/consul/data -config-file=/home/sparkuser/consul/service.json -bind=$(hostname -I | col1) -client=$(hostname -I | col1) >> /home/sparkuser/consul/logs/consul.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
 
-##############################
-# SCRIPT TO SETUP SPARK CONFIG
-##############################
-- path: /bin/spark-setup-config.sh
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
+- path: /etc/systemd/system/consul-template-hosts.service
   content: |
-    #!/bin/bash
-    set -x
-    echo "Configure SPARK starts."
-    cp /home/sparkuser/spark/conf/spark-env.sh.template /home/sparkuser/spark/conf/spark-env.sh
-    echo SPARK_MASTER_HOST={{getprivip('spark-master')}} >> /home/sparkuser/spark/conf/spark-env.sh
-    echo export SPARK_HOME=/home/sparkuser/spark >> /home/sparkuser/.profile
-    chown -R sparkuser:sparkuser /home/sparkuser/spark
-    echo "Configure SPARK ends."
-  permissions: '755'
-  
-  
+    [Unit]
+    Description=consul for hosts file
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Restart=on-failure
+    ExecStart=/bin/bash -c "/home/sparkuser/consul/consul-template -consul-addr $(hostname -I | col1):8500 -template \"/home/sparkuser/consul/hosts.ctmpl:/etc/hosts\" >> /home/sparkuser/consul/logs/consul-template-hosts.log 2>&1"
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGTERM
+
+    [Install]
+    WantedBy=multi-user.target
+  permissions: '644'
+
 runcmd:
-#Create USER
-- /bin/create-user.sh
-#Install R
-- /bin/install-studio.sh
-#Install JAVA
-- /bin/spark-install-java.sh
-#Install HADOOP
-- /bin/hadoop-install-hadoop.sh
-#Configure HADOOP
-- /bin/hadoop-setup-config.sh
-#Launch HDFS
-- /bin/launch-hadoop.sh
-#Install SPARK
-- /bin/spark-install-spark.sh
-#Setup SPARK
-- /bin/spark-setup-config.sh
-#Launch SPARK
-- su  - sparkuser -c "/home/sparkuser/spark/sbin/start-slave.sh spark://{{getip('spark-master')}}:7077"
-- echo "SPARK DEPLOYMENT DONE."
+- /tmp/installation.sh && /tmp/configuration.sh && su - sparkuser -c '/tmp/start-services.sh' && echo "SPARK SLAVE DEPLOYMENT DONE." || echo -e "\e[91mPROBLEM OCCURED WITH THE INSTALLATION\e[39m"
