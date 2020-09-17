@@ -200,7 +200,7 @@ Nova
 
 Azure
 ^^^^^
-  ``type: azure``
+  ``type: azure_vm``
     Selects the Azure resource handler.
   ``endpoint``
     The endpoint (url) of the Azure interface, e.g. https://management.azure.com
