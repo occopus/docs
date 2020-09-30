@@ -2,4 +2,15 @@
 
 set -ex
 
-tar -czvf ../tutorials/"$1".tar.gz ../tutorials/"$1"
+PWD=`pwd`
+
+cd ../tutorials
+tar -czvf "$1".tar.gz "$1"
+
+# for f in ./*; do
+#     if [ -d "$f" ]; then
+#         tar -czvf "$f".tar.gz "$f"
+#     fi
+# done
+
+cd $PWD
