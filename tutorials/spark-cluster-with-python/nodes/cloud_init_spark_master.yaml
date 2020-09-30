@@ -154,8 +154,8 @@ write_files:
 
     echo "Creating example"
     su - sparkuser -c 'mkdir /home/sparkuser/example'
-    su - sparkuser -c 'wget https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-python/example/Spark_cluster_and_HDFS_cluster_test.ipynb -O /home/sparkuser/example/Spark_cluster_and_HDFS_cluster_test.ipynb'
-    su - sparkuser -c 'wget https://raw.githubusercontent.com/occopus/docs/master/tutorials/spark-cluster-with-python/example/sztaki_logo.jpg -O /home/sparkuser/example/sztaki_logo.jpg'
+    su - sparkuser -c 'wget https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-python/example/Spark_cluster_and_HDFS_cluster_test.ipynb -O /home/sparkuser/example/Spark_cluster_and_HDFS_cluster_test.ipynb'
+    su - sparkuser -c 'wget https://raw.githubusercontent.com/occopus/docs/devel/tutorials/spark-cluster-with-python/example/sztaki_logo.jpg -O /home/sparkuser/example/sztaki_logo.jpg'
     sed -i "s/xxxSPARKMASTERIPxxx/$MASTERIP/g" /home/sparkuser/example/Spark_cluster_and_HDFS_cluster_test.ipynb
     echo "Example created"
 
