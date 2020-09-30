@@ -518,7 +518,7 @@ You can download the example as `tutorial.examples.azure-helloworld <https://raw
      'node_def:azure_helloworld_node':
          -
            resource:
-               type: azure
+               type: azure_vm
                endpoint: https://management.azure.com
                resource_group: replace_with_resource_group_name
                location : replace_with_location
@@ -626,7 +626,7 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
      'node_def:azure_ping_receiver_node':
 	 -
 	     resource:
-             type: azure
+             type: azure_vm
              endpoint: https://management.azure.com
              resource_group: replace_with_resource_group_name
              location : replace_with_location
@@ -649,7 +649,7 @@ You can download the example as `tutorial.examples.azure-ping <https://raw.githu
      'node_def:azure_ping_sender_node':
 	 -
 	     resource:
-             type: azure
+             type: azure_vm
              endpoint: https://management.azure.com
              resource_group: replace_with_resource_group_name
              location : replace_with_location

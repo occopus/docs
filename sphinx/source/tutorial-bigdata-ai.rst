@@ -255,7 +255,7 @@ This means that you need to create a firewall rule to allow **all traffic betwee
 
       14032858-d628-40a2-b611-71381bd463fa
 
-#. You can check the  health and statistics of the cluster through the following web pages:
+#. You can check the health and statistics of the cluster through the following web pages:
 
    - HDFS NameNode UI: ``http://<SparkMasterIP>:50070``
    - Spark UI: ``http://<SparkMasterIP>:8080``
