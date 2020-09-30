@@ -2,14 +2,18 @@
   -
     resource:
       type: nova
-      endpoint: https://sztaki.cloud.mta.hu:5000/v3
-      project_id: a678d20e71cb4b9f812a31e5f3eb63b0
+      endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+      project_id: replace_with_projectid_to_use
       user_domain_name: Default
-      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
-      network_id: 3fd4c62d-5fbe-4bd9-9a9f-c161dabeefde
-      flavor_name: 3
-      key_name: attila-key
-      security_groups: [ALL]
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      network_id: replace_with_id_of_network_on_your_target_cloud
+      flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+      key_name: replace_with_name_of_keypair_or_remove
+      security_groups:
+        -
+          replace_with_security_group_to_add_or_remove_section
+      floating_ip: add_yes_if_you_need_floating_ip_or_remove
+      floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
       type: cloudinit
       context_template: !yaml_import
@@ -23,14 +27,18 @@
   -
     resource:
       type: nova
-      endpoint: https://sztaki.cloud.mta.hu:5000/v3
-      project_id: a678d20e71cb4b9f812a31e5f3eb63b0
+      endpoint: replace_with_endpoint_of_nova_interface_of_your_cloud
+      project_id: replace_with_projectid_to_use
       user_domain_name: Default
-      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
-      network_id: 3fd4c62d-5fbe-4bd9-9a9f-c161dabeefde
-      flavor_name: 4740c1b8-016d-49d5-a669-2b673f86317c
-      key_name: attila-key
-      security_groups: [ALL]
+      image_id: replace_with_id_of_your_image_on_your_target_cloud
+      network_id: replace_with_id_of_network_on_your_target_cloud
+      flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
+      key_name: replace_with_name_of_keypair_or_remove
+      security_groups:
+        -
+          replace_with_security_group_to_add_or_remove_section
+      floating_ip: add_yes_if_you_need_floating_ip_or_remove
+      floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
       type: cloudinit
       context_template: !yaml_import
