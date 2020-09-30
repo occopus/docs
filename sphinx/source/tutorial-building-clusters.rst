@@ -173,12 +173,12 @@ The following steps are suggested to be performed:
 
       occopus-import nodes/node_definitions.yaml
 
-#. Update the number of worker nodes if necessary. For this, edit the ``infra-docker-swarm.yaml`` file and modify the ``min`` parameter under the ``scaling`` keyword. Currently, it is set to ``2``.
+#. Update the number of worker nodes if necessary. For this, edit the ``infra-kubernetes.yaml`` file and modify the ``min`` parameter under the ``scaling`` keyword. Currently, it is set to ``2``.
 
    .. code:: yaml
 
      - &W
-         name: worker
+         name: kubernetes-slave
          type: kubernetes_slave_node
          scaling:
              min: 2
@@ -211,7 +211,7 @@ The following steps are suggested to be performed:
 
       Before you run the command below, please make sure you use the correct user (kubeuser).
 
-   Switch kubeuser:
+   Switch to kubeuser:
 
    .. code:: bash
 
