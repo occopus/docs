@@ -1,0 +1,39 @@
+'node_def:kubernetes_master_node':
+  -
+    resource:
+      type: nova
+      endpoint: https://sztaki.cloud.mta.hu:5000/v3
+      project_id: a678d20e71cb4b9f812a31e5f3eb63b0
+      user_domain_name: Default
+      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
+      network_id: 3fd4c62d-5fbe-4bd9-9a9f-c161dabeefde
+      flavor_name: 3
+      key_name: attila-key
+      security_groups: [ALL]
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_kubernetes_master.yaml
+    health_check:
+      ports:
+        - 10250
+      timeout: 600
+
+'node_def:kubernetes_slave_node':
+  -
+    resource:
+      type: nova
+      endpoint: https://sztaki.cloud.mta.hu:5000/v3
+      project_id: a678d20e71cb4b9f812a31e5f3eb63b0
+      user_domain_name: Default
+      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
+      network_id: 3fd4c62d-5fbe-4bd9-9a9f-c161dabeefde
+      flavor_name: 4740c1b8-016d-49d5-a669-2b673f86317c
+      key_name: attila-key
+      security_groups: [ALL]
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_kubernetes_slave.yaml
+    health_check:
+      timeout: 600

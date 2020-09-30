@@ -103,6 +103,155 @@ The following steps are suggested to be performed:
 
       occopus-destroy -i 77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
+Kubernetes cluster
+~~~~~~~~~~~~~~~~~~~~
+
+This tutorial sets up a complete Kubernetes infrastructure with Kubernetes Dashboard and Helm package manager. It contains a master node and predefined number of worker nodes. The worker
+nodes receive the ip of the master node and attach to the master node to form a cluster. Finally, the Kubernetes cluster can be used with any standard tool talking the Kubernetes API server
+protocol (on port 6443).
+
+**Features**
+
+ - creating two types of nodes through contextualisation
+ - passing ip address of a node to another node
+ - using the nova resource handler
+ - utilising health check against a predefined port
+ - using parameters to scale up worker nodes
+
+**Prerequisites**
+
+ - accessing an Occopus compatible interface
+ - target cloud contains an Ubuntu 18.04 image with cloud-init support
+
+**Download**
+
+You can download the example as `tutorial.examples.kubernetes <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/kubernetes.tar.gz>`_ .
+
+**Steps**
+
+The following steps are suggested to be performed:
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an :ref:`Occopus compatible resource plugin <user-doc-clouds>`
+   - you can find and specify the relevant :ref:`list of attributes for the plugin <userdefinitionresourcesection>`
+   - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
+   - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
+
+   The downloadable package for this example contains a resource template for the Cloudsigma plugin.
+
+#. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   ===========     =============  ====================
+   Protocol        Port(s)        Service
+   ===========     =============  ====================
+   TCP             2379-2380      etcd server client API
+   TCP             6443           Kubernetes API server
+   TCP             10250          Kubelet API
+   TCP             10251          kube-scheduler
+   TCP             10252          kube-controller-manager
+   TCP             10255          read-only kubelet API
+   TCP             30000-32767    NodePort Services
+   ===========     =============  ====================
+
+   .. note::
+       Do not forget to open the ports which are needed for your Kubernetes application!
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your email and password in the authentication file. Setting authentication information is described :ref:`here <authentication>`.
+
+#. Load the node definition for ``kubernetes_master_node`` and ``kubernetes_slave_node`` nodes into the database.
+
+   .. note::
+
+      Make sure the proper virtualenv is activated! (source occopus/bin/activate)
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition (file) changes!
+
+   .. code:: bash
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Update the number of worker nodes if necessary. For this, edit the ``infra-docker-swarm.yaml`` file and modify the ``min`` parameter under the ``scaling`` keyword. Currently, it is set to ``2``.
+
+   .. code:: yaml
+
+     - &W
+         name: worker
+         type: kubernetes_slave_node
+         scaling:
+             min: 2
+
+#. Start deploying the infrastructure.
+
+   .. code:: bash
+
+      occopus-build infra-kubernetes-cluster.yaml
+
+   .. note::
+
+      It may take a few minutes until the services on the master node come to live. Please, be patient!
+
+#. After successful finish, the node with ``ip address`` and ``node id`` are listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code:: bash
+
+     List of nodes/ip addresses:
+     master:
+       <ip-address> (dfa5f4f5-7d69-432e-87f9-a37cd6376f7a)
+     worker:
+       <ip-address> (cae40ed8-c4f3-49cd-bc73-92a8c027ff2c)
+       <ip-address> (8e255594-5d9a-4106-920c-62591aabd899)
+     77cb026b-2f81-46a5-87c5-2adf13e1b2d3
+
+#. Check the result by submitting Kubernetes commands to the docker master node! Please use the kubeuser username and password when you login.
+
+   Check the nodes added to the cluster with the following command:
+
+   .. code:: bash
+
+      $ kubectl get nodes
+      NAME                                                             STATUS   ROLES    AGE    VERSION
+      occopus-kubernetes-cluster-a67dcbea-kubernetes-master-90d7cfdd   Ready    master   12m    v1.18.3
+      occopus-kubernetes-cluster-a67dcbea-kubernetes-slave-a8962b51    Ready    worker   4m7s   v1.18.3
+      occopus-kubernetes-cluster-a67dcbea-kubernetes-slave-ed210ec4    Ready    worker   4m7s   v1.18.3
+
+   Ensure that Kubernetes services have been set up correctly.
+
+   .. code:: bash
+
+      $ kubectl get pods --all-namespaces
+      NAMESPACE              NAME                                                                                     READY   STATUS    RESTARTS   AGE
+      kube-system            coredns-66bff467f8-ltkkc                                                                 1/1     Running   0          12m
+      kube-system            coredns-66bff467f8-ndh88                                                                 1/1     Running   0          12m
+      kube-system            etcd-occopus-kubernetes-cluster-a67dcbea-kubernetes-master-90d7cfdd                      1/1     Running   0          12m
+      kube-system            kube-apiserver-occopus-kubernetes-cluster-a67dcbea-kubernetes-master-90d7cfdd            1/1     Running   0          12m
+      kube-system            kube-controller-manager-occopus-kubernetes-cluster-a67dcbea-kubernetes-master-90d7cfdd   1/1     Running   0          12m
+      kube-system            kube-flannel-ds-amd64-5ptjb                                                              1/1     Running   0          4m23s
+      kube-system            kube-flannel-ds-amd64-dfczs                                                              1/1     Running   0          12m
+      kube-system            kube-flannel-ds-amd64-dqjg2                                                              1/1     Running   0          4m23s
+      kube-system            kube-proxy-f8czw                                                                         1/1     Running   0          12m
+      kube-system            kube-proxy-hlvd6                                                                         1/1     Running   0          4m23s
+      kube-system            kube-proxy-vlwk2                                                                         1/1     Running   0          4m23s
+      kube-system            kube-scheduler-occopus-kubernetes-cluster-a67dcbea-kubernetes-master-90d7cfdd            1/1     Running   0          12m
+      kube-system            tiller-deploy-55bbcfbbc8-fj8mm                                                           1/1     Running   0          9m16s
+      kubernetes-dashboard   dashboard-metrics-scraper-6b4884c9d5-w6rx6                                               1/1     Running   0          12m
+      kubernetes-dashboard   kubernetes-dashboard-64794c64b8-sb9m6                                                    1/1     Running   0          12m
+
+   You can access Dashboard at ``https://[master_node_ip]:32000``.
+
+   On the login page please choose the basic option and enter the following username and password:
+
+      - Username: admin
+      - Password: admin
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code:: bash
+
+      occopus-destroy -i 77cb026b-2f81-46a5-87c5-2adf13e1b2d3
+
 DataAvenue cluster
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -316,7 +465,7 @@ The following steps are suggested to be performed:
    In this tutorial we used HTTP protocol only. DataAvenue also supports HTTPS on port 8443; storages could also be accessed over secure HTTP by deploying e.g. HAPROXY on their nodes.
 
 CQueue cluster
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 CQueue stands for "Container Queue". Since Docker does not provide pull model for container execution, (Docker Swarm uses push execution model) the CQueue framework provides a lightweight queueing service for executing containers.
 
