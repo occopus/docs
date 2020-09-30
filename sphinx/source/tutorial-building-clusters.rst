@@ -205,7 +205,18 @@ The following steps are suggested to be performed:
        <ip-address> (8e255594-5d9a-4106-920c-62591aabd899)
      77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
-#. Check the result by submitting Kubernetes commands to the docker master node! Please use the kubeuser username and password when you login.
+#. You can check the health and statistics of the cluster
+
+   .. note::
+
+      Before you run the command below, please make sure you use the correct user (kubeuser).
+
+   Switch kubeuser:
+
+   .. code:: bash
+
+      $ sudo su
+      $ su kubeuser
 
    Check the nodes added to the cluster with the following command:
 

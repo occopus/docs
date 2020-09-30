@@ -8,7 +8,7 @@ nodes:
   - &S
     name: kubernetes-slave
     type: kubernetes_slave_node
-    scaling: 
+    scaling:
       min: 2
       max: 10
 variables:
@@ -16,6 +16,8 @@ variables:
   pythonversion: python3.7
   kubernetesversion: 1.18.3-00
   dockerversion: 5:19.03.11~3-0~ubuntu-bionic
+  flannelversion: v0.12.0
+  dashboardversion: v2.0.4
   kubemaster_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
 

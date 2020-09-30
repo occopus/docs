@@ -20,12 +20,12 @@ write_files:
     #!/bin/bash
     set -ex
     echo "Setup preparation starts."
-    
+
     useradd -s /bin/bash -d /home/kubeuser/ -m -G sudo kubeuser
     echo "kubeuser:kubeuser" | chpasswd
     usermod -aG sudo kubeuser
     echo "kubeuser ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
-  
+
     mkdir -p /home/kubeuser/.ssh
     chmod 700 /home/kubeuser/.ssh
     chown kubeuser:kubeuser /home/kubeuser/.ssh
@@ -33,11 +33,11 @@ write_files:
     mv /tmp/kubeuser/id_rsa /home/kubeuser/.ssh
     chmod 600 /home/kubeuser/.ssh/id_rsa
     chown kubeuser:kubeuser /home/kubeuser/.ssh/id_rsa
- 
+
     mv /tmp/kubeuser/authorized_keys /home/kubeuser/.ssh
     chmod 600 /home/kubeuser/.ssh/authorized_keys
     chown kubeuser:kubeuser /home/kubeuser/.ssh/authorized_keys
-    
+
     swapoff -a
     echo '* libraries/restart-without-asking boolean true' | debconf-set-selections
     apt-get update
@@ -111,7 +111,6 @@ write_files:
     apt install {{variables.pythonversion}} -y
     {{variables.pythonversion}} --version
     echo "Setup Python finished"
-
   permissions: '755'
 ###############################
 # SCRIPT TO CONFIG
@@ -128,12 +127,12 @@ write_files:
     su - kubeuser -c "sudo cp /etc/kubernetes/admin.conf /home/kubeuser/.kube/config"
     su - kubeuser -c "sudo chmod 755 /home/kubeuser/.kube/config"
     chown kubeuser:kubeuser /home/kubeuser/.kube/config
-    su - kubeuser -c "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.12.0/Documentation/kube-flannel.yml"
+    su - kubeuser -c "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/{{variables.flannelversion}}/Documentation/kube-flannel.yml"
     kubeadm token create --ttl 0 --print-join-command 2>/dev/null > /tmp/joinslave.txt
     echo "Setup configuring the MASTER finished."
 
     echo "Start configuring the Dashboard..."
-    wget -P /tmp/ "https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml"
+    wget -P /tmp/ "https://raw.githubusercontent.com/kubernetes/dashboard/{{variables.dashboardversion}}/aio/deploy/recommended.yaml"
     sed -i "s/- --namespace=kubernetes-dashboard/- --authentication-mode=basic\n            - --namespace=kubernetes-dashboard/g" /tmp/recommended.yaml
     su - kubeuser -c "sudo kubectl apply -f /tmp/recommended.yaml"
 
