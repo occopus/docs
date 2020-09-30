@@ -2,8 +2,4 @@
 
 set -ex
 
-for f in ../tutorials/*; do
-    if [ -d "$f" ]; then
-        tar -cvf "$f".tar.gz "$f"
-    fi
-done
+tar -czvf ../tutorials/"$1".tar.gz ../tutorials/"$1"
