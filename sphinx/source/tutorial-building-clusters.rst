@@ -205,7 +205,7 @@ The following steps are suggested to be performed:
        <ip-address> (8e255594-5d9a-4106-920c-62591aabd899)
      77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
-#. You can check the health and statistics of the cluster
+#. You can check the health and statistics of the cluster. Please login to the master node via SSH connection.
 
    .. note::
 
