@@ -125,7 +125,7 @@ protocol (on port 6443).
 
 **Download**
 
-You can download the example as `tutorial.examples.kubernetes <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/kubernetes.tar.gz>`_ .
+You can download the example as `tutorial.examples.kubernetes <https://raw.githubusercontent.com/occopus/docs/master/tutorials/kubernetes.tar.gz>`_ .
 
 **Steps**
 
