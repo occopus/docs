@@ -215,8 +215,7 @@ The following steps are suggested to be performed:
 
    .. code:: bash
 
-      $ sudo su
-      $ su kubeuser
+      $ sudo su - kubeuser
 
    Check the nodes added to the cluster with the following command:
 
