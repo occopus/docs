@@ -1,13 +1,14 @@
 #cloud-config
 
 runcmd:
+ - echo '* libraries/restart-without-asking boolean true' | debconf-set-selections
  - apt-get update
- - apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
- - echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
- - curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
- - add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
+ - apt-get install -y --no-install-recommends apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+ - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+ - apt-key fingerprint 0EBFCD88
+ - add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
  - apt-get update
- - apt-get install -y docker-engine
+ - apt-get install -y docker-ce docker-ce-cli containerd.io
  - wget --retry-connrefused -qO /tmp/swarm_join {{getip('master')}}:2375/v1.26/swarm
  - export TOKEN=$(grep -Eo 'SWMTKN-[[:alnum:]]*-[[:alnum:]]*-[[:alnum:]]*' /tmp/swarm_join | head -1)
  - docker swarm join --token $TOKEN {{getip('master')}}:2377
