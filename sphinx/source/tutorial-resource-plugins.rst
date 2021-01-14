@@ -274,7 +274,7 @@ You can download the example as `tutorial.examples.nova-helloworld <https://raw.
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at `this page <createinfra.html#collecting-resource-attributes>`__ ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at :ref:`this page <collect_openstack_horizon>` ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 
@@ -378,7 +378,7 @@ You can download the example as `tutorial.examples.nova-ping <https://raw.github
 
    .. important::
 
-      You can get help on collecting identifiers for the resources section at :ref:`this page <collect_amazon>` ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
+      You can get help on collecting identifiers for the resources section at :ref:`this page <collect_openstack_horizon>` ! Alternatively, detailed explanation can be found at the :ref:`node definition's resource section <userdefinitionresourcesection>` of the User Guide.
 
    .. code:: yaml
 

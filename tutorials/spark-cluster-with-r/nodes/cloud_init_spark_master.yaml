@@ -9,11 +9,11 @@ write_files:
     #!/bin/bash
 
     set -ex
-    HADOOP_VERSION=2.10.0
-    SPARK_VERSION=2.4.6
-    SPAR_HADOOP_VERSION=2.7
-    CONSUL_VERSION=1.8.0
-    CONSUL_TEMPLATE_VERSION=0.25.0
+    HADOOP_VERSION={{variables.HADOOP_VERSION}}
+    SPARK_VERSION={{variables.SPARK_VERSION}}
+    SPARK_HADOOP_VERSION={{variables.SPARK_HADOOP_VERSION}}
+    CONSUL_VERSION={{variables.CONSUL_VERSION}}
+    CONSUL_TEMPLATE_VERSION={{variables.CONSUL_TEMPLATE_VERSION}}
     RSTUDIO_VERSION=1.3.1073-amd64
 
 
@@ -45,7 +45,7 @@ write_files:
 
 
     echo "Install HADOOP starts."
-    wget -nc https://downloads.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz -O /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz
+    wget -nc https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz -O /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz
     tar -xzf /home/sparkuser/hadoop-$HADOOP_VERSION.tar.gz --directory /home/sparkuser
     mkdir /home/sparkuser/hadoop
     mv /home/sparkuser/hadoop-$HADOOP_VERSION/* /home/sparkuser/hadoop
@@ -54,11 +54,11 @@ write_files:
 
 
     echo "Install SPARK starts."
-    wget -nc https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz -O /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz
-    tar -zxf /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz  --directory /home/sparkuser
+    wget -nc https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz -O /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz
+    tar -zxf /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz  --directory /home/sparkuser
     mkdir /home/sparkuser/spark
-    mv /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION/* /home/sparkuser/spark
-    rm -r /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION.tgz /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPAR_HADOOP_VERSION
+    mv /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION/* /home/sparkuser/spark
+    rm -r /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz /home/sparkuser/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION
     echo "Install SPARK finished."
 
 

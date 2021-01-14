@@ -10,6 +10,8 @@ nodes:
     type: dockerswarm_worker_node
     scaling:
       min: 2
+variables:
+  DOCKER_VERSION: 5:19.03.13~3-0~ubuntu-bionic
 
 dependencies:
   - [ *W, *M ]

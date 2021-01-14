@@ -9,8 +9,15 @@ nodes:
     name: spark-worker
     type: spark_worker_node
     scaling:
-      min: 1
+      min: 2
       max: 10
+
+variables:
+  HADOOP_VERSION: 2.10.1
+  SPARK_VERSION: 2.4.7
+  SPARK_HADOOP_VERSION: 2.7
+  CONSUL_VERSION: 1.8.5
+  CONSUL_TEMPLATE_VERSION: 0.25.1
 
 dependencies:
   -

@@ -19,7 +19,7 @@ This tutorial sets up a complete Docker infrastructure with Swarm, Docker and Co
 **Prerequisites**
 
  - accessing an Occopus compatible interface
- - target cloud contains an Ubuntu 14.04 image with cloud-init support
+ - target cloud contains an Ubuntu 18.04 image with cloud-init support
 
 **Download**
 
