@@ -755,7 +755,7 @@ For more information on how to use the JupyterLab web-based user interface, visi
 
 **Download**
 
- You can download the example as `tutorials.examples.jupyterlab <https://raw.githubusercontent.com/occopus/docs/master/tutorials/jupyterlab.tar.gz>`_ .
+ You can download the example as `tutorials.examples.jupyterlab <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab.tar.gz>`_ .
 
 .. note::
 
