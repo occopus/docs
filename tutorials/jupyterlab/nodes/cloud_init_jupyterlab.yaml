@@ -1,0 +1,119 @@
+#cloud-config
+
+write_files:
+# essential for the minimal jupyterlab installation
+- path: /bin/jupyterlab-add-user.sh
+  content: |
+    #!/bin/bash
+    echo "==> Creating user \"$USR\" started."
+    export USR='{{variables.username_jupyterlab}}'
+    adduser --disabled-password --gecos "" $USR
+    echo "$USR ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+    echo "==> Creating user \"$USR\" finished."
+  permissions: '755'
+
+# essential for the minimal jupyterlab installation
+- path: /bin/jupyterlab-install-base-tools.sh
+  content: |
+    #!/bin/bash
+    echo "==> Installing JUPYTERLAB BASE TOOLS (pip,venv) started."
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y update
+    apt-get install -y python3-pip=9.0.1-2.3~ubuntu1.18.04.4
+    apt-get install -y python3-venv=3.6.7-1~18.04
+    echo "==> Installing JUPYTERLAB BASE TOOLS (pip,venv) finished."
+  permissions: '755'
+
+# essential for the minimal jupyterlab installation
+- path: /bin/jupyterlab-install.sh
+  content: |
+    #!/bin/bash
+    echo "==> Installing JUPYTERLAB started."
+    python3 -m venv jupyterlab-virtenv
+    source jupyterlab-virtenv/bin/activate
+    pip install --upgrade pip==20.3.3
+    pip install wheel==0.36.1
+    pip install jupyterlab==2.2.9
+    echo "==> Installing JUPYTERLAB finished."
+  permissions: '755'
+
+# extra installations to enable the usage of jupyterlab extensions
+- path: /bin/jupyterlab-install-jupyterlab-extensions-base-tools.sh
+  content: |
+    #!/bin/bash
+    echo "==> Installing JUPYTERLAB EXTENSIONS BASE TOOLS started."
+    apt-get install -y software-properties-common=0.96.24.32.14
+    apt-get install -y gcc=4:7.4.0-1ubuntu2.3 python3-dev=3.6.7-1~18.04
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash
+    apt-get install -y nodejs=14.15.4-1nodesource1
+    echo "==> Installing JUPYTERLAB EXTENSIONS BASE TOOLS finished."
+  permissions: '755'
+
+# extra installations to install the required jupyterlab extensions
+- path: /bin/jupyterlab-install-jupyterlab-extensions.sh
+  content: |
+    #!/bin/bash
+    echo "==> Installing JUPYTERLAB EXTENSIONS started"
+    source jupyterlab-virtenv/bin/activate
+    pip install nbresuse==0.3.6
+    jupyter labextension install jupyterlab-topbar-extension@v0.5.0 jupyterlab-system-monitor@v0.6.0
+    echo "==> Installing JUPYTERLAB EXTENSIONS finished."
+  permissions: '755'
+
+# essential for the minimal jupyterlab installation
+- path: /bin/setup_hashed_password.py
+  content: |
+    #hashing the password with SHA256
+    from notebook.auth.security import passwd
+    password = passwd("{{variables.pwd_jupyterlab}}", algorithm="sha256")
+    print(str(password))
+  permissions: '755'
+
+# configuration, the content is based on the type of jupyterlab installed (minimal jupyterlab, jupyterlab with extensions, etc.)
+- path: /bin/jupyterlab-configure.sh
+  content: |
+    #!/bin/bash
+    echo "==> Configuring JUPYTERLAB started."
+    source ~/jupyterlab-virtenv/bin/activate
+    mkdir -p ~/.jupyter
+    echo "c.NotebookApp.quit_button = False" >> ~/.jupyter/jupyter_notebook_config.py
+    passwd=$(python /bin/setup_hashed_password.py)
+    echo "c.NotebookApp.password = '$passwd'" >> ~/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.default_url = '/lab'" >> ~/.jupyter/jupyter_notebook_config.py
+    echo "c.NotebookApp.ResourceUseDisplay.track_cpu_percent = True" >> ~/.jupyter/jupyter_notebook_config.py
+    echo "==> Configuring JUPYTERLAB finished."
+  permissions: '755'
+
+# essential for the minimal jupyterlab installation
+- path: /bin/jupyterlab-copy-examples.sh
+  content: |
+    #!/bin/bash
+    echo "==> Copying JUPYTERLAB EXAMPLES started."
+    mkdir -p ~/workspace/examples
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab/examples/what-is-the-jupyter-notebook.ipynb -o ~/workspace/examples/what-is-the-jupyter-notebook.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab/examples/list-of-python-packages.ipynb -o ~/workspace/examples/list-of-python-packages.ipynb
+    echo "==> Copying JUPYTERLAB EXAMPLES finished."
+  permissions: '755'
+
+# essential for the minimal jupyterlab installation
+- path: /bin/jupyterlab-launch.sh
+  content: |
+    #!/bin/bash
+    echo "==> Launching JUPYTERLAB started."
+    cd ~/workspace
+    source ~/jupyterlab-virtenv/bin/activate
+    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --config=~/.jupyter/jupyter_notebook_config.py --no-browser 1>~/jupyterlab.log 2>&1 &
+    echo "==> Launching JUPYTERLAB finished."
+  permissions: '755'
+
+runcmd:
+- echo "==> DEPLOYMENT started."
+- /bin/jupyterlab-add-user.sh
+- /bin/jupyterlab-install-base-tools.sh
+- su - {{variables.username_jupyterlab}} -c /bin/jupyterlab-install.sh
+- /bin/jupyterlab-install-jupyterlab-extensions-base-tools.sh  # comment out this line if the minimal jupyterlab is needed only.
+- su - {{variables.username_jupyterlab}} -c /bin/jupyterlab-install-jupyterlab-extensions.sh # comment out this line if the minimal jupyterlab is needed only.
+- su - {{variables.username_jupyterlab}} -c /bin/jupyterlab-configure.sh
+- su - {{variables.username_jupyterlab}} -c /bin/jupyterlab-copy-examples.sh
+- su - {{variables.username_jupyterlab}} -c /bin/jupyterlab-launch.sh
+- echo "==> DEPLOYMENT finished."

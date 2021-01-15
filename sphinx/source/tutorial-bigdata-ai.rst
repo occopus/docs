@@ -726,3 +726,118 @@ The complete machine learning environment consists of the following components: 
    .. code:: bash
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+JupyterLab
+~~~~~~~~~~
+The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more. The notebook extends the console-based approach to interactive computing in a qualitatively new direction, providing a web-based application suitable for capturing the whole computation process: developing, documenting, and executing code, as well as communicating the results.
+
+The Jupyter Notebook combines two components:
+ - A web application: a browser-based tool for interactive authoring of documents which combine explanatory text, mathematics, computations and their rich media output.
+ - Notebook documents: a representation of all content visible in the web application, including inputs and outputs of the computations, explanatory text, mathematics, images, and rich media representations of objects.
+
+For more information on Jupyter Notebooks, visit `the official documentation of Jupyter Notebook <https://jupyter-notebook.readthedocs.io/en/latest/>`_.
+
+JupyterLab is the next-generation web-based user interface for Project Jupyter, it's a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible: configure and arrange the user interface to support a wide range of workflows in data science, scientific computing, and machine learning. JupyterLab is extensible and modular: write plugins that add new components and integrate with existing ones.
+
+Compared to the classical web user interface where users can manage Jupyter Notebooks (available at ``http://<JupyterLabIP>:8888/tree``) JupyterLab (available at ``http://<JupyterLabIP>:8888/lab``) provides a more modern user interface where users can install extensions to satisfy their needs and improve their productivity using the Extension Manager.
+
+For more information on how to use the JupyterLab web-based user interface, visit `the official documentation of JupyterLab <https://jupyterlab.readthedocs.io/en/stable/user/interface.html>`_.
+
+**Features**
+
+ - creating a node through contextualisation
+ - utilising health check against a predefined port
+
+**Prerequisites**
+
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
+ - target cloud contains an Ubuntu 18.04 image with cloud-init support
+
+**Download**
+
+ You can download the example as `tutorials.examples.jupyterlab <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab.tar.gz>`_ .
+
+.. note::
+
+   In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
+
+**Steps**
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an :ref:`Occopus compatible resource plugin <user-doc-clouds>`
+   - you can find and specify the relevant :ref:`list of attributes for the plugin <userdefinitionresourcesection>`
+   - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
+   - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
+
+   The downloadable package for this example contains a resource template for the Nova plugin.
+
+   .. important::
+     For the JupyterLab extensions to work properly, the recommended resources are ``VCPU:2``, ``RAM:4GB``
+
+   .. important::
+
+     Do not modify the values of the contextualisation and the health_check section’s attribute!
+
+   .. note::
+
+     If you want Occopus to monitor (health_check) your initiated virtual machine and it is to be deployed in a different network, make sure you assign public (floating) IP to the node.
+
+#. Open the file ``nodes/infra-jupyterlab.yaml`` and edit the variables section labelled by ``variables``. The default username is "jovyan" and the default password is "lpds". Change the value of ``pwd_jupyterlab`` to a safe password!
+
+.. important::
+
+  Make sure the default password is changed, because the JupyterLab environment is exposed publicly on the Internet and anyone with access to the password could execute arbitrary code on the underlying virtual machine with root privileges!
+
+#. Services on the virtual machine should be available from outside, therefore some port numbers must be opened for the VM executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   ===========     =============  ====================
+   Protocol        Port(s)        Service
+   ===========     =============  ====================
+   TCP             22             SSH
+   TCP             8888           Jupyter Notebook
+   ===========     =============  ====================
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
+
+
+#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code:: bash
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure.
+
+   .. code:: bash
+
+      occopus-build infra-jupyterlab.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code:: bash
+
+      List of nodes/instances/addresses:
+      jupyterlab:
+          3116eaf5-89e7-405f-ab94-9550ba1d0a7c
+            192.168.xxx.xxx
+
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. You can start using the freshly installed JupyterLab using your web browster at the following URL:
+
+   - JupyterLab: ``http://<JupyterLabIP>:8888``
+
+   .. note::
+
+     The JupyterLab web user interface is password protected, enter the password that was set in ``nodes/infra-jupyterlab.yaml``
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code:: bash
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa

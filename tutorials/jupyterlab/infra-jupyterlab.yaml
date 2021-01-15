@@ -1,0 +1,11 @@
+infra_name: jupyterlab
+user_id: somebody@somewhere
+
+variables:
+  username_jupyterlab: jovyan
+  pwd_jupyterlab: lpds
+
+nodes:
+  - &M
+    name: jupyterlab
+    type: jupyterlab_node
