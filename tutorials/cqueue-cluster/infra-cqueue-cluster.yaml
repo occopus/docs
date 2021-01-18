@@ -8,9 +8,13 @@ nodes:
   - &W
     name: worker
     type: cqueue_worker_node
-    scaling: 
+    scaling:
       min: 1
       max: 10
+variables:
+  DOCKER_VERSION: 5:20.10.2~3-0~ubuntu-$(lsb_release -cs)
+  DOCKER_COMPOSE_VERSION: 1.27.4
+  CQUEUE_VERSION: 0.2.5
 
 dependencies:
   -

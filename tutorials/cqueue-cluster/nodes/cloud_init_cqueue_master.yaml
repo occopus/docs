@@ -2,7 +2,7 @@
 
 write_files:
 ################################
-# COMPOSE FILE FOR CQUEUE FRONTEND 
+# COMPOSE FILE FOR CQUEUE FRONTEND
 ################################
 - path: /tmp/compose-cqueue-frontend-only
   content: |
@@ -26,7 +26,7 @@ write_files:
           - "6379:6379"
 
       frontend:
-        image: sztakilpds/cqueue_frontend
+        image: sztakilpds/cqueue_frontend:{{variables.CQUEUE_VERSION}}
         environment:
           - BROKER=amqp://guest:guest@rabbitmq:5672
           - RESULT_BACKEND=redis://redis:6379
@@ -45,19 +45,18 @@ write_files:
 ##############################
 - path: /bin/install-docker-ce.sh
   content: |
-     #!/bin/bash
-     set -x
-     echo "Downloading DOCKER CE starts." 
-     apt-get update
-     apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
-     echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-     curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
-     add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main" 
-     apt-get update
-     apt-get install -y docker-engine
-     echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
-     service docker restart
-     echo "Downloading DOCKER CE finished."
+    #!/bin/bash
+
+    set -x
+    echo "Downloading DOCKER CE starts."
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    apt-get update
+    apt-get install -y docker-ce={{variables.DOCKER_VERSION}} docker-ce-cli={{variables.DOCKER_VERSION}} containerd.io
+    echo "Downloading DOCKER CE finished."
   permissions: '755'
 
 
@@ -67,18 +66,19 @@ write_files:
 - path: /bin/install-docker-compose.sh
   content: |
     #!/bin/bash
-    echo "Downloading DOCKER COMPOSE starts." 
-    set -x 
-    sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose	
+
+    echo "Downloading DOCKER COMPOSE starts."
+    set -x
+    sudo curl -L https://github.com/docker/compose/releases/download/{{variables.DOCKER_COMPOSE_VERSION}}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
     echo "Downloading DOCKER COMPOSE finished."
   permissions: '755'
 
 runcmd:
-#Install DOCKER CE
+# Install DOCKER CE
 - /bin/install-docker-ce.sh
-#Install DOCKER COMPOSE
+# Install DOCKER COMPOSE
 - /bin/install-docker-compose.sh
-#Launch cqueue master frontend
+# Launch cqueue master frontend
 - docker-compose -f /tmp/compose-cqueue-frontend-only up -d
 - echo "CQUEUE MASTER DEPLOYMENT DONE."
