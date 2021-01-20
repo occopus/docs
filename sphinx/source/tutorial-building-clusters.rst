@@ -481,7 +481,7 @@ CQueue stands for "Container Queue". Since Docker does not provide pull model fo
 
 Figure 1 shows, the overall architecture of a CQueue cluster. The CQueue cluster contains one Master node (VM1) and any number of Worker nodes (VM2). Worker nodes can be manually scaled up and down with Occopus. The Master node implements a queue (see "Q" box within VM1), where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes (VM2) fetch the tasks one after the other and execute the container specified by the task (see "A" box within VM2). In each task submission a new Docker container will be launched within at CQueue Worker.
 
-.. figure:: images/tutorials/cqueue_cluster.jpg
+.. figure:: images/tutorials/cqueue_cluster.png
    :align: center
 
    Figure 1. CQueue cluster architecture
@@ -559,7 +559,9 @@ The following steps are suggested to be performed:
    - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
    - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
 
-   The downloadable package for this example contains a resource template for the CloudBroker plugin.
+.. note::
+
+ In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
 
 #. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
 

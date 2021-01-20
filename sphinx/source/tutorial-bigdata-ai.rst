@@ -778,6 +778,7 @@ For more information on how to use the JupyterLab web-based user interface, visi
 
      If you want Occopus to monitor (health_check) your initiated virtual machine and it is to be deployed in a different network, make sure you assign public (floating) IP to the node.
 
+
 #. Open the file ``nodes/infra-jupyterlab.yaml`` and edit the variables section labelled by ``variables``. The default username is "jovyan" and the default password is "lpds". Change the value of ``pwd_jupyterlab`` to a safe password!
 
 .. important::
@@ -823,7 +824,7 @@ For more information on how to use the JupyterLab web-based user interface, visi
 
       14032858-d628-40a2-b611-71381bd463fa
 
-#. You can start using the freshly installed JupyterLab using your web browster at the following URL:
+#. You can start using JupyterLab using your web browster at the following URL:
 
    - JupyterLab: ``http://<JupyterLabIP>:8888``
 
