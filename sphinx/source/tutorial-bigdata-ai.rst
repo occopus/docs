@@ -6,7 +6,7 @@ Big Data and AI applications
 Apache Hadoop cluster
 ~~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Hadoop Master node and Hadoop Slave worker nodes, which can be scaled up or down. To register Hadoop Slave nodes Consul is used.
+This tutorial sets up a complete Apache Hadoop (version **2.10.1**) infrastructure. It contains a Hadoop Master node and Hadoop Slave worker nodes, which can be scaled up or down. To register Hadoop Slave nodes Consul is used.
 
 **Features**
 
@@ -19,7 +19,6 @@ This tutorial sets up a complete Apache Hadoop infrastructure. It contains a Had
 
  - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
  - target cloud contains a base Ubuntu OS image with cloud-init support
- - generated ssh key-pair (or for testing purposes one is attached)
 
 **Download**
 
@@ -113,16 +112,12 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
 
       14032858-d628-40a2-b611-71381bd463fa
 
-#. You can check the  health and statistics of the cluster through the following web pages:
+#. You can check the health and statistics of the cluster through the following web pages:
 
    - Health of nodes: ``http://[HadoopMasterIP]:50070``
    - Job statistics: ``http://[HadoopMasterIP]:8088``
 
-#. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_ . To login to the Hadoop Master node use the private key attached to the tutorial package:
-
-   .. code:: bash
-
-      ssh -i builtin_hadoop_private_key hduser@[HadoopMaster ip]
+#. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
@@ -134,7 +129,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
 Apache Spark cluster with RStudio Stack
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
+This tutorial sets up a complete Apache Spark (version **2.4.7**) infrastructure with HDFS (Hadoop Distributed File System) (version **2.10.1**) and RStudio server. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
 One of the most typical application area of Big Data technology is the statistical data processing that is usually done by the programming language R. In order to facilitate the work of statisticians using Spark on cloud, we have created an extended version of the Spark infrastructure descriptors placing the sparklyr library on Spark workers, too. Finally, we have also integrated the user-friendly RStudio user interface into the Spark system. As a result, researchers using the statistical R package can easily and quickly deploy a complete R-oriented Spark cluster on clouds containing the following components: RStudio, R, sparklyr, Spark and HDFS.
@@ -187,8 +182,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
      If you want Occopus to monitor (health_check) your Spark Master and it is to be deployed in a different network, make sure you assign public (floating) IP to the Master node.
 
 
-#. Generally speaking, a Spark cluster and its services are not deployed on the public internet. They are generally private services, and should only be accessible within the network of the organization that deploys Spark. Access to the hosts and ports used by Spark services should be limited to origin hosts that need to access the services.
-This means that you need to create a firewall rule to allow **all traffic between Spark nodes** and the **required ports** [web UI and job submission port(s)] should be allowed **only from your IP address**.
+#. Generally speaking, a Spark cluster and its services are not deployed on the public internet. They are generally private services, and should only be accessible within the network of the organization that deploys Spark. Access to the hosts and ports used by Spark services should be limited to origin hosts that need to access the services. This means that you need to create a firewall rule to allow **all traffic between Spark nodes** and the **required ports** [web UI and job submission port(s)] should be allowed **only from your IP address**.
 
    **Main UI port list:**
 
@@ -355,7 +349,7 @@ This means that you need to create a firewall rule to allow **all traffic betwee
 Apache Spark cluster with Jupyter notebook and PySpark
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
+This tutorial sets up a complete Apache Spark (version **2.4.7**) infrastructure with HDFS (Hadoop Distributed File System) (version **2.10.1**) and PySpark. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
 Spark also provides a special library called “Spark MLlib” for supporting machine learning applications. Similarly, to the R-oriented Spark environment, we have developed the infrastructure descriptors for the creation of a machine learning environment in the cloud. Here, the programming language is Python and the user programming environment is Jupyter. The complete machine learning environment consists of the following components: Jupyter, Python, Spark and HDFS. Deploying this machine learning environment is also automatically done by Occopus and the number of Spark workers can be defined by the user.
@@ -407,6 +401,7 @@ This tutorial sets up a complete Apache Spark infrastructure integrated with HDF
 
 
 #. Generally speaking, a Spark cluster and its services are not deployed on the public internet. They are generally private services, and should only be accessible within the network of the organization that deploys Spark. Access to the hosts and ports used by Spark services should be limited to origin hosts that need to access the services.
+
 This means that you need to create a firewall rule to allow **all traffic between Spark nodes** and the **required ports** [web UI and job submission port(s)] should be allowed **only from your IP address**.
 
    **Main UI port list:**
@@ -720,6 +715,122 @@ The complete machine learning environment consists of the following components: 
 
       Figure 1: Jupyter Notebook for testing TensorFlow/Keras environment with GPU
 
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+
+   .. code:: bash
+
+      occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
+
+JupyterLab
+~~~~~~~~~~
+The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more. The notebook extends the console-based approach to interactive computing in a qualitatively new direction, providing a web-based application suitable for capturing the whole computation process: developing, documenting, and executing code, as well as communicating the results.
+
+The Jupyter Notebook combines two components:
+ - A web application: a browser-based tool for interactive authoring of documents which combine explanatory text, mathematics, computations and their rich media output.
+ - Notebook documents: a representation of all content visible in the web application, including inputs and outputs of the computations, explanatory text, mathematics, images, and rich media representations of objects.
+
+For more information on Jupyter Notebooks, visit `the official documentation of Jupyter Notebook <https://jupyter-notebook.readthedocs.io/en/latest/>`_.
+
+JupyterLab is the next-generation web-based user interface for Project Jupyter, it's a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible: configure and arrange the user interface to support a wide range of workflows in data science, scientific computing, and machine learning. JupyterLab is extensible and modular: write plugins that add new components and integrate with existing ones.
+
+Compared to the classical web user interface where users can manage Jupyter Notebooks (available at ``http://<JupyterLabIP>:8888/tree``) JupyterLab (available at ``http://<JupyterLabIP>:8888/lab``) provides a more modern user interface where users can install extensions to satisfy their needs and improve their productivity using the Extension Manager.
+
+For more information on how to use the JupyterLab web-based user interface, visit `the official documentation of JupyterLab <https://jupyterlab.readthedocs.io/en/stable/user/interface.html>`_.
+
+**Features**
+
+ - creating a node through contextualisation
+ - utilising health check against a predefined port
+
+**Prerequisites**
+
+ - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
+ - target cloud contains an Ubuntu 18.04 image with cloud-init support
+
+**Download**
+
+ You can download the example as `tutorials.examples.jupyterlab <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab.tar.gz>`_ .
+
+.. note::
+
+   In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
+
+**Steps**
+
+#. Open the file ``nodes/node_definitions.yaml`` and edit the resource section of the nodes labelled by ``node_def:``.
+
+   - you must select an :ref:`Occopus compatible resource plugin <user-doc-clouds>`
+   - you can find and specify the relevant :ref:`list of attributes for the plugin <userdefinitionresourcesection>`
+   - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
+   - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
+
+   The downloadable package for this example contains a resource template for the Nova plugin.
+
+   .. important::
+     For the JupyterLab extensions to work properly, the recommended resources are ``VCPU:2``, ``RAM:4GB``
+
+   .. important::
+
+     Do not modify the values of the contextualisation and the health_check section’s attribute!
+
+   .. note::
+
+     If you want Occopus to monitor (health_check) your initiated virtual machine and it is to be deployed in a different network, make sure you assign public (floating) IP to the node.
+
+
+#. Open the file ``nodes/infra-jupyterlab.yaml`` and edit the variables section labelled by ``variables``. The default username is "jovyan" and the default password is "lpds". Change the value of ``pwd_jupyterlab`` to a safe password!
+
+.. important::
+
+  Make sure the default password is changed, because the JupyterLab environment is exposed publicly on the Internet and anyone with access to the password could execute arbitrary code on the underlying virtual machine with root privileges!
+
+#. Services on the virtual machine should be available from outside, therefore some port numbers must be opened for the VM executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
+
+   ===========     =============  ====================
+   Protocol        Port(s)        Service
+   ===========     =============  ====================
+   TCP             22             SSH
+   TCP             8888           Jupyter Notebook
+   ===========     =============  ====================
+
+#. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
+
+
+#. Load the node definitions into the database. Make sure the proper virtualenv is activated!
+
+   .. important::
+
+      Occopus takes node definitions from its database when builds up the infrastructure, so importing is necessary whenever the node definition or any imported (e.g. contextualisation) file changes!
+
+   .. code:: bash
+
+      occopus-import nodes/node_definitions.yaml
+
+#. Start deploying the infrastructure.
+
+   .. code:: bash
+
+      occopus-build infra-jupyterlab.yaml
+
+#. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
+
+   .. code:: bash
+
+      List of nodes/instances/addresses:
+      jupyterlab:
+          3116eaf5-89e7-405f-ab94-9550ba1d0a7c
+            192.168.xxx.xxx
+
+      14032858-d628-40a2-b611-71381bd463fa
+
+#. You can start using JupyterLab using your web browster at the following URL:
+
+   - JupyterLab: ``http://<JupyterLabIP>:8888``
+
+   .. note::
+
+     The JupyterLab web user interface is password protected, enter the password that was set in ``nodes/infra-jupyterlab.yaml``
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 

@@ -481,7 +481,7 @@ CQueue stands for "Container Queue". Since Docker does not provide pull model fo
 
 Figure 1 shows, the overall architecture of a CQueue cluster. The CQueue cluster contains one Master node (VM1) and any number of Worker nodes (VM2). Worker nodes can be manually scaled up and down with Occopus. The Master node implements a queue (see "Q" box within VM1), where each item (called task in CQueue) represents the specification of a container execution (image, command, arguments, etc.). The Worker nodes (VM2) fetch the tasks one after the other and execute the container specified by the task (see "A" box within VM2). In each task submission a new Docker container will be launched within at CQueue Worker.
 
-.. figure:: images/tutorials/cqueue_cluster.jpg
+.. figure:: images/tutorials/cqueue_cluster.png
    :align: center
 
    Figure 1. CQueue cluster architecture
@@ -492,8 +492,46 @@ Please, note that CQueue is not aware of what happens inside the container, simp
 In case the container hosts an application, CQueue can be used for executing jobs, where each job is realized by one single container execution. To use CQueue for huge number of job execution, prepare your container and generate the list of container execution in a parameter sweep style.
 
 
-In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (see VM1 on Figure 1) having a RabbitMQ (for queuing) (see "Q" box within VM1), a Redis (for storing container logs) (see "DB" within VM1), and a web-based frontend (for providing a REST API) component (see "F" in VM1); 2) a Worker node (see VM2 on Figure 1) containing a CQueue worker component (see "W" box within VM2) which pulls tasks from the Master and performs the execution of containers specified by the tasks (see "A" box in VM2).
+In this tutorial we deploy a CQueue cluster with two nodes: 1) a Master node (see VM1 on Figure 1) having a RabbitMQ (for queuing) (see "Q" box within VM1), a Redis (for storing container logs) (see "DB" within VM1), and a web-based frontend (for providing a REST API and a basic WebUI) component (see "F" in VM1); 2) a Worker node (see VM2 on Figure 1) containing a CQueue worker component (see "W" box within VM2) which pulls tasks from the Master and performs the execution of containers specified by the tasks (see "A" box in VM2).
 
+There are three use-cases identified for using CQueue.
+
+**Use-case 1 (Container executation)**
+
+The first use-case uses Container executor, i.e. the application container managed by the CQueue worker. After the application container (task) finished, the result saved on the result backend. (Redis)
+
+.. code:: bash
+
+   curl -H 'Content-Type: application/json' -X POST -d'{"image":"ubuntu", "cmd":["echo", "test msg"]}' http://localhost:8080/task
+
+
+**Use-case 2 (Local executation)**
+
+The second use-case runs the task in the worker container. The container runs the given task, and after the execution, the worker container saves the result to the result backend.
+
+.. code:: bash
+
+   curl -H 'Content-Type: application/json' -X POST -d'{"type":"local", "cmd":["echo", "test msg"]}' http://localhost:8080/task
+
+.. note::
+
+   If you like to use this method, it is necessary to build the CQueue worker in the application container.
+
+**Use-case 3 (Batch executation)**
+
+In this use-case, the application runs in the worker container similarly to the second use-case, but it will define multiple tasks. In this mode, CQueue is capable of creating an iterable parameter in the application with the syntax of ``{{.}}``. In this mode, it is necessary to define the start, and the stop parameter and CQueue will iterate over it. This execution mode can result in a very significant performance improvement when the tasks running times are short.
+
+.. code:: bash
+
+   curl -H 'Content-Type: application/json' -X POST -d'{"type":"batch", "start":"1" , "stop":"10", "cmd":["echo", "run {{.}}.cfg"]}' http://localhost:8080/task
+
+.. note::
+
+   If you like to use this method, it is necessary to build the CQueue worker in the application container.
+
+.. note::
+
+   To create a worker with batch capabilities, the worker must be started with ``--batch=true`` flag.
 
 **Features**
 
@@ -521,7 +559,9 @@ The following steps are suggested to be performed:
    - you may follow the help on :ref:`collecting the values of the attributes for the plugin <user-doc-collecting-resources>`
    - you may find a resource template for the plugin in the :ref:`resource plugin tutorials <tutorial-resource-plugins>`
 
-   The downloadable package for this example contains a resource template for the CloudBroker plugin.
+.. note::
+
+ In this tutorial, we will use nova cloud resources (based on our nova tutorials in the basic tutorial section). However, feel free to use any Occopus-compatible cloud resource for the nodes, but we suggest to instantiate all nodes in the same cloud.
 
 #. Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following port ranges:
 

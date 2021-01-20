@@ -6,28 +6,24 @@ write_files:
 ##############################
 - path: /bin/install-docker-ce.sh
   content: |
-     #!/bin/bash
-     set -x
-     echo "Downloading DOCKER CE starts."
-      #!/bin/bash
-     set -x
-     echo "Downloading DOCKER CE starts."
-     apt-get update
-     apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
-     echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-     curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
-     add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
-     apt-get update
-     apt-get install -y docker-engine
-     echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
-     service docker restart
-     echo "Downloading DOCKER CE finished."
+    #!/bin/bash
+
+    set -x
+    echo "Downloading DOCKER CE starts."
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    apt-get update
+    apt-get install -y docker-ce={{variables.DOCKER_VERSION}} docker-ce-cli={{variables.DOCKER_VERSION}} containerd.io
+    echo "Downloading DOCKER CE finished."
   permissions: '755'
 
 runcmd:
-#Install DOCKER CE
+# Install DOCKER CE
 - /bin/install-docker-ce.sh
-#Launch CQueue worker 
-- docker run -d -e BROKER=amqp://guest:guest@{{getip(master)}}:5672 -e RESULT_BACKEND=redis://{{getip(master)}}:6379 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker sztakilpds/cqueue_worker
+# Launch CQueue worker
+- docker run -d -e BROKER=amqp://guest:guest@{{getip(master)}}:5672 -e RESULT_BACKEND=redis://{{getip(master)}}:6379 --restart=always -v /var/run/docker.sock:/var/run/docker.sock sztakilpds/cqueue_worker:{{variables.CQUEUE_VERSION}}
+- docker run -d -e BROKER=amqp://guest:guest@{{getip(master)}}:5672 -e RESULT_BACKEND=redis://{{getip(master)}}:6379 --restart=always -v /var/run/docker.sock:/var/run/docker.sock sztakilpds/cqueue_worker:{{variables.CQUEUE_VERSION}} --batch=true
 - echo "CQUEUE WORKER DEPLOYMENT DONE."
-

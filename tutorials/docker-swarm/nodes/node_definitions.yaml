@@ -1,5 +1,5 @@
 'node_def:dockerswarm_master_node':
-  - 
+  -
     resource:
       type: cloudsigma
       endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
@@ -26,7 +26,7 @@
         - 2375
 
 'node_def:dockerswarm_worker_node':
-  - 
+  -
     resource:
       type: cloudsigma
       endpoint: replace_with_endpoint_of_cloudsigma_interface_of_your_cloud
