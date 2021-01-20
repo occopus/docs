@@ -90,8 +90,8 @@ write_files:
     #!/bin/bash
     echo "==> Copying JUPYTERLAB EXAMPLES started."
     mkdir -p ~/workspace/examples
-    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab/examples/what-is-the-jupyter-notebook.ipynb -o ~/workspace/examples/what-is-the-jupyter-notebook.ipynb
-    curl -fsSL https://raw.githubusercontent.com/occopus/docs/devel/tutorials/jupyterlab/examples/list-of-python-packages.ipynb -o ~/workspace/examples/list-of-python-packages.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/jupyterlab/examples/what-is-the-jupyter-notebook.ipynb -o ~/workspace/examples/what-is-the-jupyter-notebook.ipynb
+    curl -fsSL https://raw.githubusercontent.com/occopus/docs/master/tutorials/jupyterlab/examples/list-of-python-packages.ipynb -o ~/workspace/examples/list-of-python-packages.ipynb
     echo "==> Copying JUPYTERLAB EXAMPLES finished."
   permissions: '755'
 
