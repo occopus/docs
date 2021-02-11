@@ -17,10 +17,8 @@ Installation
 
    .. code:: bash
 
-      sudo apt install -y python3-pip
-      sudo apt install -y virtualenv
-      sudo apt install -y redis-server
-      sudo apt install -y libssl-dev
+      sudo apt update && \
+      sudo apt install -y python3-pip virtualenv redis-server libssl-dev
 
 #. Prepare the environment (you may skip this part to have a system-wide installation, not recommended)
 
