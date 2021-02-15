@@ -18,8 +18,6 @@ plugins: !python_import
     - occo.infraprocessor.synchronization.primitives
     - occo.configmanager
     - occo.plugins.configmanager.dummy
-    - occo.plugins.configmanager.chef
-    - occo.plugins.configmanager.puppet_solo
 components:
     rest:
         host: 127.0.0.1
