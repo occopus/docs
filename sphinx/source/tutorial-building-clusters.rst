@@ -267,14 +267,13 @@ DataAvenue cluster
 
 Data Avenue is a data storage management service that enables to access different types of storage resources (including S3, sftp, GridFTP, iRODS, SRM servers) using a uniform interface. The provided REST API allows of performing all the typical storage operations such as creating folders/buckets, renaming or deleting files/folders, uploading/downloading files, or copying/moving files/folders between different storage resources, respectively, even simply using 'curl' from command line. Data Avenue automatically translates users' REST commands to the appropriate storage protocols, and manages long-running data transfers in the background.
 
-In this tutorial we establish a cluster with two nodes types. On the DataAvenue node the DataAvenue application will run, and on a predefined number of storage nodes an S3 storage will run, in order to be able to try DataAvenue file transfer software such as making buckets, download or copy files. We used Ceph and Docker components to build-up the cluster.
+In this tutorial we establish a cluster with two nodes types. On the DataAvenue node the DataAvenue application will run, and an S3 storage will run, in order to be able to try DataAvenue file transfer software such as making buckets, download or copy files. We used MinIO and Docker components to build-up the cluster.
 
 **Features**
 
  - creating two types of nodes through contextualisation
  - using the nova resource handler
- - using parameters to scale up storage nodes
-
+ 
 **Prerequisites**
 
  - accessing an Occopus compatible interface
@@ -304,29 +303,14 @@ The following steps are suggested to be performed:
    ===========     =============  ====================
    TCP             22             SSH
    TCP             80             HTTP
+   TCP             443            HTTPS
    TCP             8080           DA service
    ===========     =============  ====================
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
 
-#. Update the number of storage nodes if necessary. For this, edit the ``infra-dataavenue.yaml`` file and modify the min and max parameter under the scaling keyword. Scaling is the interval in which the number of nodes can change (min, max). Currently, the minimum is set to 2 (which will be the initial number at startup).
-
-   .. code:: yaml
-
-      - &S
-        name: storage
-        type: storage_node
-            scaling:
-                min: 2
-
-   .. important::
-
-     Important: Keep in mind that Occopus has to start at least one node from each node type to work properly and scaling can be applied only for storage nodes in this example!
-
-
 #. Optionally edit the "variables" section of the ``infra-dataavenue.yaml`` file. Set the following attributes:
 
-   - ``storage_user_name`` is the name of the S3 storage user
    - ``access_key`` is the access key of the S3 storage user
    - ``secret_key`` is the secret key of the S3 storage user
 
@@ -356,7 +340,6 @@ The following steps are suggested to be performed:
           192.168.xxx.xxx (34b07a23-a26a-4a42-a5f4-73966b8ed23f)
       storage:
           192.168.xxx.xxx (29b98290-c6f4-4ae7-95ca-b91a9baf2ea8)
-          192.168.xxx.xxx (3ba43b6e-bcec-46ed-bd90-6a352749db5d)
 
       db0f0047-f7e6-428e-a10d-3b8f7dbdb4d4
 
@@ -364,7 +347,7 @@ The following steps are suggested to be performed:
 
    .. code:: bash
 
-     echo -e 'X-Key: 1a7e159a-ffd8-49c8-8b40-549870c70e73\nX-Username: A8Q2WPCWAELW61RWDGO8\nX-Password: FWd1mccBfnw6VHa2vod98NEQktRCYlCronxbO1aQ' > credentials
+     echo -e 'X-Key: dataavenue-key\nX-Username: A8Q2WPCWAELW61RWDGO8\nX-Password: FWd1mccBfnw6VHa2vod98NEQktRCYlCronxbO1aQ' > credentials
 
    .. note::
      This step will be useful to shorten the curl commands later when using DataAvenue!
