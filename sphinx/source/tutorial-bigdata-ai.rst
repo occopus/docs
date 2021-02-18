@@ -6,7 +6,7 @@ Big Data and AI applications
 Apache Hadoop cluster
 ~~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Apache Hadoop (version **2.10.1**) infrastructure. It contains a Hadoop Master node and Hadoop Slave worker nodes, which can be scaled up or down. To register Hadoop Slave nodes Consul is used.
+This tutorial sets up a complete Apache Hadoop (version **3.3.0**) infrastructure. It contains a Hadoop Master node and Hadoop Slave worker nodes, which can be scaled up or down. To register Hadoop Slave nodes Consul is used.
 
 **Features**
 
@@ -114,7 +114,7 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
 
 #. You can check the health and statistics of the cluster through the following web pages:
 
-   - Health of nodes: ``http://[HadoopMasterIP]:50070``
+   - Health of nodes: ``http://[HadoopMasterIP]:9870``
    - Job statistics: ``http://[HadoopMasterIP]:8088``
 
 #. To launch a Hadoop MapReduce job copy your input and executable files to the Hadoop Master node, and perform the submission described `here <https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html>`_.
