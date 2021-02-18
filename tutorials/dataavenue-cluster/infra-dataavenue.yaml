@@ -9,10 +9,9 @@ nodes:
     name: storage
     type: storage_node
     scaling:
-      min: 2
-      max: 10
+      min: 1
+      max: 1
     variables:
-      storage_user_name: testuser
       access_key: A8Q2WPCWAELW61RWDGO8
       secret_key: FWd1mccBfnw6VHa2vod98NEQktRCYlCronxbO1aQ
 

@@ -1,59 +1,25 @@
 #cloud-config
 write_files:
 ################################
-# SCRIPT TO INSTALL DOCKER
-################################
-- path: /bin/deploy-docker.sh
-  content: |
-    #!/bin/bash
-    echo "Install DOCKER starts."
-    set -x
-    apt-get update
-    apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
-    echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-    curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
-    add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
-    apt-get update
-    apt-get install -y docker-engine
-    echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
-    service docker restart
-    echo "Install DOCKER stops."
-  permissions: '755'
-
-#####################################
-# SCRIPT TO INSTALL DOCKER-COMPOSE
-#####################################
-- path: /bin/deploy-docker-compose.sh
-  content: |
-    #!/bin/bash
-    set -x
-    echo "Install DOCKER-COMPOSE starts."
-    sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    echo "Install DOCKER-COMPOSE stops."
-  permissions: '755'
-
-################################
-# SCRIPT TO INSTALL DATAAVENUE
+# SCRIPT TO INSTALL AND DEPLOY DATAAVENUE
 ################################
 - path: /bin/deploy-dataavenue.sh
   content: |
     #!/bin/bash
-    set -x
-    echo "Install DATAAVENUE starts."
-    wget -O data-avenue-docker-compose-latest.tar.gz https://nextcloud.sztaki.hu/s/EiNnjwDjR9xfTQZ/download --directory /home/ubuntu/
-    cd /home/ubuntu
-    tar zxvf data-avenue-docker-compose-latest.tar.gz
-    cd /home/ubuntu/data-avenue-docker-compose
-    docker-compose up > dataavenue.out &
-    echo "Install DATAAVENUE stops."
+    echo "Deploying DATAAVENUE..."
+    apt-get update
+    git clone https://github.com/SZTAKI-LPDS/data-avenue.git /home/ubuntu/data-avenue
+    mvn -f /home/ubuntu/data-avenue/pom.xml package
+    cp /home/ubuntu/data-avenue/data-avenue.core.war/target/dataavenue.war /home/ubuntu/data-avenue/data-avenue.docker-compose/dataavenue/webapps/
+    docker-compose -f /home/ubuntu/data-avenue/data-avenue.docker-compose/docker-compose.yml up -d
+    echo "Done."
   permissions: '755'
-
+packages:
+ - git
+ - maven
+ - openjdk-8-jdk
+ - docker-compose
 runcmd:
-#Install DOCKER
-- /bin/deploy-docker.sh
-#Install DOCKER-COMPOSE
-- /bin/deploy-docker-compose.sh
 #Run Dataavenue
 - /bin/deploy-dataavenue.sh
-- echo "DATAAAVENUE NODES'S CONTEXTUALIZATION DONE."
+- echo "DATAAVENUE NODE CONTEXTUALIZATION DONE."
