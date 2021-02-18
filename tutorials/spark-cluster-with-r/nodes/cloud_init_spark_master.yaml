@@ -8,6 +8,7 @@ write_files:
   content: |
     #!/bin/bash
 
+    # chage -d 2020-08-04 ubuntu
     set -ex
     HADOOP_VERSION={{variables.HADOOP_VERSION}}
     SPARK_VERSION={{variables.SPARK_VERSION}}
@@ -40,7 +41,7 @@ write_files:
 
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y openjdk-8-jdk openjdk-8-jre unzip r-base gdebi-core libpango1.0-dev libcurl4-gnutls-dev libssl-dev libxml2-dev
+    apt-get install -yq openjdk-8-jdk openjdk-8-jre unzip r-base gdebi-core libpango1.0-dev libcurl4-gnutls-dev libssl-dev libxml2-dev
     echo "Install requirement packages starts."
 
 
@@ -74,6 +75,7 @@ write_files:
     echo "Install RSTUDIO starts."
     wget -nc "https://download2.rstudio.org/server/xenial/amd64/rstudio-server-$RSTUDIO_VERSION.deb" -O "/home/sparkuser/rstudio-server-$RSTUDIO_VERSION.deb"
     gdebi -n /home/sparkuser/rstudio-server-$RSTUDIO_VERSION.deb
+    rm /home/sparkuser/rstudio-server-$RSTUDIO_VERSION.deb
     echo "Install RSTUDIO finished."
 
 
@@ -96,7 +98,6 @@ write_files:
     chown sparkuser:sparkuser /home/sparkuser/.bashrc
     echo export PATH="/home/sparkuser/hadoop/bin:$PATH" >> /home/sparkuser/.bashrc
     mv /tmp/hadoop/configs/* /home/sparkuser/hadoop/etc/hadoop
-    mv /tmp/hadoop/webconfigs/* /home/sparkuser/hadoop/share/hadoop/hdfs/webapps/hdfs/WEB-INF/
     echo "spark: lpds, admin" >> /home/sparkuser/hadoop/etc/hadoop/realm.properties
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
     echo "export HADOOP_PID_DIR=/home/sparkuser/hadoop" >> /home/sparkuser/hadoop/etc/hadoop/hadoop-env.sh
@@ -165,7 +166,7 @@ write_files:
 
     echo "Launch HADOOP starts."
     echo 'Y' | /home/sparkuser/hadoop/bin/hdfs namenode -format hdfs_cluster
-    /home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode
+    /home/sparkuser/hadoop/bin/hdfs --daemon start namenode
     echo "Launch HADOOP finished."
 
 
@@ -185,15 +186,10 @@ write_files:
    <configuration>
     <property>
      <name>dfs.namenode.http-address</name>
-      <value>HadoopMaster:50070</value>
+      <value>HadoopMaster:9870</value>
     </property>
     <property>
-      <name>dfs.name.dir</name>
-      <value>/tmp</value>
-      <final>true</final>
-    </property>
-    <property>
-       <name>dfs.permissions</name>
+       <name>dfs.permissions.enabled</name>
        <value>false</value>
     </property>
     <property>
@@ -223,44 +219,10 @@ write_files:
   content: |
       <configuration>
       <property>
-        <name>fs.default.name</name>
+        <name>fs.defaultFS</name>
         <value>hdfs://HadoopMaster:9000</value>
       </property>
       </configuration>
-  permissions: '644'
-
-- path: /tmp/hadoop/webconfigs/web.xml
-  content: |
-    <?xml version="1.0" encoding="UTF-8"?>
-    <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
-      <security-constraint>
-          <web-resource-collection>
-              <web-resource-name>Protected</web-resource-name>
-              <url-pattern>/*</url-pattern>
-          </web-resource-collection>
-          <auth-constraint>
-              <role-name>admin</role-name>
-          </auth-constraint>
-      </security-constraint>
-      <login-config>
-          <auth-method>BASIC</auth-method>
-          <realm-name>realm</realm-name>
-      </login-config>
-    </web-app>
-  permissions: '644'
-
-- path: /tmp/hadoop/webconfigs/jetty-web.xml
-  content: |
-    <Configure class="org.mortbay.jetty.webapp.WebAppContext">
-     <Get name="securityHandler">
-      <Set name="userRealm">
-        <New class="org.mortbay.jetty.security.HashUserRealm">
-          <Set name="name">realm</Set>
-          <Set name="config">/home/sparkuser/hadoop/etc/hadoop/realm.properties</Set>
-        </New>
-      </Set>
-     </Get>
-    </Configure>
   permissions: '644'
 
 - path: /home/sparkuser/consul/hosts.ctmpl
@@ -338,8 +300,8 @@ write_files:
 
     if [ `diff /etc/hosts $FILE_LOCATION | grep '>' | wc -l` -gt 0 ]; then
         echo -e `date +%Y-%m-%d` `date +"%T"` "Downscale detected. Restarting name node service..."
-        su - sparkuser -c '/home/sparkuser/hadoop/sbin/hadoop-daemon.sh stop namenode'
-        su - sparkuser -c '/home/sparkuser/hadoop/sbin/hadoop-daemon.sh start namenode'
+        su - sparkuser -c '/home/sparkuser/hadoop/bin/hdfs --daemon stop namenode'
+        su - sparkuser -c '/home/sparkuser/hadoop/bin/hdfs --daemon start namenode'
         echo -e `date +%Y-%m-%d` `date +"%T"` "Namenode restarted!"
         cp /etc/hosts $FILE_LOCATION
     else [ `diff /etc/hosts $FILE_LOCATION | grep '<' | wc -l` -gt 0 ]

@@ -129,11 +129,10 @@ You can download the example as `tutorial.examples.hadoop-cluster <https://raw.g
 Apache Spark cluster with RStudio Stack
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Apache Spark (version **2.4.7**) infrastructure with HDFS (Hadoop Distributed File System) (version **2.10.1**) and RStudio server. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
+This tutorial sets up a complete Apache Spark (version **3.0.1**) infrastructure with HDFS (Hadoop Distributed File System) (version **3.3.0**) and RStudio server. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
 One of the most typical application area of Big Data technology is the statistical data processing that is usually done by the programming language R. In order to facilitate the work of statisticians using Spark on cloud, we have created an extended version of the Spark infrastructure descriptors placing the sparklyr library on Spark workers, too. Finally, we have also integrated the user-friendly RStudio user interface into the Spark system. As a result, researchers using the statistical R package can easily and quickly deploy a complete R-oriented Spark cluster on clouds containing the following components: RStudio, R, sparklyr, Spark and HDFS.
-
 
 This tutorial sets up a complete Apache Spark infrastructure integrated with HDFS, R, RStudio and sparklyr. It contains a Spark Master node and Spark Worker nodes, which can be scaled up or down.
 
@@ -199,7 +198,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
    +-------+------------------------------------------------------------------+
    | 8081  | Worker UI                                                        |
    +-------+------------------------------------------------------------------+
-   | 50070 | HDFS NameNode UI                                                 |
+   | 9870  | HDFS NameNode UI                                                 |
    +-------+------------------------------------------------------------------+
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
@@ -251,7 +250,7 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
 
 #. You can check the health and statistics of the cluster through the following web pages:
 
-   - HDFS NameNode UI: ``http://<SparkMasterIP>:50070``
+   - HDFS NameNode UI: ``http://<SparkMasterIP>:9870``
    - Spark UI: ``http://<SparkMasterIP>:8080``
    - Spark Application UI: ``http://<SparkMasterIP>:4040`` (active only if a Spark application is running)
 
@@ -349,10 +348,11 @@ You can download the example as `tutorial.examples.spark-cluster-with-r <https:/
 Apache Spark cluster with Jupyter notebook and PySpark
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This tutorial sets up a complete Apache Spark (version **2.4.7**) infrastructure with HDFS (Hadoop Distributed File System) (version **2.10.1**) and PySpark. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
+This tutorial sets up a complete Apache Spark (version **3.0.1**) infrastructure with HDFS (Hadoop Distributed File System) (version **3.3.0**) and PySpark. Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing, MLlib for machine learning, GraphX for graph processing, and Spark Streaming. For more information visit the `official Apache Spark page <https://spark.apache.org>`_ .
 
 Apache Spark cluster together with HDFS (Hadoop Distributed File System) represents one of the most important tool for Big Data and machine learning applications, enabling the parallel processing of large data sets on many virtual machines, which are running Spark workers. On the other hand, setting up a Spark cluster with HDFS on clouds is not straightforward, requiring deep knowledge of both cloud and Apache Spark architecture. To save this hard work for scientists we have created and made public the required infrastructure descriptors by which Occopus can automatically deploy Spark clusters with the number of workers specified by the user.
 Spark also provides a special library called “Spark MLlib” for supporting machine learning applications. Similarly, to the R-oriented Spark environment, we have developed the infrastructure descriptors for the creation of a machine learning environment in the cloud. Here, the programming language is Python and the user programming environment is Jupyter. The complete machine learning environment consists of the following components: Jupyter, Python, Spark and HDFS. Deploying this machine learning environment is also automatically done by Occopus and the number of Spark workers can be defined by the user.
+
 This tutorial sets up a complete Apache Spark infrastructure integrated with HDFS, Python and Jupyter Notebook. It contains a Spark Master node and Spark Worker nodes, which can be scaled up or down.
 
 **Features**
@@ -419,7 +419,7 @@ This means that you need to create a firewall rule to allow **all traffic betwee
    +-------+------------------------------------------------------------------+
    | 8081  | Worker UI                                                        |
    +-------+------------------------------------------------------------------+
-   | 50070 | HDFS NameNode UI                                                 |
+   | 9870  | HDFS NameNode UI                                                 |
    +-------+------------------------------------------------------------------+
 
 #. Make sure your authentication information is set correctly in your authentication file. You must set your authentication data for the ``resource`` you would like to use. Setting authentication information is described :ref:`here <authentication>`.
@@ -475,7 +475,7 @@ This means that you need to create a firewall rule to allow **all traffic betwee
 
 #. You can check the  health and statistics of the cluster through the following web pages:
 
-   - HDFS NameNode UI: ``http://<SparkMasterIP>:50070``
+   - HDFS NameNode UI: ``http://<SparkMasterIP>:9870``
    - Spark UI: ``http://<SparkMasterIP>:8080``
    - Spark Application UI: ``http://<SparkMasterIP>:4040`` (active only if a Spark application is running)
 
@@ -485,7 +485,7 @@ This means that you need to create a firewall rule to allow **all traffic betwee
 
 #. Testing with Jupyter Notebook
 
-   The Jupyter notebook's web interface can be access via ``http://<SparkMasterIP>:8888``. Here, you can upload and run Jupyter notebooks.
+   The Jupyter notebook's web interface can be access via ``http://<SparkMasterIP>:8888``. Here, you can upload and run Jupyter notebooks and try out the prepared demo notebook.
 
    .. note::
 

@@ -21,7 +21,7 @@
     health_check:
       ports:
         - 8080
-      timeout: 2000
+      timeout: 1000
 
 'node_def:spark_worker_node':
   -
