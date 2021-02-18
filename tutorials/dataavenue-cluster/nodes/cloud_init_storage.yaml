@@ -1,34 +1,19 @@
 #cloud-config
 write_files:
 ################################
-# SCRIPT TO INSTALL DOCKER
+# SCRIPT TO INSTALL AND DEPLOY MINIO
 ################################
-- path: /bin/deploy-docker.sh
+- path: /bin/deploy-minio.sh
   content: |
     #!/bin/bash
-    echo "Install DOCKER starts."
-    set -x
+    echo "Deploying MINIO..."
     apt-get update
-    apt-get install -y --no-install-recommends linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
-    echo deb http://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-    curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
-    add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
-    apt-get update
-    apt-get install -y docker-engine
-    echo "DOCKER_OPTS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'" > /etc/default/docker
-    service docker restart
-    echo "Install DOCKER stops."
+    docker run -d -v /mnt:/data -p 80:9000/tcp --name minio -e "MINIO_ACCESS_KEY={{variables.access_key}}" -e "MINIO_SECRET_KEY={{variables.secret_key}}" minio/minio server /data
+    echo "Done."
   permissions: '755'
-
+packages:
+ - docker-compose
 runcmd:
-#Install DOCKER
-- /bin/deploy-docker.sh
-#Install CEPH NETWORK
-- docker network inspect ceph 2>&1 > /dev/null || docker network create --driver bridge --subnet 172.16.13.0/28 --gateway 172.16.13.1 ceph
-- mkdir -p /etc/ceph
-#Run CEPH CONTAINER
-- docker run -d --name=ceph --net=ceph -e CEPH_DEMO_UID={{variables.storage_user_name}} -e CEPH_DEMO_ACCESS_KEY={{variables.access_key}} -e  CEPH_DEMO_SECRET_KEY={{variables.secret_key}} -e MON_IP=172.16.13.2 -e CEPH_NETWORK=172.16.13.0/28 -e CEPH_PUBLIC_NETWORK=172.16.13.0/28 -p 80:80 -p 5000:5000 -p 6789:6789 -p 6800-6805:6800-6805 -v /etc/ceph:/etc/ceph  ceph/demo:tag-build-master-jewel-ubuntu-16.04
-#- docker exec ceph ceph -s 
-#Create user to the S3 storage
-#- docker exec ceph radosgw-admin user create --uid={{variables.storage_user_name}} --display-name="{{variables.storage_user_name}}" --access-key={{variables.access_key}} --secret={{variables.secret_key}} > .env
-- echo "STORAGE NODE'S CONTEXTUALISATION DONE"
+#Run MINIO
+- /bin/deploy-minio.sh
+- echo "STORAGE NODE CONTEXTUALISATION DONE"
