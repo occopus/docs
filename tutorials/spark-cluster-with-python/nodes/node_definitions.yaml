@@ -21,7 +21,7 @@
     health_check:
       ports:
         - 8080
-      timeout: 2000
+      timeout: 1000
 
 'node_def:spark_worker_node':
   -
@@ -41,3 +41,5 @@
       type: cloudinit
       context_template: !yaml_import
         url: file://cloud_init_spark_worker.yaml
+    health_check:
+      ping: False

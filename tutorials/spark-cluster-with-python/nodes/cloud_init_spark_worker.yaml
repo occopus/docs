@@ -8,6 +8,7 @@ write_files:
   content: |
     #!/bin/bash
 
+    # chage -d 2020-08-04 ubuntu
     set -ex
     HADOOP_VERSION={{variables.HADOOP_VERSION}}
     SPARK_VERSION={{variables.SPARK_VERSION}}
@@ -34,7 +35,7 @@ write_files:
 
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y openjdk-8-jdk openjdk-8-jre unzip
+    apt-get install -yq --no-install-recommends openjdk-8-jdk openjdk-8-jre unzip
     echo "Install requirement packages starts."
 
 
@@ -131,11 +132,10 @@ write_files:
     #!/bin/bash
 
     set -ex
-    MASTERIP=`hostname -I | col1`
 
 
     echo "Launch HADOOP starts."
-    /home/sparkuser/hadoop/sbin/hadoop-daemon.sh start datanode
+    /home/sparkuser/hadoop/bin/hdfs --daemon start datanode
     echo "Launch HADOOP finished."
 
 
@@ -155,20 +155,19 @@ write_files:
    <configuration>
     <property>
      <name>dfs.namenode.http-address</name>
-      <value>{{getprivip('spark-master')}}:50070</value>
+      <value>HadoopMaster:9870</value>
     </property>
     <property>
-      <name>dfs.name.dir</name>
-      <value>/tmp</value>
-      <final>true</final>
-    </property>
-    <property>
-       <name>dfs.permissions</name>
+       <name>dfs.permissions.enabled</name>
        <value>false</value>
     </property>
     <property>
       <name>dfs.datanode.du.reserved</name>
       <value>500000000</value>
+    </property>
+    <property>
+      <name>dfs.hosts.exclude</name>
+      <value>/home/sparkuser/hadoop/etc/hadoop/dfs.exclude</value>
     </property>
     <property>
       <name>dfs.client.use.datanode.hostname</name>
@@ -189,7 +188,7 @@ write_files:
   content: |
       <configuration>
       <property>
-        <name>fs.default.name</name>
+        <name>fs.defaultFS</name>
         <value>hdfs://{{getprivip('spark-master')}}:9000</value>
       </property>
       </configuration>
@@ -259,4 +258,4 @@ write_files:
   permissions: '644'
 
 runcmd:
-- /tmp/installation.sh && /tmp/configuration.sh && su - sparkuser -c '/tmp/start-services.sh' && echo "SPARK SLAVE DEPLOYMENT DONE." || echo -e "\e[91mPROBLEM OCCURED WITH THE INSTALLATION\e[39m"
+- /tmp/installation.sh && /tmp/configuration.sh && su - sparkuser -c '/tmp/start-services.sh' && echo "SPARK WORKER DEPLOYMENT DONE." || echo -e "\e[91mPROBLEM OCCURED WITH THE INSTALLATION\e[39m"
