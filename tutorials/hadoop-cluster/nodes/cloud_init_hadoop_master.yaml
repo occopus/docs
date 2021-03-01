@@ -35,7 +35,7 @@ write_files:
 
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y openjdk-8-jdk openjdk-8-jre python3-pip unzip
+    apt-get install -yq --no-install-recommends openjdk-8-jdk openjdk-8-jre unzip
     echo "Install requirement packages starts."
 
 
@@ -76,7 +76,6 @@ write_files:
     chown hduser:hduser /home/hduser/.bashrc
     echo export PATH="/home/hduser/hadoop/bin:$PATH" >> /home/hduser/.bashrc
     mv /tmp/hadoop/configs/* /home/hduser/hadoop/etc/hadoop
-    mv /tmp/hadoop/webconfigs/* /home/hduser/hadoop/share/hadoop/hdfs/webapps/hdfs/WEB-INF/
     echo "hadoop: lpds, admin" >> /home/hduser/hadoop/etc/hadoop/realm.properties
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre" >> /home/hduser/hadoop/etc/hadoop/hadoop-env.sh
     echo "export HADOOP_PID_DIR=/home/hduser/hadoop" >> /home/hduser/hadoop/etc/hadoop/hadoop-env.sh
@@ -124,12 +123,11 @@ write_files:
     #!/bin/bash
 
     set -ex
-    MASTERIP=`hostname -I | col1`
 
 
     echo "Launch HADOOP starts."
     echo 'Y' | /home/hduser/hadoop/bin/hdfs namenode -format hdfs_cluster
-    /home/hduser/hadoop/sbin/hadoop-daemon.sh start namenode
+    /home/hduser/hadoop/bin/hdfs --daemon start namenode
     echo "Launch HADOOP finished."
 
 
@@ -143,15 +141,10 @@ write_files:
    <configuration>
     <property>
      <name>dfs.namenode.http-address</name>
-      <value>HadoopMaster:50070</value>
+      <value>HadoopMaster:9870</value>
     </property>
     <property>
-      <name>dfs.name.dir</name>
-      <value>/tmp</value>
-      <final>true</final>
-    </property>
-    <property>
-       <name>dfs.permissions</name>
+       <name>dfs.permissions.enabled</name>
        <value>false</value>
     </property>
     <property>
@@ -181,44 +174,10 @@ write_files:
   content: |
       <configuration>
       <property>
-        <name>fs.default.name</name>
+        <name>fs.defaultFS</name>
         <value>hdfs://HadoopMaster:9000</value>
       </property>
       </configuration>
-  permissions: '644'
-
-- path: /tmp/hadoop/webconfigs/web.xml
-  content: |
-    <?xml version="1.0" encoding="UTF-8"?>
-    <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
-      <security-constraint>
-          <web-resource-collection>
-              <web-resource-name>Protected</web-resource-name>
-              <url-pattern>/*</url-pattern>
-          </web-resource-collection>
-          <auth-constraint>
-              <role-name>admin</role-name>
-          </auth-constraint>
-      </security-constraint>
-      <login-config>
-          <auth-method>BASIC</auth-method>
-          <realm-name>realm</realm-name>
-      </login-config>
-    </web-app>
-  permissions: '644'
-
-- path: /tmp/hadoop/webconfigs/jetty-web.xml
-  content: |
-    <Configure class="org.mortbay.jetty.webapp.WebAppContext">
-     <Get name="securityHandler">
-      <Set name="userRealm">
-        <New class="org.mortbay.jetty.security.HashUserRealm">
-          <Set name="name">realm</Set>
-          <Set name="config">/home/hduser/hadoop/etc/hadoop/realm.properties</Set>
-        </New>
-      </Set>
-     </Get>
-    </Configure>
   permissions: '644'
 
 - path: /home/hduser/consul/hosts.ctmpl
@@ -296,8 +255,8 @@ write_files:
 
     if [ `diff /etc/hosts $FILE_LOCATION | grep '>' | wc -l` -gt 0 ]; then
         echo -e `date +%Y-%m-%d` `date +"%T"` "Downscale detected. Restarting name node service..."
-        su - hduser -c '/home/hduser/hadoop/sbin/hadoop-daemon.sh stop namenode'
-        su - hduser -c '/home/hduser/hadoop/sbin/hadoop-daemon.sh start namenode'
+        su - hduser -c '/home/hduser/hadoop/bin/hdfs --daemon stop namenode'
+        su - hduser -c '/home/hduser/hadoop/bin/hdfs --daemon start namenode'
         echo -e `date +%Y-%m-%d` `date +"%T"` "Namenode restarted!"
         cp /etc/hosts $FILE_LOCATION
     else [ `diff /etc/hosts $FILE_LOCATION | grep '<' | wc -l` -gt 0 ]
@@ -374,3 +333,4 @@ write_files:
 
 runcmd:
 - /tmp/installation.sh && /tmp/configuration.sh && su - hduser -c '/tmp/start-services.sh' && echo "HADOOP MASTER DEPLOYMENT DONE." || echo -e "\e[91mPROBLEM OCCURED WITH THE INSTALLATION\e[39m"
+

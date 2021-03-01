@@ -20,8 +20,8 @@
         url: file://cloud_init_hadoop_master.yaml
     health_check:
       ports:
-        - 50070
-      timeout: 6000
+       - 9870
+      timeout: 1000
 
 'node_def:hadoop_slave_node':
   -
@@ -41,3 +41,6 @@
       type: cloudinit
       context_template: !yaml_import
         url: file://cloud_init_hadoop_slave.yaml
+    health_check:
+      timeout: 1000
+
