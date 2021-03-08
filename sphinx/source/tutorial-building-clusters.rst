@@ -187,7 +187,7 @@ The following steps are suggested to be performed:
 
    .. code:: bash
 
-      occopus-build infra-kubernetes-cluster.yaml
+      occopus-build infra-kubernetes.yaml
 
    .. note::
 
