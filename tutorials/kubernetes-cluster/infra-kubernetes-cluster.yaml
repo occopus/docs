@@ -9,15 +9,14 @@ nodes:
     name: kubernetes-slave
     type: kubernetes_slave_node
     scaling:
-      min: 2
+      min: 4
       max: 10
 variables:
-  helmversion: 2.16.9-linux-amd64
-  pythonversion: python3.7
-  kubernetesversion: 1.18.3-00
-  dockerversion: 5:19.03.11~3-0~ubuntu-bionic
-  flannelversion: v0.12.0
-  dashboardversion: v2.0.4
+  helmversion: 3.5.2-linux-amd64
+  kubernetesversion: 1.20.5-00
+  dockerversion: 5:19.03.15~3-0~ubuntu-bionic
+  flannelversion: v0.13.0
+  dashboardversion: v2.2.0
   kubemaster_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
 
@@ -77,4 +76,3 @@ variables:
 dependencies:
   -
     connection: [ *S, *M ]
-

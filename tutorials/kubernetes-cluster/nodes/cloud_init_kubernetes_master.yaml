@@ -1,0 +1,167 @@
+#cloud-config
+
+write_files:
+################################
+# Kubeuser KEYS
+################################
+- path: /tmp/kubeuser/id_rsa
+  content: |
+    {{variables.kubemaster_private_key}}
+  permissions: '600'
+- path: /tmp/kubeuser/authorized_keys
+  content: |
+    {{variables.kubemaster_public_key}}
+  permissions: '600'
+################################
+# SCRIPT TO DEPLOY INITIAL
+################################
+- path: /tmp/initial.sh
+  content: |
+    #!/bin/bash
+    set -ex
+    echo "Setup preparation starts."
+
+    useradd -s /bin/bash -d /home/kubeuser/ -m -G sudo kubeuser
+    echo "kubeuser:kubeuser" | chpasswd
+    usermod -aG sudo kubeuser
+    echo "kubeuser ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
+
+    mkdir -p /home/kubeuser/.ssh
+    chmod 700 /home/kubeuser/.ssh
+    chown kubeuser:kubeuser /home/kubeuser/.ssh
+
+    mv /tmp/kubeuser/id_rsa /home/kubeuser/.ssh
+    chmod 600 /home/kubeuser/.ssh/id_rsa
+    chown kubeuser:kubeuser /home/kubeuser/.ssh/id_rsa
+
+    mv /tmp/kubeuser/authorized_keys /home/kubeuser/.ssh
+    chmod 600 /home/kubeuser/.ssh/authorized_keys
+    chown kubeuser:kubeuser /home/kubeuser/.ssh/authorized_keys
+
+    swapoff -a
+    echo '* libraries/restart-without-asking boolean true' | debconf-set-selections
+    apt-get update
+
+    echo "Setup preparation finished."
+  permissions: '755'
+###############################
+# SCRIPT TO Deploy CRON SCRIPT
+################################
+- path: /tmp/scale-down.sh
+  content: |
+    #!/bin/bash
+    set -ex
+    kubectl get nodes > /tmp/nodes.txt
+
+    OLDARR=($(echo $(awk '/NotReady/ {print $4}' /tmp/nodes.txt) | tr " " "\n"))
+    NODEARR=($(echo $(awk '/NotReady/ {print $1}' /tmp/nodes.txt) | tr " " "\n"))
+    WORKARR=($(echo $(awk '/<none>/ {print $1}' /tmp/nodes.txt) | tr " " "\n"))
+
+    for i in ${!OLDARR[@]}
+    do
+      if [[ ${OLDARR[$i]} != *s* ]]
+      then
+        kubectl drain ${NODEARR[$i]} --ignore-daemonsets --delete-local-data
+        kubectl delete node ${NODEARR[$i]}
+      fi
+    done
+
+    for i in ${!WORKARR[@]}
+    do
+      kubectl label nodes ${WORKARR[$i]} kubernetes.io/role=worker
+    done
+  permissions: '755'
+###############################
+# SCRIPT TO INSTALL
+################################
+- path: /tmp/install.sh
+  content: |
+    #!/bin/bash
+    set -ex
+
+    echo "Setup DOCKER starts."
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    apt-key fingerprint 0EBFCD88
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    apt-get -y install docker-ce={{variables.dockerversion}} docker-ce-cli={{variables.dockerversion}} containerd.io
+    sudo usermod -aG docker kubeuser
+    newgrp docker
+    docker -v
+    cat <<EOF | sudo tee /etc/docker/daemon.json
+    {
+      "exec-opts": ["native.cgroupdriver=systemd"],
+      "log-driver": "json-file",
+      "log-opts": {
+      "max-size": "100m"
+    },
+    "storage-driver": "overlay2"
+    }
+    EOF
+    sudo systemctl enable docker
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+    echo "Setup DOCKER finished."
+
+    echo "Setup KUBERNETES starts."
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && apt-get update
+    apt-get install -y kubelet={{variables.kubernetesversion}}
+    apt-get install -y kubectl={{variables.kubernetesversion}}
+    apt-get install -y kubeadm={{variables.kubernetesversion}}
+    echo "Setup KUBERNETES finished."
+
+    echo "Setup HELM starts."
+    wget https://get.helm.sh/helm-v{{variables.helmversion}}.tar.gz
+    tar xvf helm-v{{variables.helmversion}}.tar.gz
+    mv linux-amd64/helm /usr/local/bin/
+    rm helm-v{{variables.helmversion}}.tar.gz
+    rm -rf linux-amd64
+    echo "Setup HELM finished."
+
+  permissions: '755'
+###############################
+# SCRIPT TO CONFIG
+################################
+- path: /tmp/config.sh
+  content: |
+    #!/bin/bash
+    set -ex
+
+    echo "Setup configuring the MASTER starts."
+    kubeadm init --pod-network-cidr=10.244.0.0/16
+    su - kubeuser -c "mkdir -p /home/kubeuser/.kube"
+    su - kubeuser -c "sudo chmod 755 /home/kubeuser/.kube"
+    su - kubeuser -c "sudo cp /etc/kubernetes/admin.conf /home/kubeuser/.kube/config"
+    su - kubeuser -c "sudo chmod 755 /home/kubeuser/.kube/config"
+    chown kubeuser:kubeuser /home/kubeuser/.kube/config
+    su - kubeuser -c "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/{{variables.flannelversion}}/Documentation/kube-flannel.yml"
+    kubeadm token create --ttl 0 --print-join-command 2>/dev/null > /tmp/joinslave.txt
+    echo "Setup configuring the MASTER finished."
+
+    echo "Start configuring the Dashboard..."
+    wget -P /tmp/ "https://raw.githubusercontent.com/kubernetes/dashboard/{{variables.dashboardversion}}/aio/deploy/recommended.yaml"
+    sed -i "s/- --namespace=kubernetes-dashboard/- --enable-skip-login\n            - --token-ttl=0\n            - --namespace=kubernetes-dashboard/g" /tmp/recommended.yaml
+    sed -z "s/  kind: ClusterRole\n  name: kubernetes-dashboard/  kind: ClusterRole\n  name: cluster-admin/" -i /tmp/recommended.yaml
+    su - kubeuser -c "kubectl apply -f /tmp/recommended.yaml"
+
+    echo "Starting proxy as background process..."
+    su - kubeuser -c "sudo nohup kubectl proxy &"
+
+    echo "Setup creating a cron job"
+    su - kubeuser -c "sudo chmod +x /tmp/scale-down.sh"
+    chown kubeuser:kubeuser /tmp/scale-down.sh
+    su - kubeuser -c "sudo systemctl enable cron"
+    su - kubeuser -c "echo '*/1 * * * * /tmp/scale-down.sh >> /home/kubeuser/scale-down.log' >> /home/kubeuser/mycron"
+    su - kubeuser -c "sudo chmod 755 /home/kubeuser/mycron"
+    su - kubeuser -c "crontab mycron"
+    su - kubeuser -c "sudo rm /home/kubeuser/mycron"
+    echo "Setup Initializing the MASTER finished."
+
+  permissions: '755'
+packages:
+ - apt-transport-https
+ - ca-certificates
+ - curl
+ - gnupg-agent
+ - software-properties-common
+runcmd:
+- /tmp/initial.sh && /tmp/install.sh && /tmp/config.sh && echo "KUBERNETES CLUSTER DEPLOYMENT DONE." || "\ePROBLEM OCCURED WITH THE INSTALLATION\e"
