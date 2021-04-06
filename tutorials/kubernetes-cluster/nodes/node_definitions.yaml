@@ -1,0 +1,40 @@
+'node_def:kubernetes_master_node':
+  -
+    resource:
+      type: nova
+      endpoint: https://sztaki.cloud.mta.hu:5000/v3
+      project_id: a9c30db63ddf47a98045ef9c726c7436
+      user_domain_name: Default
+      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
+      network_id: 
+      flavor_name: 3
+      key_name: 
+      security_groups: 
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_kubernetes_master.yaml
+    health_check:
+      ports:
+        - 10250
+      timeout: 6000
+
+'node_def:kubernetes_slave_node':
+  -
+    resource:
+      type: nova
+      endpoint: https://sztaki.cloud.mta.hu:5000/v3
+      project_id: a9c30db63ddf47a98045ef9c726c7436
+      user_domain_name: Default
+      image_id: 6bba6dc3-b6d5-4b15-942e-61e0ef2f93cb
+      network_id: 
+      flavor_name: 4740c1b8-016d-49d5-a669-2b673f86317c
+      key_name: 
+      security_groups: 
+    contextualisation:
+      type: cloudinit
+      context_template: !yaml_import
+        url: file://cloud_init_kubernetes_slave.yaml
+    health_check:
+      timeout: 6000
+

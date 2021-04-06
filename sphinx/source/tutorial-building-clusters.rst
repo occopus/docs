@@ -125,7 +125,7 @@ protocol (on port 6443).
 
 **Download**
 
-You can download the example as `tutorial.examples.kubernetes <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/kubernetes.tar.gz>`_ .
+You can download the example as `tutorial.examples.kubernetes <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/kubernetes-cluster.tar.gz>`_ .
 
 **Steps**
 
@@ -249,12 +249,9 @@ The following steps are suggested to be performed:
       kubernetes-dashboard   dashboard-metrics-scraper-6b4884c9d5-w6rx6                                               1/1     Running   0          12m
       kubernetes-dashboard   kubernetes-dashboard-64794c64b8-sb9m6                                                    1/1     Running   0          12m
 
-   You can access Dashboard at ``https://[master_node_ip]:32000``.
+   You can access Dashboard at ``http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login``.
 
-   On the login page please choose the basic option and enter the following username and password:
-
-      - Username: admin
-      - Password: admin
+   On the login page please click on the SKIP button.
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
 
@@ -273,7 +270,7 @@ In this tutorial we establish a cluster with two nodes types. On the DataAvenue 
 
  - creating two types of nodes through contextualisation
  - using the nova resource handler
- 
+
 **Prerequisites**
 
  - accessing an Occopus compatible interface
