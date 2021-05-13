@@ -179,6 +179,8 @@ Nova
     Optional. Specifies the name of the region within the project.
   ``user_domain_name``
     Optional. Specifies the name of the user domain. The default value of this attribute is "Default".
+  ``region_name``
+    Optional. The name of the region to be used. Should be specified when connecting to OpenStack servers where floating IP handling handling is already implemented in the Network stack, and not under Compute/Access & Secutiry.
   ``network_id``
     Optional. Specifies the ID of the network to attach to the virtual machine.
   ``image_id``
