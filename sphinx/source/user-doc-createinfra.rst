@@ -207,13 +207,13 @@ Azure
   ``endpoint``
     The endpoint (url) of the Azure interface, e.g. https://management.azure.com
   ``resource_group``
-    The resource group to allocate Azure resources in.
+    The resource group to allocate Azure resources in. You can use a new resource group, or an existing one. The list of existing resource groups can be queried from the `Azure Portal <https://portal.azure.com/#blade/HubsExtension/BrowseResourceGroups>`_.
   ``location``
-    The location where the resources should be allocated, e.g. francecentral.
+    The location where the resources should be allocated, e.g. francecentral. The Azure command line client can be used to query the list of usable location: ``az account list-locations -o table`` (for usable names, see the "Name" row of the table).
   ``vm_size``
-    The size of the VM to allocate, e.g. Standard_DS1_v2.
+    The size of the VM to allocate, e.g. Standard_DS1_v2. The Azure command line client can use used to query the list of available VM sizes: ``az vm list-sizes --location <location>``, enter the value of the "name" key for the desired VM size in the list.
   ``publisher``
-    The image publisher's name, e.g. Canonical.
+    The image publisher's name, e.g. Canonical. One can use the Azure command line client to get the list of images: ``az vm image list``. The output of this command contains the values which should be used for ``publisher``, ``offer``, ``sku`` and ``version``.
   ``offer``
     The published name of the image, e.g. UbuntuServer.
   ``sku``
@@ -221,7 +221,7 @@ Azure
   ``version``
     The version of the image to use, e.g. latest.
   ``username``
-    The name of the admin user to create on the VM.
+    The name of the admin user to create on the VM. Azure currently has the following restrictions on the username: must only contain letters, numbers, hyphens, and underscores and may not start with a hyphen or number, must not include reserved word, is between 1 and 64 characters long.
   ``password``
     The password for the admin user.
   ``vnet_name``
