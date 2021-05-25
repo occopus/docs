@@ -3,6 +3,14 @@
 Release Notes
 *************
 
+v1.9 (25 May 2021)
+==================
+
+- Fixing protocol id in azure vm plugin
+- Fixing authentication check in the azure container and vm plugins
+- Refactor floating ip handling in nova plugin
+- Update nova client library to latest version in nova plugin
+
 v1.8 (17 Aug 2020)
 ==================
 

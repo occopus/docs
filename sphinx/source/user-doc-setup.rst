@@ -157,6 +157,8 @@ For ``azure`` resources:
                 client_secret: your_client_secret
                 subscription_id: your_subscription_id
 
+Please consult the `Azure Documentation <https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-application-id-and-authentication-key>`_ on how to obtain the necessary ``tenant_id``, ``client_id``, ``client_secret`` and ``subscription_id`` values, and how to gain proper access for being able to manage Azure virtual machines and associated resources.
+
 For ``azure_aci`` resources:
 
 .. code:: yaml
@@ -169,6 +171,8 @@ For ``azure_aci`` resources:
                 client_id: your_client_id
                 client_secret: your_client_secret
                 subscription_id: your_subscription_id
+
+Please consult the `Azure Documentation <https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-application-id-and-authentication-key>`_ on how to obtain the necessary ``tenant_id``, ``client_id``, ``client_secret`` and ``subscription_id`` values, and how to gain proper access for being able to manage Azure continer instances and associated resources.
 
 For ``cloudbroker`` resources:
 
