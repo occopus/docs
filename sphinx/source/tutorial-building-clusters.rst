@@ -277,7 +277,7 @@ This tutorial sets up a complete Slurm (version **19.05.5**) infrastructure. It 
 
 **Download**
 
-You can download the example as `tutorial.examples.slurm <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/slurm-cluster.tar.gz>`_ .
+You can download the example as `tutorial.examples.slurm <https://raw.githubusercontent.com/occopus/docs/master/tutorials/slurm-cluster.tar.gz>`_ .
 
 Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way
 (e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following ports:
