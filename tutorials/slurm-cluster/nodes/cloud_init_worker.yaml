@@ -1,0 +1,181 @@
+#cloud-config
+
+users:
+  - default
+  - name: munge
+    uid: 1001
+  - name: slurm
+    uid: 1002
+
+write_files:
+- path: /bin/install-nfs.sh
+  content: |
+    #!/bin/bash
+    echo "INSTALL NFS started=="
+    apt update
+    apt-get install nfs-common inotify-tools -y
+    mkdir -p /storage
+    chown nobody:nogroup /storage
+    mount {{getip('slurm-master')}}:/storage /storage
+    echo {{getip('slurm-master')}}:/storage /storage nfs auto,timeo=14,intr 0 0 | sudo tee -a /etc/fstab
+    echo "INSTALL NFS finished=="
+  permissions: '755'
+
+- path: /bin/install-ntp.sh
+  content: |
+    #!/bin/bash
+    echo "INSTALL NTP started=="
+    apt-get install ntp -y
+    ufw app list
+    ufw allow OpenSSH
+    ufw allow 6818
+    ufw --force enable
+    echo "Europe/Budapest" > /etc/timezone
+    ln -fs /usr/share/zoneinfo/`cat /etc/timezone` /etc/localtime
+    dpkg-reconfigure -f noninteractive tzdata
+    echo "server {{getip('slurm-master')}} iburst" >> /etc/ntp.conf
+    sed -i 's/pool 0.ubuntu.pool.ntp.org iburst/#pool 0.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 1.ubuntu.pool.ntp.org iburst/#pool 1.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 2.ubuntu.pool.ntp.org iburst/#pool 2.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 3.ubuntu.pool.ntp.org iburst/#pool 3.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool ntp.ubuntu.com/#pool ntp.ubuntu.com/g' /etc/ntp.conf
+    sudo /etc/init.d/ntp restart
+    echo "INSTALL NTP finished=="
+  permissions: '755'
+
+- path: /bin/wait-for-file.sh
+  content: |
+    #!/bin/bash
+    if [ ! -f /storage/slurm/$1 ]; then
+      while read i; do if [ "$i" = $1 ]; then break; fi; done \
+        < <(inotifywait  -e create,open --format '%f' --quiet /storage/slurm --monitor)
+    fi
+  permissions: '755'
+
+- path: /bin/install-munge.sh
+  content: |
+    #!/bin/bash
+    echo "==INSTALLING MUNGE started=="
+    apt install -y munge={{variables.mungeversion}}
+    echo "==INSTALLING MUNGE finished=="
+  permissions: '755'
+
+- path: /bin/fetch-munge-key-from-master.sh
+  content: |
+    #!/bin/bash
+    echo "==SETTING MUNGE FILE PERMISSIONS started=="
+    bash /bin/wait-for-file.sh munge.key
+    cp /storage/slurm/munge.key /etc/munge/munge.key
+    #rsync -avzhe "ssh -o 'StrictHostKeyChecking no' -i /etc/ssh/ssh_host_rsa_key" munge@{{getip('slurm-master')}}:/etc/munge/munge.key /etc/munge
+
+    chown -R munge: /etc/munge/ /var/log/munge/ /var/lib/munge/ /run/munge/
+    chmod 0700 /etc/munge/ /var/log/munge/ /var/lib/munge/
+    chmod 0755 /run/munge/
+    chmod 0600 /etc/munge/munge.key
+    chown munge /etc/munge/munge.key
+    echo "==SETTING MUNGE FILE PERMISSIONS finished=="
+  permissions: '755'
+
+- path: /bin/start-munge-service.sh
+  content: |
+    #!/bin/bash
+    echo "==STARTING MUNGE SERVICE (munge) started=="
+    systemctl enable munge
+    systemctl start munge
+    echo "==STARTING MUNGE SERVICE (munge) finished=="
+  permissions: '755'
+
+- path: /bin/install-slurm.sh
+  content: |
+    #!/bin/bash
+    echo "==INSTALLING SLURM started=="
+    apt install -y slurmd={{variables.slurmversion}}
+    apt install -y slurm-client={{variables.slurmversion}}
+    echo "==INSTALLING SLURM finished=="
+  permissions: '755'
+
+- path: /bin/modify-slurmd-service.sh
+  content: |
+    #!/bin/bash
+    echo "==MODIFY SLURMD SERVICE FILE started=="
+    sed -i 's*PIDFile=/run/slurmd.pid*PIDFile=/run/slurm-llnl/slurmd.pid*g' /lib/systemd/system/slurmd.service
+    echo "==MODIFY SLURMD SERVICE FILE finished=="
+  permissions: '755'
+
+- path: /bin/set-slurmd-file-permissions.sh
+  content: |
+    #!/bin/bash
+    echo "== SETTING SLURMD FILE PERMISSIONS started=="
+
+    mkdir /var/slurm-llnl/ /var/spool/slurmctld /var/spool/slurmd /run/slurm-llnl/
+    chown ubuntu /etc/slurm-llnl/
+    chown slurm:slurm /var/spool/slurmctld /var/spool/slurmd /run/slurm-llnl/ /var/log/slurm-llnl
+    chmod 755 /var/spool/slurmctld /var/spool/slurmd /run/slurm-llnl/ /var/log/slurm-llnl /run/slurm-llnl
+
+    bash /bin/wait-for-file.sh slurm.conf
+    cp /storage/slurm/slurm.conf /etc/slurm-llnl/slurm.conf
+    echo "$(slurmd -C 2>&1 | head -n 1) NodeAddr=$(hostname -I)" >> /etc/slurm-llnl/slurm.conf
+    #slurmd -C 2>&1 | head -n 1 >> /etc/slurm-llnl/slurm.conf
+
+    cp /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf
+    chmod 755 /storage/slurm/slurm.conf
+    chown nobody:nogroup /storage/slurm/slurm.conf
+
+    bash /bin/wait-for-file.sh cgroup.conf
+    cp /storage/slurm/cgroup.conf /etc/slurm-llnl/cgroup.conf
+    chmod 755 /storage/slurm/cgroup.conf
+    chown nobody:nogroup /storage/slurm/cgroup.conf
+
+    chown ubuntu /etc/slurm-llnl/slurm.conf /etc/slurm-llnl/cgroup.conf
+    chmod 644 /etc/slurm-llnl/slurm.conf /etc/slurm-llnl/cgroup.conf
+
+    echo "== SETTING SLURMD FILE PERMISSIONS finished=="
+  permissions: '755'
+
+- path: /bin/start-slurmd-service.sh
+  content: |
+    #!/bin/bash
+    echo "== STARTING SLURM WORKER SERVICE (slurmd) started=="
+    systemctl restart munge
+    systemctl daemon-reload
+    systemctl enable slurmd
+    systemctl start slurmd
+    echo "== STARTING SLURM WORKER SERVICE (slurmd) finished=="
+  permissions: '755'
+
+- path: /bin/slurm-conf-populator.sh
+  content: |
+    #!/bin/bash
+    answer=$(cmp --silent /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf || echo "different")
+    
+    if [[ "$answer" =  "different" ]]; then
+      cp /storage/slurm/slurm.conf /etc/slurm-llnl/slurm.conf
+      chown ubuntu /etc/slurm-llnl/slurm.conf
+      chmod 644 /etc/slurm-llnl/slurm.conf
+
+      systemctl restart munge
+      systemctl daemon-reload
+      systemctl restart slurmd
+    fi
+  permissions: '744'
+
+- path: /bin/create-slurm-cron-job.sh
+  content: |
+    #!/bin/bash
+    echo "== CREATING SLURM CRON JOB started=="
+    echo "* * * * * root bash /bin/slurm-conf-populator.sh" | tee -a /etc/crontab
+    echo "== CREATING SLURM CRON JOB finished=="
+  permissions: '755'
+  
+runcmd:
+- echo "==== DEPLOYMENT started ===="
+- /bin/install-nfs.sh
+- /bin/install-ntp.sh
+- /bin/install-munge.sh
+- /bin/fetch-munge-key-from-master.sh
+- /bin/start-munge-service.sh
+- /bin/install-slurm.sh
+- /bin/modify-slurmd-service.sh
+- /bin/set-slurmd-file-permissions.sh
+- /bin/start-slurmd-service.sh
+- /bin/create-slurm-cron-job.sh
