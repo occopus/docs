@@ -259,6 +259,67 @@ The following steps are suggested to be performed:
 
       occopus-destroy -i 77cb026b-2f81-46a5-87c5-2adf13e1b2d3
 
+Slurm cluster
+~~~~~~~~~~~~~~~~~~~~
+
+This tutorial sets up a complete Slurm (version **19.05.5**) infrastructure. It contains a Slurm Management (master) node and Slurm Compoute (worker) nodes, which can be scaled up or down.
+
+**Features**
+
+ - creating two types of nodes through contextualisation
+ - utilising health check against a predefined port
+ - using cron jobs to scale Slurm Compute nodes automatically
+
+**Prerequisites**
+
+ - accessing an Occopus compatible interface
+ - target cloud contains an Ubuntu 18.04 image with cloud-init support
+
+**Download**
+
+You can download the example as `tutorial.examples.slurm <https://raw.githubusercontent.com/occopus/docs/devel/tutorials/slurm-cluster.tar.gz>`_ .
+
+Components in the infrastructure connect to each other, therefore several port ranges must be opened for the VMs executing the components. Clouds implement port opening various way
+(e.g. security groups for OpenStack, etc). Make sure you implement port opening in your cloud for the following ports:
+
+   ===========     =============  ====================
+   Protocol        Port(s)        Service
+   ===========     =============  ====================
+   TCP	           22	            SSH
+   TCP	           111	          RPCbind
+   TCP	           2049	          NFS Server
+   TCP	           6817	          SlurmDbDPort (Master)
+   TCP	           6818	          SlurmDPort (Worker)
+   TCP	           6819	          SlurmctldPort (Master)
+   ===========     =============  ====================
+
+   .. note::
+
+   The Slurm Master doesn’t work without any worker nodes. You can test the cluster with the sinfo command. If the Master node doesn’t recognise this command, you have to wait for the first worker node.
+
+**User management**
+
+In the Slurm you can use the sacctmgr command for user management. First, you need to create an account. An account is similar to a UNIX group. An account may contain multiple users, or just a single user.
+Accounts may be organized as a hierarchical tree. A user may belong to multiple accounts, but must have a DefaultAccount.
+
+For example create an account:
+
+.. code:: bash
+
+  # Create new account
+  sacctmgr add account sztaki Description="Any departments"
+  # Show all accounts:
+  sacctmgr show account
+
+.. note::
+
+   By default you are the root user in Slurm, so, you have to use sudo before the slurm commands if you use the ubuntu user instead of root.
+
+.. important::
+
+   Before you create a Slurm user, you have to create a real unix user too!
+
+
 DataAvenue cluster
 ~~~~~~~~~~~~~~~~~~~~
 

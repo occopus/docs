@@ -1,0 +1,20 @@
+infra_name: slurm-cluster
+user_id: somebody@somewhere
+
+nodes:
+  - &M
+    name: slurm-master
+    type: slurm_master_node
+  - &S
+    name: slurm-worker
+    type: slurm_worker_node
+    scaling: 
+      min: 2
+      max: 10
+variables:
+  mungeversion: 0.5.13-2build1
+  slurmversion: 19.05.5-1
+dependencies:
+  -
+    connection: [ *S, *M ]
+
