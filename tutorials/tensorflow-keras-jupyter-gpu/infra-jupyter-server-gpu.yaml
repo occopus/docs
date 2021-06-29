@@ -1,8 +1,0 @@
-infra_name: jupyter-server-gpu
-user_id: somebody@somewhere
-
-nodes:
-  - &M
-    name: jupyter-server-gpu
-    type: jupyter_server_gpu_node
-

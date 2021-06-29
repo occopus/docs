@@ -603,14 +603,12 @@ The complete machine learning environment consists of the following components: 
 
       occopus-destroy -i 14032858-d628-40a2-b611-71381bd463fa
 
-TensorFlow and Keras with Jupyter Notebook Stack using NVIDIA GPU card
+TensorFlow 2 with JupyterLab Stack using NVIDIA GPU card
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
 
-Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
-
-The complete machine learning environment consists of the following components: Jupyter, Keras and TensorFlow utilizing the power of a GPU card.
+The complete machine learning environment consists of the following components: JupyterLab and TensorFlow 2 utilizing the power of a GPU card.
 
 .. important::
 
@@ -625,12 +623,12 @@ The complete machine learning environment consists of the following components: 
 **Prerequisites**
 
  - accessing a cloud through an Occopus-compatible interface (e.g EC2, Nova, Azure, etc.)
- - target cloud contains a base Ubuntu OS image with cloud-init support
+ - target cloud contains a base Ubuntu 20.04 OS image with cloud-init support and Docker CE
 
 
 **Download**
 
- You can download the example as `tutorial.examples.tensorflow-keras-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-keras-jupyter-gpu.tar.gz>`_ .
+ You can download the example as `tutorial.examples.tensorflow-jupyter-gpu <https://raw.githubusercontent.com/occopus/docs/master/tutorials/tensorflow-jupyter-gpu.tar.gz>`_ .
 
 .. note::
 
@@ -684,7 +682,7 @@ The complete machine learning environment consists of the following components: 
 
    .. code:: bash
 
-      occopus-build infra-jupyter-server-gpu.yaml
+      occopus-build infra-tensorflow.yaml
 
 #. After successful finish, the node with ``ip address`` and ``node id`` is listed at the end of the logging messages and the identifier of the newly built infrastructure is printed. You can store the identifier of the infrastructure to perform further operations on your infra or alternatively you can query the identifier using the **occopus-maintain** command.
 
@@ -704,16 +702,16 @@ The complete machine learning environment consists of the following components: 
 
    .. note::
 
-     The webUIs are protected, the access needs a login. The default password is "lpds", which can be changed before deployment.
+     The webUIs are protected, the access needs a login. The default password is "tensorflow", which can be changed before deployment.
 
-#. Run a demo ML application. In this short demo application we can test our Anaconda development environment. We are building a convolutional neural network (_CNN_ or _ConvNet_) which is able to classify animals into 4 categories (dog, cat, bird and fish). Classification is a type of supervised learning - this means we need to provide labels for all the training data. We are going to utilize _Keras_ with _Tensorflow backend\_ for achieving this goal, more precisely for creating and compiling model, training and testing. Keras enables fast experimentation with deep neural networks, and it focuses on being user-friendly and modular, so it's a natural choice for this task, while Tensorflow is responsible for managing the underlying structures and calculations.
+#. Run a demo `TensorFlow notebook <https://www.tensorflow.org/tutorials/quickstart/beginner>`_ .
 
-   Select keras-gpu-demo/Simple_image_classifier.ipynb file (see Figure 1) within the Jupyter notebook interface, and select Cells/Run All to run all of the commands below, or use shift+enter within a cell to run the cells one-by-one.
+   Select beginner.ipynb file (see Figure 1) within the JupyterLab interface, and select Cells/Run All to run all of the commands below, or use shift+enter within a cell to run the cells one-by-one.
 
-   .. figure:: images/tutorials/tf-keras-jupyter-gpu-tutorial.png
+   .. figure:: images/tutorials/tensorflow-jupyter-gpu-tutorial.png
       :align: center
 
-      Figure 1: Jupyter Notebook for testing TensorFlow/Keras environment with GPU
+      Figure 1: Jupyter Notebook for testing TensorFlow 2 environment with GPU
 
 
 #. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``

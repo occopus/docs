@@ -1,4 +1,4 @@
-'node_def:jupyter_server_gpu_node':
+'node_def:tensorflow_node':
   -
     resource:
       type: nova
@@ -7,19 +7,18 @@
       user_domain_name: Default
       image_id: replace_with_id_of_your_image_on_your_target_cloud
       network_id: replace_with_id_of_network_on_your_target_cloud
+      server_name: tensorflow-{{cut(infra_id,0,4)}}
       flavor_name: replace_with_id_of_the_flavor_on_your_target_cloud
       key_name: replace_with_name_of_keypair_or_remove
       security_groups:
         -
           replace_with_security_group_to_add_or_remove_section
       floating_ip: add_yes_if_you_need_floating_ip_or_remove
-      floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
       type: cloudinit
       context_template: !yaml_import
-        url: file://cloud_init_jupyter_server_gpu.yaml
+        url: file://cloud_init_tensorflow.yaml
     health_check:
       ports:
         - 8888
-      timeout: 1200
-
+      timeout: 3600
