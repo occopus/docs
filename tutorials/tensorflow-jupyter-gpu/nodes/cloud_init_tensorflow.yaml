@@ -1,0 +1,41 @@
+#cloud-config
+
+write_files:
+- path: /bin/install-nvidia-driver.sh
+  content: |
+    #!/bin/bash
+    apt-get install -y linux-headers-$(uname -r)
+    distribution=$(. /etc/os-release;echo $ID$VERSION_ID | sed -e 's/\.//g')
+    wget https://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64/cuda-$distribution.pin
+    mv cuda-$distribution.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64/7fa2af80.pub
+    echo "deb http://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64 /" | sudo tee /etc/apt/sources.list.d/cuda.list
+    apt-get update
+    apt-get install -y cuda-drivers
+  permissions: '755'
+
+- path: /bin/install-nvidia-container-toolkit.sh
+  content: |
+    #!/bin/bash
+    distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+      && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+    apt-get update
+    apt-get install -y nvidia-docker2
+    systemctl restart docker
+  permissions: '755'
+
+- path: /bin/start-tensorflow-jupyterlab.sh
+  content: |
+    #!/bin/bash
+    docker run -d --restart always --gpus all -p 8888:8888 -e JUPYTER_PASSWORD={{variables.JUPYTER_PASSWORD}} --name jupyterlab sztakilpds/tensorflow:2.4.2-gpu-jupyterlab
+  permissions: '755'
+
+runcmd:
+- echo "==> DEPLOYMENT started."
+- export DEBIAN_FRONTEND=noninteractive
+- apt update && apt upgrade -y
+- /bin/install-nvidia-driver.sh
+- /bin/install-nvidia-container-toolkit.sh
+- /bin/start-tensorflow-jupyterlab.sh
+- echo "==> DEPLOYMENT finished."

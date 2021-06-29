@@ -1,0 +1,10 @@
+infra_name: tensorflow
+user_id: somebody@somewhere
+
+variables:
+  JUPYTER_PASSWORD: tensorflow
+
+nodes:
+  - &M
+    name: tensorflow
+    type: tensorflow_node
