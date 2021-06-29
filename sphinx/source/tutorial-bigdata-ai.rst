@@ -704,7 +704,7 @@ The complete machine learning environment consists of the following components: 
 
      The webUIs are protected, the access needs a login. The default password is "tensorflow", which can be changed before deployment.
 
-#. Run a demo TensorFlow notebook. `TensorFlow notebook <https://www.tensorflow.org/tutorials/quickstart/beginner>`_ .
+#. Run a demo `TensorFlow notebook <https://www.tensorflow.org/tutorials/quickstart/beginner>`_ .
 
    Select beginner.ipynb file (see Figure 1) within the JupyterLab interface, and select Cells/Run All to run all of the commands below, or use shift+enter within a cell to run the cells one-by-one.
 
