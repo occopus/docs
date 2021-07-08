@@ -371,7 +371,51 @@ The following steps are suggested to be performed:
 
 #. You can check the health and statistics of the cluster. Please login to the master node via SSH connection.
 
-#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-build``
+    .. note::
+
+        Before you run the command below, please make sure at least one worker node is connected to the master.
+
+    By default, ``sinfo`` lists the partitions that are available.
+
+    .. code:: bash
+
+        sinfo
+        PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST
+        debug*       up   infinite      2   idle occopus-slurm-cluster-8769d296-slurm-worker-69ed479f,occopus-slurm-cluster-8769d296-slurm-worker-ef6cc071
+
+    Please run the following command on the master node to check the status of the slurm controller daemon status.
+
+    .. code:: bash
+
+        sudo systemctl status slurmctld
+        ? slurmctld.service - Slurm controller daemon
+            Loaded: loaded (/lib/systemd/system/slurmctld.service; enabled; vendor preset: enabled)
+            Active: active (running) since Wed 2021-07-07 17:39:08 CEST; 1min 5s ago
+            Docs: man:slurmctld(8)
+            Process: 13401 ExecStart=/usr/sbin/slurmctld $SLURMCTLD_OPTIONS (code=exited, status=0/SUCCESS)
+        Main PID: 13423 (slurmctld)
+            Tasks: 11
+            Memory: 2.2M
+            CGroup: /system.slice/slurmctld.service
+                    L¦13423 /usr/sbin/slurmctld
+
+    You can also check the slurm daemon status on any of the worker nodes with the following command.
+
+    .. code:: bash
+
+        sudo systemctld status slurmd
+        ? slurmd.service - Slurm node daemon
+            Loaded: loaded (/lib/systemd/system/slurmd.service; enabled; vendor preset: enabled)
+            Active: active (running) since Wed 2021-07-07 17:39:01 CEST; 3min 44s ago
+            Docs: man:slurmd(8)
+            Process: 7491 ExecStart=/usr/sbin/slurmd $SLURMD_OPTIONS (code=exited, status=0/SUCCESS)
+        Main PID: 7493 (slurmd)
+            Tasks: 1
+            Memory: 1.6M
+            CGroup: /system.slice/slurmd.service
+                    L¦7493 /usr/sbin/slurmd
+
+#. Finally, you may destroy the infrastructure using the infrastructure id returned by ``occopus-destroy``
 
     .. code:: bash
 
