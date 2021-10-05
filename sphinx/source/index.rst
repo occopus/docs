@@ -30,6 +30,18 @@ and deploy complex virtual infrastructures as well as to manage them at deployme
 * Kacsuk, P., Kovács, J. & Farkas, Z. The Flowbster Cloud-Oriented Workflow System to Process Large Scientific Data Sets J Grid Computing (2018) 16: 55. https://doi.org/10.1007/s10723-017-9420-4
 * Lovas, R ; Farkas, A ; Marosi, A Cs ; Acs, S ; Kovacs, J ; Szaloki, A ; Kadar, B Orchestrated Platform for Cyber-Physical Systems COMPLEXITY 2018 pp. 1-16. Paper: 8281079 , 16 p. (2018) http://dx.doi.org/10.1155%2F2018%2F8281079
 
+Acknowledgement
+****************
+
+This development  has been supported by the National Development Agency,
+Hungary under contract no. KMR12-1-2012-0119 (CLAKK); by the European
+Community’s Seventh Framework Programme FP7/2007-2013 under grant
+agreement no. 283481 (SCI-BUS) and 608886 (CloudSME); and by the
+European Union Horizon 2020 research and innovation programme under
+grant agreement no. 731574 (COLA) and no. 768892 (CloudiFacturing). We
+thank for the usage of `MTA Cloud <https://cloud.mta.hu>`_ that
+significantly helped us achieve the results published here.
+
 .. toctree::
    :maxdepth: 4
    :caption: User guide
