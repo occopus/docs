@@ -8,7 +8,7 @@ nodes:
   - &S
     name: slurm-worker
     type: slurm_worker_node
-    scaling: 
+    scaling:
       min: 2
       max: 10
 variables:
