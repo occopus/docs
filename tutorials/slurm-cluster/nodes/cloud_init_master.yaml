@@ -6,135 +6,16 @@ users:
   - name: slurm
     uid: 1002
 
+packages:
+  - libmysqlclient-dev
+  - mariadb-server
+  - ntp
+  - nfs-kernel-server
+
 write_files:
-- path: /bin/install-packages.sh
+- path: /tmp/slurmdbd.conf
   content: |
-    #!/bin/bash
-    echo "==INSTALLING PACKAGES started=="
-    export DEBIAN_FRONTEND=noninteractive
-    apt update
-    apt-get install libmysqlclient-dev mariadb-server ntp -y
-    echo "==INSTALLING PACKAGES finished=="
-  permissions: '755'
-
-- path: /bin/install-nfs.sh
-  content: |
-    #!/bin/bash
-    ufw allow OpenSSH
-    ufw --force enable
-    apt-get install nfs-kernel-server -y
-    mkdir -p /storage
-    chown nobody:nogroup /storage
-    mkdir /storage/slurm
-    chown nobody:nogroup /storage/slurm
-    chmod 755 /storage/slurm
-
-    echo "/storage *(rw,sync,no_subtree_check)" >> /etc/exports
-    systemctl restart nfs-kernel-server
-    ufw allow nfs
-  permissions: '755'
-
-- path: /bin/install-ntp.sh
-  content: |
-    #!/bin/bash
-    echo "Europe/Budapest" > /etc/timezone
-    ln -fs /usr/share/zoneinfo/`cat /etc/timezone` /etc/localtime
-    dpkg-reconfigure -f noninteractive tzdata
-    printf "server 127.127.1.0\nfudge 127.127.1.0 stratum 10" >> /etc/ntp.conf
-    sudo /etc/init.d/ntp restart
-  permissions: '755'
-
-- path: /bin/install-munge.sh
-  content: |
-    #!/bin/bash
-    echo "==INSTALLING MUNGE started=="
-    apt install -y munge={{variables.mungeversion}}
-    echo "==INSTALLING MUNGE finished=="
-  permissions: '755'
-
-- path: /bin/set-munge-file-permissions.sh
-  content: |
-    #!/bin/bash
-    echo "==SETTING MUNGE FILE PERMISSIONS started=="
-
-    cp /etc/munge/munge.key /storage/slurm/munge.key
-    chmod 755 /storage/slurm/munge.key
-    chown nobody:nogroup /storage/slurm/munge.key
-
-    chown -R munge: /etc/munge/ /var/log/munge/ /var/lib/munge/ /run/munge/
-    chmod 0700 /etc/munge/ /var/log/munge/ /var/lib/munge/
-    chmod 0755 /run/munge/
-    chmod 0600 /etc/munge/munge.key
-    chown munge /etc/munge/munge.key
-    echo "==SETTING MUNGE FILE PERMISSIONS finished=="
-  permissions: '755'
-
-- path: /bin/start-munge-service.sh
-  content: |
-    #!/bin/bash
-    echo "==STARTING MUNGE SERVICE (munge) started=="
-    systemctl enable munge
-    systemctl start munge
-    echo "==STARTING MUNGE SERVICE (munge) finished=="
-  permissions: '755'
-
-- path: /bin/start-mariadb-service.sh
-  content: |
-    #!/bin/bash
-    echo "==STARTING MARIADB SERVICE started=="
-    systemctl enable mariadb
-    systemctl start mariadb
-    echo "=STARTING MARIADB finished=="
-  permissions: '755'
-
-- path: /bin/set-mariadb-permissions.sh
-  content: |
-    #!/bin/bash
-    echo "==STARTING MARIADB PERMISSIONS started=="
-    mysql -u root -e "create database slurm_acct_db;"
-    mysql -u root -e "create user 'slurm'@'localhost';"
-    mysql -u root -e "set password for 'slurm'@'localhost' = password('slurmdbpass');"
-    mysql -u root -e "grant usage on *.* to 'slurm'@'localhost';"
-    mysql -u root -e "grant all privileges on slurm_acct_db.* to 'slurm'@'localhost';"
-    mysql -u root -e "flush privileges;"
-    echo "==STARTING MARIADB PERMISSIONS finished=="
-  permissions: '755'
-
-- path: /bin/install-slurm.sh
-  content: |
-    #!/bin/bash
-    echo "==INSTALLING SLURM started=="
-    apt install -y slurmdbd={{variables.slurmversion}}
-    apt install -y slurmctld={{variables.slurmversion}}
-    # open slurmdbd and slurmcltd ports
-    ufw allow 6819
-    ufw allow 6817
-    echo "==INSTALLING SLURM finished=="
-  permissions: '755'
-
-- path: /bin/set-slurm-permissions.sh
-  content: |
-    #!/bin/bash
-    echo "== SETTING SLURMCTLD FILE PERMISSIONS started=="
-    # SLURM DIRS
-    chown ubuntu /etc/slurm-llnl/
-    mkdir /var/spool/slurmctld /var/spool/slurmd
-    chown slurm:slurm /var/spool/slurmctld /var/spool/slurmd
-    chmod 755 /var/spool/slurmctld /var/spool/slurmd
-    
-    # PID & LOG FILES
-    mkdir /run/slurm-llnl
-    chown slurm:slurm /var/log/slurm-llnl /run/slurm-llnl
-    chmod 755 /var/log/slurm-llnl /var/run/slurm-llnl
-
-    echo "== SETTING SLURMCTLD FILE PERMISSIONS finished=="
-  permissions: '755'
-
-- path: /bin/create-slurmdbd-config.sh
-  content: |
-    #!/bin/bash
-    echo "==CREATING SLURMDBD CONFIG FILE started=="
-    echo "# Example slurmdbd.conf file.
+    # Example slurmdbd.conf file.
     #
     # See the slurmdbd.conf man page for more information.
     #
@@ -151,26 +32,12 @@ write_files:
     PidFile=/run/slurm-llnl/slurmdbd.pid
     #PluginDir=/usr/lib/slurm
     SlurmUser=slurm
-    DebugLevel=debug4" | tee /etc/slurm-llnl/slurmdbd.conf
-    chown ubuntu /etc/slurm-llnl/slurmdbd.conf
-    chmod 644 /etc/slurm-llnl/slurmdbd.conf
-    echo "==CREATING SLURMDBD CONFIG FILE finished=="
+    DebugLevel=debug4
   permissions: '755'
 
-- path: /bin/slurm-service-files.sh
+- path: /tmp/slurm.conf
   content: |
-    #!/bin/bash
-    echo "==SLURM SERVICE FILES CONFIG started=="
-    sed -i 's*PIDFile=/run/slurmdbd.pid*PIDFile=/run/slurm-llnl/slurmdbd.pid*g' /lib/systemd/system/slurmdbd.service
-    sed -i 's*PIDFile=/run/slurmctld.pid*PIDFile=/run/slurm-llnl/slurmctld.pid*g' /lib/systemd/system/slurmctld.service
-    echo "==SLURM SERVICE FILES CONFIG finished=="
-  permissions: '755'
-
-- path: /bin/create-slurm-config-file.sh
-  content: |
-    #!/bin/bash
-    echo "==CREATING SLURM CONFIG FILE started=="
-    echo "# Example slurm.conf file. Please run configurator.html
+    # Example slurm.conf file. Please run configurator.html
     # (in doc/html) to build a configuration file customized
     # for your environment.
     #
@@ -180,7 +47,7 @@ write_files:
     # See the slurm.conf man page for more information.
     #
     ClusterName=compute-cluster
-    SlurmctldHost=$(hostname | awk {'print $1'})($(hostname -I | awk {'print $1'}))
+    SlurmctldHost=HOSTNAME(IP)
     SlurmUser=slurm
     AuthType=auth/munge
     StateSaveLocation=/var/spool/slurmctld
@@ -222,27 +89,17 @@ write_files:
     #AccountingStorageTRES=gres/gpu
     DebugFlags=CPU_Bind
     AccountingStorageType=accounting_storage/slurmdbd
-    AccountingStorageHost=$(hostname | awk {'print $1'})
+    AccountingStorageHost=HOSTNAME
     #AccountingStoragePass=/var/run/munge/global.socket.2
     AccountingStorageUser=slurm
     # COMPUTE NODES
     #GresTypes=gpu
-    PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP" | tee /etc/slurm-llnl/slurm.conf
-
-    cp /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf
-    chmod 755 /storage/slurm/slurm.conf
-    sudo chown nobody:nogroup /storage/slurm/slurm.conf 
-
-    chown ubuntu /etc/slurm-llnl/slurm.conf
-    chmod 644 /etc/slurm-llnl/slurm.conf
-    echo "==CREATING SLURM CONFIG FILE finished=="
+    PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
   permissions: '755'
 
-- path: /bin/create-cgroup-conf.sh
+- path: /tmp/cgroup.conf
   content: |
-    #!/bin/bash
-    echo "==CREATING CGROUP CONF FILE started=="
-    echo "###
+    ###
     #
     # Slurm cgroup support configuration file
     #
@@ -251,92 +108,146 @@ write_files:
     #--
     CgroupAutomount=yes
     ConstrainCores=no
-    ConstrainRAMSpace=no" | tee /etc/slurm-llnl/cgroup.conf
+    ConstrainRAMSpace=no
+  permissions: '755'
+
+- path: /bin/install-slurm.sh
+  content: |
+    #!/bin/bash
+
+    set -x
+
+    # Install NFS
+    mkdir -p /storage
+    chown nobody:nogroup /storage
+    mkdir /storage/slurm
+    chown nobody:nogroup /storage/slurm
+    chmod 755 /storage/slurm
+    echo "/storage *(rw,sync,no_subtree_check)" >> /etc/exports
+    systemctl restart nfs-kernel-server
+
+    # Install NTP
+    echo "Europe/Budapest" > /etc/timezone
+    ln -fs /usr/share/zoneinfo/`cat /etc/timezone` /etc/localtime
+    dpkg-reconfigure -f noninteractive tzdata
+    echo "server 0.hu.pool.ntp.org iburst" >> /etc/ntp.conf
+    sed -i 's/pool 0.ubuntu.pool.ntp.org iburst/# pool 0.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 1.ubuntu.pool.ntp.org iburst/# pool 1.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 2.ubuntu.pool.ntp.org iburst/# pool 2.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool 3.ubuntu.pool.ntp.org iburst/# pool 3.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
+    sed -i 's/pool ntp.ubuntu.com/# pool ntp.ubuntu.com/g' /etc/ntp.conf
+    systemctl restart ntp
+
+    # Install munge and configure munge
+    apt install -y munge={{variables.mungeversion}}
+    cp /etc/munge/munge.key /storage/slurm/munge.key
+    chmod 755 /storage/slurm/munge.key
+    chown nobody:nogroup /storage/slurm/munge.key
+    chown -R munge: /etc/munge/ /var/log/munge/ /var/lib/munge/ /run/munge/
+    chmod 0700 /etc/munge/ /var/log/munge/ /var/lib/munge/
+    chmod 0755 /run/munge/
+    chmod 0600 /etc/munge/munge.key
+    chown munge /etc/munge/munge.key
+    systemctl enable munge
+    systemctl start munge
+
+    # Configure mariadb
+    systemctl enable mariadb
+    systemctl start mariadb
+    mysql -u root -e "create database slurm_acct_db;"
+    mysql -u root -e "create user 'slurm'@'localhost';"
+    mysql -u root -e "set password for 'slurm'@'localhost' = password('slurmdbpass');"
+    mysql -u root -e "grant usage on *.* to 'slurm'@'localhost';"
+    mysql -u root -e "grant all privileges on slurm_acct_db.* to 'slurm'@'localhost';"
+    mysql -u root -e "flush privileges;"
+
+    # Install slurm and configure slurm
+    apt install -y slurmdbd={{variables.slurmversion}}
+    apt install -y slurmctld={{variables.slurmversion}}
+    chown ubuntu /etc/slurm-llnl/
+    mkdir /var/spool/slurmctld /var/spool/slurmd
+    chown slurm:slurm /var/spool/slurmctld /var/spool/slurmd
+    chmod 755 /var/spool/slurmctld /var/spool/slurmd
+    mkdir /run/slurm-llnl
+    chown slurm:slurm /var/log/slurm-llnl /run/slurm-llnl
+    chmod 755 /var/log/slurm-llnl /var/run/slurm-llnl
+    chown ubuntu:ubuntu /tmp/slurmdbd.conf
+    cp /tmp/slurmdbd.conf /etc/slurm-llnl/slurmdbd.conf
+    chown ubuntu /etc/slurm-llnl/slurmdbd.conf
+    chmod 644 /etc/slurm-llnl/slurmdbd.conf
+    sed -i 's*PIDFile=/run/slurmdbd.pid*PIDFile=/run/slurm-llnl/slurmdbd.pid*g' /lib/systemd/system/slurmdbd.service
+    sed -i 's*PIDFile=/run/slurmctld.pid*PIDFile=/run/slurm-llnl/slurmctld.pid*g' /lib/systemd/system/slurmctld.service
+    HOSTNAME=$(hostname | awk {'print $1'})
+    IP=$(hostname -I | awk {'print $1'})
+    sed -i s/HOSTNAME/${HOSTNAME}/g /tmp/slurm.conf
+    sed -i s/IP/${IP}/g /tmp/slurm.conf
+    chown ubuntu:ubuntu /tmp/slurm.conf
+    cp /tmp/slurm.conf /etc/slurm-llnl/slurm.conf
+    cp /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf
+    chmod 755 /storage/slurm/slurm.conf
+    chown nobody:nogroup /storage/slurm/slurm.conf
+    chmod 644 /etc/slurm-llnl/slurm.conf
+    # Cgroup file
+    chown ubuntu:ubuntu /tmp/cgroup.conf
+    cp /tmp/cgroup.conf /etc/slurm-llnl/cgroup.conf
     cp /etc/slurm-llnl/cgroup.conf /storage/slurm/cgroup.conf
     chmod 755 /storage/slurm/cgroup.conf
     chown nobody:nogroup /storage/slurm/cgroup.conf
     chown ubuntu /etc/slurm-llnl/cgroup.conf
     chmod 644 /etc/slurm-llnl/cgroup.conf
-    echo "==CREATING CGROUP CONF FILE finished=="
-  permissions: '755'
-
-- path: /bin/start-slurm-services.sh
-  content: |
-    #!/bin/bash
-    echo "== STARTING SLURM MASTER SERVICES started=="
-    #systemctl restart munge
     systemctl daemon-reload
     systemctl enable slurmdbd
     systemctl start slurmdbd
-
-    echo "Waiting for slurmdbd..."
+    # TODO
     sleep 20
     sacctmgr add cluster compute-cluster -i
-
     systemctl enable slurmctld
-    echo "== STARTING SLURM MASTER SERVICES finished=="
+    echo "* * * * * root bash /bin/slurm-conf-populator.sh" | tee -a /etc/crontab
+    echo "* * * * * root bash /bin/slurm-scale-down.sh" | tee -a /etc/crontab
   permissions: '755'
+
 
 - path: /bin/slurm-conf-populator.sh
   content: |
     #!/bin/bash
+
+    set -x
+
     answer=$(cmp --silent /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf || echo "different")
-    
     if [[ "$answer" = "different" ]]; then
       cp /storage/slurm/slurm.conf /etc/slurm-llnl/slurm.conf
-      chown ubuntu /etc/slurm-llnl/slurm.conf
+      chown ubuntu:ubuntu /etc/slurm-llnl/slurm.conf
       chmod 644 /etc/slurm-llnl/slurm.conf
-
-      #systemctl restart munge
       systemctl daemon-reload
       systemctl restart slurmdbd
       sleep 5
       systemctl restart slurmctld
-
-      echo "* * * * * root bash /bin/slurm-scale-down.sh" | tee -a /etc/crontab
     fi
   permissions: '744'
 
 - path: /bin/slurm-scale-down.sh
   content: |
     #!/bin/bash
-    sinfo > /storage/slurm/nodes.txt
-    WORKARR=($(echo $(awk '/down/ {print $6}' /storage/slurm/nodes.txt) | tr " " "\n"))
-    
+
+    set -x
+
+    LOG_LOCATION=/home/ubuntu/downscale.log
+    exec 3>&1 4>&2
+    trap 'exec 2>&4 1>&3' 0 1 2 3
+    exec 1>>$LOG_LOCATION 2>&1
+
+    echo "####"
+    date
+    WORKARR=(`sinfo -dh|col6`)
     for i in ${!WORKARR[@]}
       do
-        echo "==REMOVE FROM THE CLUSTER: " ${WORKARR[i]} "=="
-        grep -vwE "(${WORKARR[i]})" /storage/slurm/slurm.conf > /storage/slurm/slurm2.conf
+        date
+        echo "##REMOVE FROM THE CLUSTER: ${WORKARR[i]} ##"
+        grep -v "${WORKARR[i]}" /storage/slurm/slurm.conf > /storage/slurm/slurm2.conf
         mv /storage/slurm/slurm2.conf /storage/slurm/slurm.conf
       done
-
-    rm /storage/slurm/nodes.txt
+    echo "####"
   permissions: '744'
 
-- path: /bin/create-slurm-cron-job.sh
-  content: |
-    #!/bin/bash
-    echo "== CREATING SLURM CRON JOB started=="
-    echo "* * * * * root bash /bin/slurm-conf-populator.sh" | tee -a /etc/crontab
-    echo "== CREATING SLURM CRON JOB finished=="
-  permissions: '755'
-
 runcmd:
-- echo "====DEPLOYMENT started===="
-- /bin/install-packages.sh
-- /bin/install-nfs.sh
-- /bin/install-ntp.sh
-- /bin/install-munge.sh
-- /bin/set-munge-file-permissions.sh
-- /bin/start-munge-service.sh
-- /bin/start-mariadb-service.sh
-- /bin/set-mariadb-permissions.sh
 - /bin/install-slurm.sh
-- /bin/set-slurm-permissions.sh
-- /bin/create-slurmdbd-config.sh
-- /bin/slurm-service-files.sh
-- /bin/create-slurm-config-file.sh
-- /bin/create-cgroup-conf.sh
-- /bin/start-slurm-services.sh
-- /bin/create-slurm-cron-job.sh
-- echo "====DEPLOYMENT finished===="

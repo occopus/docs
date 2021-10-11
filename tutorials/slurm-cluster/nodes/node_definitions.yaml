@@ -11,7 +11,7 @@
       key_name: replace_with_name_of_keypair_or_remove
       security_groups:
         -
-          replace_with_security_group_to_add_or_remove_section 
+          replace_with_security_group_to_add_or_remove_section
       floating_ip: add_yes_if_you_need_floating_ip_or_remove
       floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
@@ -36,7 +36,7 @@
       key_name: replace_with_name_of_keypair_or_remove
       security_groups:
         -
-          replace_with_security_group_to_add_or_remove_section 
+          replace_with_security_group_to_add_or_remove_section
       floating_ip: add_yes_if_you_need_floating_ip_or_remove
       floating_ip_pool: replace_with_name_of_floating_ip_pool_or_remove
     contextualisation:
