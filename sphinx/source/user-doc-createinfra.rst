@@ -187,6 +187,8 @@ Nova
     The identifier of the image on the cloud to be instantiated to realize a virtual machine.
   ``flavor_name``
     The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
+  ``boot_from_volume``
+    Create a volume from the specified image and boot the instance from that volume. Can be used to start based on flavors without a root disk.
   ``server_name``
     Optional. The hostname of the instantiated virtual machine.
   ``key_name``
@@ -223,7 +225,11 @@ Azure
   ``username``
     The name of the admin user to create on the VM. Azure currently has the following restrictions on the username: must only contain letters, numbers, hyphens, and underscores and may not start with a hyphen or number, must not include reserved word, is between 1 and 64 characters long.
   ``password``
-    The password for the admin user.
+    Optional. The password for the admin user. If not set, then ``ssh_key_data`` must be defined.
+  ``ssh_key_data``
+    Optional. The public part of the SSH key for the admin user. The content specified here will be placed into the admin user's authorized_keys file. If not set, then ``password`` must be defined.
+  ``server_name``
+    Optional. The hostname of the instantiated virtual machine.
   ``vnet_name``
     Optional. Name of the virtual network to use for the VM. If not specified, the Azure resource plugin will allocate a virtual network.
   ``nic_name``
