@@ -170,25 +170,23 @@ Nova
   ``type: nova``
     Selects the nova resource handler.
   ``endpoint``
-    The endpoint (url) of the nova cloud interface.
-  ``tenant_name``
-    Optional. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, **project_id** and **user_domain_name** must be set.
+    The endpoint (URL) of the OpenStack Identity API service. If the URL includes the API version (e.g. ``https://foo.bar:5000/v3/``), then the given API version will be used, otherwise API v3 will be assumed as default.
   ``project_id``
-    Optional. Specifies the ID of the project to connect to.
+    Specifies the ID of the project to connect to.
   ``region_name``
     Optional. Specifies the name of the region within the project.
   ``user_domain_name``
     Optional. Specifies the name of the user domain. The default value of this attribute is "Default".
-  ``region_name``
-    Optional. The name of the region to be used. Should be specified when connecting to OpenStack servers where floating IP handling handling is already implemented in the Network stack, and not under Compute/Access & Secutiry.
   ``network_id``
     Optional. Specifies the ID of the network to attach to the virtual machine.
   ``image_id``
     The identifier of the image on the cloud to be instantiated to realize a virtual machine.
   ``flavor_name``
     The type of flavor to be instantiated through nova when realizing this virtual machine. This value refers to a flavour of the nova cloud. It determines the resources (CPU, memory, storage, networking) of the node.
-  ``boot_from_volume``
-    Create a volume from the specified image and boot the instance from that volume. Can be used to start based on flavors without a root disk.
+  ``volume_size``
+    Optional. When set, can be used to tell the ``nova`` plugin to create a volume from the image specified, and boot the VM from the volume created. Value ``0`` makes OpenStack create a volume automatically, other values can be used to specify the desired volume size.
+  ``volume_persist``
+    Optional. Values ``True`` and ``true`` indicate tell the plugin to keep the volume of the VM after it has been terminated. The default value of this attribute is ``false``.
   ``server_name``
     Optional. The hostname of the instantiated virtual machine.
   ``key_name``
@@ -201,6 +199,8 @@ Nova
     Optional. If defined, also implies **floating_ip**, and specifies the name of the floating IP pool that should be used to allocate a new floating IP for the VM.
   ``name``
     Optional. A user-defined name for this resource. Used in logging and can be referred to in the :ref:`authentication file <authentication>` to distinguish authentication to be applied among resources having the same type.
+  ``tenant_name``
+    Deprecated. A container used to group or isolate resources on the cloud behind the nova interface. If this option is not specified, **project_id** and **user_domain_name** must be set.
 
 Azure
 ^^^^^
