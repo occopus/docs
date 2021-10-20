@@ -18,7 +18,7 @@ The documentation tested with the following versions:
     * Sphinx - ``3.0.3``
     * sphinx_rtd_theme - ``0.4.3``
 
-    
+
 To create a local documentation environment just follow the steps (Debian-based OS):
 
 .. code:: bash
@@ -58,7 +58,7 @@ After these steps, you can look at the documentation under: ``http://[Your_IP_Ad
 .. danger::
     Nginx config is **not** a valid production ready config! Use **only** for **testing** purposes!
     If you are able to do that do not expose it to the public (use local network if it is possible).
-     
+
 Helper scripts
 ~~~~~~~~~~~~~~
 
@@ -102,9 +102,9 @@ Read the Docs build
 ~~~~~~~~~~~~~~~~~~~
 
 Every tag creates a new version for the Occopus documentation site. Occopus documentation is
-hosted by Read the Docs (RTD) at the URL: https://occopus.readthedocs.io. 
+hosted by Read the Docs (RTD) at the URL: https://occopus.readthedocs.io.
 
-The ``master`` branch defines the lastest tag in RTD which is considered as the 
+The ``master`` branch defines the lastest tag in RTD which is considered as the
 stable version of the documentation. Each releases of the master branch is compiled and shown by RTD as versions.
 
 Actual version of the ``devel`` branch is also continuesly refreshed by RTD and shown under a hidden (/devel) URL. Optionally,
