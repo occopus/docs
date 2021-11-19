@@ -252,7 +252,7 @@ Azure ACI
   ``image``
     The public image to be used from Docker Hub, e.g. bde2020/spark-worker:2.4.5-hadoop2.7.
   ``network_type``
-    The the of network to be used. Value "public" allocates a public address for the container, whereas value "private" uses a private network.
+    The the of network to be used. Value "public" allocates a public address for the container, whereas value "private" uses a private network. When the value "public" is specified, then Occopus will allocate an FQDN for the conteiner, which will also be set as the evironment variable ``_OCCOPUS_ALLOCATED_FQDN``.
   ``memory``
     The memory in GB to allocate for the container, e.g. 2.
   ``cpu_cores``
