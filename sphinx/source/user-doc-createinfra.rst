@@ -186,7 +186,7 @@ Nova
   ``volume_size``
     Optional. When set, can be used to tell the ``nova`` plugin to create a volume from the image specified, and boot the VM from the volume created. Value ``0`` makes OpenStack create a volume automatically, other values can be used to specify the desired volume size.
   ``volume_persist``
-    Optional. Values ``True`` and ``true`` indicate tell the plugin to keep the volume of the VM after it has been terminated. The default value of this attribute is ``false``.
+    Optional. Values ``True`` or ``true`` tell Occopus to keep the volume of the VM after it has been terminated. The default value of this attribute is ``false``.
   ``server_name``
     Optional. The hostname of the instantiated virtual machine.
   ``key_name``
