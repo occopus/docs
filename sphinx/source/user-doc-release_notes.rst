@@ -3,6 +3,18 @@
 Release Notes
 *************
 
+v1.10 (30 Nov 2021)
+===================
+
+- Deprecate novaclient, relying on openstacksdk only in nova plugin
+- Drop voms support, boot volume support in nova plugin
+- Remove voms auth type checking for nova plugin
+- Add support for booting from volumes in case of diskless flavors
+- Add support for endpoints with/wo version number in nova plugin
+- Add support to pass FQDN as environment variable in azure container plugin
+- Add support for server naming and ssh key in azure vm plugin
+- Add cost query to cloudbroker plugin and to API endpoint
+
 v1.9 (25 May 2021)
 ==================
 
