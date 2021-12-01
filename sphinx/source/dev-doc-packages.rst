@@ -23,16 +23,14 @@ Build environment
 
 .. important::
 
-   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 18.04** version.
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 20.04** version.
 
 There are only a few system-wide packages needed:
 
 .. code:: bash
 
-   sudo apt install -y python3-pip
-   sudo apt install -y virtualenv
-   sudo apt install -y redis-server
-   sudo apt install -y libssl-dev
+   sudo apt update && \
+   sudo apt install -y python3-pip python3-dev virtualenv redis-server libssl-dev
 
 Git submodules can be used to clone and manage all repositories at once:
 

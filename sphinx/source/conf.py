@@ -22,7 +22,7 @@ copyright = '2020, SZTAKI'
 author = 'József Kovács, Zoltán Farkas, Márk Emődi'
 
 # The full version, including alpha/beta/rc tags
-release = 'v1.8'
+release = 'v1.10'
 
 
 # -- General configuration ---------------------------------------------------
