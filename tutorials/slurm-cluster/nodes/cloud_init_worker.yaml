@@ -7,6 +7,14 @@ users:
   - name: slurm
     uid: 1002
 
+timezone: Europa/Budapest
+
+ntp:
+  enabled: true
+  ntp_client: chrony
+  servers:
+    - 0.hu.pool.ntp.org
+
 packages:
   - nfs-common
   - inotify-tools
@@ -21,21 +29,9 @@ write_files:
 
     # Configure NFS
     mkdir -p /storage
-    chown nobody:nogroup /storage
+    chown ubuntu:ubuntu /storage
     mount {{getip('slurm-master')}}:/storage /storage
     echo {{getip('slurm-master')}}:/storage /storage nfs auto,timeo=14,intr 0 0 | tee -a /etc/fstab
-
-    # Configure NTP
-    echo "Europe/Budapest" > /etc/timezone
-    ln -fs /usr/share/zoneinfo/`cat /etc/timezone` /etc/localtime
-    dpkg-reconfigure -f noninteractive tzdata
-    echo "server 0.hu.pool.ntp.org iburst" >> /etc/ntp.conf
-    sed -i 's/pool 0.ubuntu.pool.ntp.org iburst/# pool 0.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
-    sed -i 's/pool 1.ubuntu.pool.ntp.org iburst/# pool 1.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
-    sed -i 's/pool 2.ubuntu.pool.ntp.org iburst/# pool 2.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
-    sed -i 's/pool 3.ubuntu.pool.ntp.org iburst/# pool 3.ubuntu.pool.ntp.org iburst/g' /etc/ntp.conf
-    sed -i 's/pool ntp.ubuntu.com/# pool ntp.ubuntu.com/g' /etc/ntp.conf
-    systemctl restart ntp
 
     # Install and configure munge
     apt install -y munge={{variables.mungeversion}}
@@ -59,14 +55,10 @@ write_files:
     chmod 755 /var/spool/slurmctld /var/spool/slurmd /run/slurm-llnl/ /var/log/slurm-llnl /run/slurm-llnl
     bash /bin/wait-for-file.sh slurm.conf
     cp /storage/slurm/slurm.conf /etc/slurm-llnl/slurm.conf
-    echo "$(slurmd -C 2>&1 | head -n 1) NodeAddr=$(hostname -I | col1)" >> /etc/slurm-llnl/slurm.conf
-    cp /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf
-    chmod 755 /storage/slurm/slurm.conf
-    chown nobody:nogroup /storage/slurm/slurm.conf
+    echo "$(slurmd -C 2>&1 | head -n 1) NodeAddr=$(hostname -I)" >> /etc/slurm-llnl/slurm.conf
+    su - ubuntu -c "cp /etc/slurm-llnl/slurm.conf /storage/slurm/slurm.conf"
     bash /bin/wait-for-file.sh cgroup.conf
     cp /storage/slurm/cgroup.conf /etc/slurm-llnl/cgroup.conf
-    chmod 755 /storage/slurm/cgroup.conf
-    chown nobody:nogroup /storage/slurm/cgroup.conf
     chown ubuntu /etc/slurm-llnl/slurm.conf /etc/slurm-llnl/cgroup.conf
     chmod 644 /etc/slurm-llnl/slurm.conf /etc/slurm-llnl/cgroup.conf
     systemctl restart munge
