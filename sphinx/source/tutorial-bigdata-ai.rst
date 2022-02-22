@@ -500,6 +500,10 @@ This means that you need to create a firewall rule to allow **all traffic betwee
 TensorFlow and Keras with Jupyter Notebook Stack
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::
+
+  This Occopus-based version is now deprecated in favor of the `TensorFlow-JupyterLab Reference Architecture <https://git.sztaki.hu/science-cloud/reference-architectures/tensorflow-jupyterlab>`_ based on Terraform and Ansible. 
+
 TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
 
 Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research. Keras contains numerous implementations of commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers, and a host of tools to make working with image and text data easier. In addition to standard neural networks, Keras has support for convolutional and recurrent neural networks. It supports other common utility layers like dropout, batch normalization, and pooling. For more information visit the `official Keras  page <https://keras.io>`_ .
@@ -605,6 +609,10 @@ The complete machine learning environment consists of the following components: 
 
 TensorFlow 2 with JupyterLab Stack using NVIDIA GPU card
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+
+  This Occopus-based version is now deprecated in favor of the `TensorFlow-JupyterLab Reference Architecture <https://git.sztaki.hu/science-cloud/reference-architectures/tensorflow-jupyterlab>`_ based on Terraform and Ansible.
 
 TensorFlow is an end-to-end open source platform for machine learning. It has a comprehensive, flexible ecosystem of tools, libraries and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML powered applications. TensorFlow was developed by the Google Brain team for internal Google use. It was released under the Apache License 2.0 on November 9, 2015. For more information visit the `official TensorFlow page <https://tensorflow.org/>`_ .
 
@@ -722,6 +730,11 @@ The complete machine learning environment consists of the following components: 
 
 JupyterLab
 ~~~~~~~~~~
+
+.. note::
+
+  This Occopus-based version is now deprecated in favor of the `JupyterLab Reference Architecture <https://git.sztaki.hu/science-cloud/reference-architectures/jupyterlab>`_ based on Terraform and Ansible.
+
 The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more. The notebook extends the console-based approach to interactive computing in a qualitatively new direction, providing a web-based application suitable for capturing the whole computation process: developing, documenting, and executing code, as well as communicating the results.
 
 The Jupyter Notebook combines two components:
