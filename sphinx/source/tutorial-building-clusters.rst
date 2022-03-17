@@ -106,6 +106,10 @@ The following steps are suggested to be performed:
 Kubernetes cluster
 ~~~~~~~~~~~~~~~~~~~~
 
+.. note::
+
+  This Occopus-based version is now deprecated in favor of the `Kubernetes Reference Architecture <https://git.sztaki.hu/science-cloud/reference-architectures/kubernetes>`_ based on Terraform and Ansible.
+
 This tutorial sets up a complete Kubernetes infrastructure with Kubernetes Dashboard and Helm package manager. It contains a master node and predefined number of worker nodes. The worker
 nodes receive the ip of the master node and attach to the master node to form a cluster. Finally, the Kubernetes cluster can be used with any standard tool talking the Kubernetes API server
 protocol (on port 6443).
