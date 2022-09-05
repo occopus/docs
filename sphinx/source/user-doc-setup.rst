@@ -9,7 +9,7 @@ Installation
 
 .. important::
 
-   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 18.04** version.
+   We primarily support **Ubuntu** operating system. The following instruction steps were tested on **Ubuntu 20.04** version.
 
 #. Install a few system-wide packages
 
@@ -18,7 +18,7 @@ Installation
    .. code:: bash
 
       sudo apt update && \
-      sudo apt install -y python3-pip virtualenv redis-server libssl-dev
+      sudo apt install -y python3-pip python3-dev virtualenv redis-server libssl-dev
 
 #. Prepare the environment (you may skip this part to have a system-wide installation, not recommended)
 
